@@ -1,0 +1,43 @@
+# Hummingbird configuration file  #
+
+
+# --- grid/geometry settings --- #
+
+nX	          100
+nY	          100
+xMin         0.01
+xMax         10
+
+# --- solver settings --- #
+#     GAUSSSEIDEL=0 (see data.h)
+#     JACOBI=1 (see data.h)
+#     THOMAS=2 (see data.h)
+#
+
+solverType 0
+maxIter       500000
+maxResidual   1.0E-16
+facRelax 1.0
+
+# --- flow type --- # (see data.h)
+#     CHANNELFLOW = -1
+#      Parameters: uIn
+#
+#     PARALLELFLOW = 0
+#        Parameters: uInfty, vInfty
+#
+#     STAGNATION_POINT = 1
+#        Parameters: magnitude
+#
+#     SOURCE = 2
+#        Parameters: magnitude (< 0 for sink)
+#
+#     POTENTIAL_VORTEX = 3
+#        Parameters: magnitude (< 0 for clockwise)
+#
+#     DIPOL = 4
+#        Parameters: magnitude (< 0 for clockwise)
+#
+
+potentialFunc 4
+magnitude 5

@@ -1,0 +1,16 @@
+# --- Spider configuration file --- #
+
+# --- Numerical settings --- #
+xMin     0
+xMax     3
+yMin     0
+yMax     3
+
+nCellsX  3
+nCellsY  3
+
+# --- Boundary conditions --- #
+# FIXME
+
+# --- Initial conditions --- #
+# FIXME

@@ -1,0 +1,63 @@
+% Die Titelseite
+% Im folgenden kommen ein paar Variablen, die auszufüllen sind
+% Bisher steht dort nur Musterinhalt
+% Außerdem müssen zei Dateien erstellt werden, Bild/Logo/Emblem des Fachgebietes
+% sowie der Universität
+
+\newcommand{\trtitle}{Numerische Strömungssimulation}
+\newcommand{\trtype}{Praktikumsbericht}
+\newcommand{\trauthor}{Karsten Paul}
+\newcommand{\trstudycourse}{Computational Engineering Science}
+\newcommand{\trmatrikelnummer}{333 092}
+\newcommand{\trsemester}{6}
+\newcommand{\trbetreuer}{Dr.-Ing. Bernd Binninger}
+%\newcommand{\trprof}{Prof. Dr. Udo Seltsam}
+%\newcommand{\trfachgebiet}{Erste Sahne}
+\newcommand{\trinstitut}{Technische Verbrennung}
+%\newcommand{\trfakultaet}{IV Wissenschaft}
+\newcommand{\truni}{RWTH Aachen}
+\newcommand{\trdate}{\today}
+
+\thispagestyle{empty}
+
+% Kopfzeile mit Logos.
+% Eventuell die \hspace{} je nach Logogröße anpassen
+	\flushright
+  \includegraphics[width=10cm]{itvLogo}
+
+\rule{\textwidth}{0.4pt}
+
+\vspace{2.5cm}
+\begin{center}
+  \textbf{\Huge \trtitle}
+\end{center}
+\vspace{2cm}
+
+\begin{center}
+  \textbf{\huge \trtype} \\[1cm]
+  \Large Institut für \trinstitut \\
+ % Fakultät \trfakultaet \\
+  \large\truni \\[0.5cm]
+  \large im Studiengang \trstudycourse \\
+  \large im \trsemester . Semester
+  \\[3cm]
+  vorgelegt von \\[0.2cm]
+  \textbf{\Large \trauthor \\ \trmatrikelnummer} \\[0.1cm]
+  \textbf{\trdate}
+\end{center}
+
+\vspace{1cm}
+
+
+\begin{center}
+\begin{tabular}{ll}
+\large Betreuer: & \large\trbetreuer \\
+\end{tabular}
+\end{center}
+
+\vfill
+
+\trauthor \\
+Matrikelnummer:  \trmatrikelnummer 
+
+\rule{\textwidth}{0.4pt}
