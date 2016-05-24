@@ -383,7 +383,7 @@ h_{o}(x) = arctan(x)+2, \\
 x\in[-5,5].
 \end{align*}
 \end{enumerate}
-Die Ergebnisse sehen wie folgt aus:
+Die Ergebnisse sehen wie folgt aus: \textcolor{red}{BLOCKSATZ IN AUFZÄHLUNG!!!}
 \begin{enumerate}
 \item
 Zunächst werden die Ableitungen, die beispielsweise in \eqref{eq:fd_laplace_phi_krummlinig} benötigt werden, überprüft. Die analytischen Lösungen sehen für das genannte Problem wie folgt aus (vgl. \eqref{trafo_xi_eta}):
@@ -394,11 +394,87 @@ Zunächst werden die Ableitungen, die beispielsweise in \eqref{eq:fd_laplace_phi_
 & \dfrac{\partial\xi}{\partial y}=0, & \dfrac{\partial\eta}{\partial y}=\dfrac{50}{arctan(x)+2}, \\
 & \dfrac{\partial^{2}\xi}{\partial y^{2}}=0, & \dfrac{\partial^{2}\eta}{\partial y^{2}}=0.
 \end{align*}
-Diese Ableitungen wurden an mehreren Knotenpunkten analytisch berechnet und mit den, vom Programm berechneten, Werten verglichen. \textcolor{red}{RESULTATE!!}
-\item
+Diese Ableitungen wurden an mehreren Knotenpunkten analytisch berechnet und mit den, vom Programm berechneten, Werten verglichen. \textcolor{red}{RESULTATE!!} \\ 
+
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel1_1}
+  \caption{Kanal 1: Äquipotential- und Stromlinien}
+  \label{fig:channel1_1}
+\end{figure}
+\FloatBarrier
+Es ist ersichtlich, dass sich alle Äquipotential- und Stromlinien senkrecht schneiden, so wie es auch aus der Theorie vorgeschrieben wird. Desweiteren stehen die Äquipotentiallinien senkrecht auf der Kontur.
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel1_2}
+  \caption{Kanal 1: Geschwindigkeitsfeld}
+  \label{fig:channel1_2}
+\end{figure}
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel1_3}
+  \caption{Kanal 1: Druckfeld}
+  \label{fig:channel1_3}
+\end{figure}
+\FloatBarrier
+Am Auslauf des Kanals ist der Druckbeiwert bei circa Eins, da $u_{lokal}>u_{\infty}$. Am Einlauf gilt hingegen $u_{lokal}\approx u_{\infty}$, so dass der Druckbeiwert dort ungefährt gleich Null ist.
+\FloatBarrier
 
 \item
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel2_1}
+  \caption{Kanal 2: Äquipotential- und Stromlinien}
+  \label{fig:channel2_1}
+\end{figure}
+\FloatBarrier
+Es folgen die gleichen Ergebnisse wie bei Kanal 1.
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel2_2}
+  \caption{Kanal 2: Geschwindigkeitsfeld}
+  \label{fig:channel2_2}
+\end{figure}
+
+\item
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel3_1}
+  \caption{Kanal 3: Äquipotential- und Stromlinien}
+  \label{fig:channel3_1}
+\end{figure}
+\FloatBarrier
+Es folgen die gleichen Ergebnisse wie bei Kanal 1.
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel3_2}
+  \caption{Kanal 3: Geschwindigkeitsfeld}
+  \label{fig:channel3_2}
+\end{figure}
+
+\item
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel4_1}
+  \caption{Kanal 4: Äquipotential- und Stromlinien}
+  \label{fig:channel4_1}
+\end{figure}
+\FloatBarrier
+Es folgen die gleichen Ergebnisse wie bei Kanal 1.
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+  \caption{Kanal 4: Geschwindigkeitsfeld}
+  \label{fig:channel4_2}
+\end{figure}
 
 \end{enumerate}
-\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte könnten für Fall 2) beispielsweise wie folgt aussehen:
+\FloatBarrier
+\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte könnten für Fall 2) beispielsweise wie folgt aussehen: \textcolor{red}{EINFÜGEN!!}
  
