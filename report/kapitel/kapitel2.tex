@@ -1,18 +1,140 @@
-\chapter{Zweites Kapitel}
-\section{Neuer Abschnitt}
+\chapter{Konvektions-Diffusions-Strömung}
 
-Hier füge ich mal eine Tabelle ein
-\begin{table}[htbp]
-\centering
-\begin{tabular}{l|l|l|l}
-SpalteA & SpalteB & SpalteC & SpalteD \\
-\midrule
-InhaltA1 & InhaltB1 & InhaltC1 & InhaltD1 \\
-InhaltA2 & InhaltB2 & InhaltC2 & InhaltD2 \\
-InhaltA3 & InhaltB3 & InhaltC3 & InhaltD3
-\end{tabular}
-\caption{Beispiel einer Tabelle}
-\label{tab:tabelle1}
-\end{table}
+\section{Aufgabenstellung}
+Ziel ist es, eine inkompressible, instationäre und zweidimensionale Strömung zu simulieren, welche Konvektions- und Diffusionsprozesse enthält. \\
+Analag zu Kapitel \ref{chap:1} wird zunächst auf die mathematische Modellbildung eingeganen, anschließend werden numerische Methoden zum Lösen der entstandenen Gleichungen vorgestellt und schließlich, werden Testfälle bzw. Resultate des Programms diskutiert und somit das Programm validiert.
 
-Wie man in der Tabelle~\ref{tab:tabelle1} sehen kann ...
+\section{Mathematische Modellbildung} \label{sec:mathmodell_2}
+Es wird die Bilanzgröße $\Phi$ betrachet. Stellt man die Bilanz der konvektiven und diffusiven Flüsse, sowie der Quellterme für ein diferentielles Element im Zweidimensionalen auf, so ergibt sich für die horizontalen (konvektiven und diffusiven) Flüsse:
+\begin{align}
+f_{konv,links} = \rho u\Phi dy,\quad f_{konv,rechts}=\left(\rho u \Phi + \dfrac{\partial\left(\rho u \Phi\right)}{\partial x}dx\right)dy, \label{eq:flüsse_konv_hor} \\
+f_{diff,links} = -a\dfrac{\partial\Phi}{\partial x} dy,\quad f_{diff,rechts}=-\left(a\dfrac{\partial\Phi}{\partial x} + \dfrac{\partial}{\partial x}\left(a\dfrac{\partial\Phi}{\partial x}\right)dx\right)dy. \label{eq:flüsse_diff_hor}
+\end{align}
+Analog gilt für die vertikalen Flüsse:
+\begin{align}
+g_{konv,unten} = \rho u\Phi dx,\quad g_{konv,oben}=\left(\rho u \Phi + \dfrac{\partial\left(\rho u \Phi\right)}{\partial y}dy\right)dx, \label{eq:flüsse_konv_ver} \\
+g_{diff,unten} = -a\dfrac{\partial\Phi}{\partial y} dx,\quad g_{diff,oben}=-\left(a\dfrac{\partial\Phi}{\partial y} + \dfrac{\partial}{\partial y}\left(a\dfrac{\partial\Phi}{\partial y}\right)dy\right)dx. \label{eq:flüsse_diff_ver}
+\end{align}
+Für die Quellterme gilt:
+\begin{equation} \label{eq:quellterm}
+s\cdot dxdy.
+\end{equation}
+Mittels diesen Flüssen bzw. Quelltermen ist folgende Bilanzgleichung aufstellbar:
+\begin{align*}
+\dfrac{\partial\left(\rho\Phi\right)}{\partial t}= 
+& f_{konv,links}-f_{konv,rechts}+g_{konv,unten}+g_{konv,oben}+ \\ 
+& f_{diff,links}-f_{diff,rechts}+g_{diff,unten}-g_{diff,oben}+ \\ 
+& s\cdot dxdy. 
+\end{align*}
+Nach Einsetzen und Kürzen ergibt sich die folgende Formel für die Bilanzierung der Bilanzgröße $\Phi$ im differtentiellen Element der Abmessungen $dx\times dy$:
+\begin{equation} \label{eq:bilanz_2d_konserv}
+\dfrac{\partial\left(\rho\Phi\right)}{\partial t}+\dfrac{\partial\left(\rho u\Phi\right)}{\partial x}+\dfrac{\partial\left(\rho v\Phi\right)}{\partial y}=\dfrac{\partial}{\partial x}\left(a\dfrac{\partial\Phi}{\partial x}\right)+\dfrac{\partial}{\partial y}\left(a\dfrac{\partial\Phi}{\partial y}\right)+s,
+\end{equation}
+wobei $\Phi$ für den Fall $s\equiv0$ eine Erhaltungsgröße darstellt, da weder Quellen, noch Senken vorhanden sind. Allgemeiner sieht diese Formel wie folgt aus:
+\begin{equation} \label{eq:bilanz_allg}
+\dfrac{\partial\left(\rho\Phi\right)}{\partial t}+div\left(\rho\vec{v}\Phi\right)=div\left(\alpha\cdot\nabla \Phi\right)+s.
+\end{equation}
+Gleichung \eqref{eq:bilanz_2d} stellt die konservative Form der Differentialgleichung dar. Unter Anwendung der Kettenregel und Nutzung der Konitnuitätsgleichung
+\begin{equation}
+\dfrac{\partial\rho}{\partial t}+\dfrac{\partial\left(\rho u\right)}{\partial x}+\dfrac{\partial\left(\rho v\right)}{\partial y}=0
+\end{equation}
+gelangt man zu der nicht-konservativen Darstellung:
+\begin{equation} \label{eq:bilanz_2d_nichtkonserv}
+\rho\dfrac{\partial\Phi}{\partial t}+\rho\cdot u\dfrac{\partial\Phi}{\partial x}+\rho\cdot v\dfrac{\partial\Phi}{\partial y}=\dfrac{\partial}{\partial x}\left(a\dfrac{\partial\Phi}{\partial x}\right)+\dfrac{\partial}{\partial y}\left(a\dfrac{\partial\Phi}{\partial y}\right)+s.
+\end{equation}
+Schreibt man diese Gleichungen als Flussformulierung, so ergibt sich nach Anwendung eines Volumenintegrals über das komplette Volumen $\Omega$ und der anschließenden Anwendung der Gauss'schen Integralsatzes folgende Form:
+\begin{equation} \label{eq:bilanz_integralform}
+\dfrac{\partial}{\partial t}\int_{\Omega}\left(\rho\Phi\right)\mathrm{d}\Omega+\oint_{\partial\Omega}\left(\rho\vec{v}\Phi-\alpha\cdot\nabla\Phi\right)\cdot \mathrm{d}\vec{A}= \int_{\Omega}s\mathrm{d}\Omega,
+\end{equation} 
+wobei $\vec{F}=\rho\vec{v}\Phi-\alpha\cdot grad(\Phi)$ den Fluss bezeichnet. Die rechte Seite dieser Formel stellt die Bilanz der Quellen über das gesamte Integrationsgebiet $\Omega$ dar, die linke Seite stellt die Summe aus zeitlicher Änderung der Bilanzgröße und der Bilanz aller Flüsse über die Gebietsoberfläche dar. 
+
+\section{Diskretisierung}
+Das gesamte Integrationsgebiet $\Omega$ wird in kleine finite, sich nicht überlappende, Volumen zerlegt. Das dadurch entstehende numerische Verfahren ist das \textbf{Finite-Volumen-Verfahren}. \\
+Mit der so entstandenen Diskretisierung bzw. dem so entstandenen Gitter gilt mit Gleichung \ref{eq:bilanz_integralform} für jedes finite Vilumen $j$ folgende Gleichung:
+\begin{equation} \label{eq:bilanz_fv}
+\dfrac{\partial}{\partial t}\left(\rho\Phi_{j}\right)\Delta V_{j} + \sum_{Seiten}\vec{F}\left(\Phi\right)\cdot\Delta\vec{A}=s_{j}\Delta V_{j}.
+\end{equation}
+In den folgenden Unterkapiteln wird näher auf die einzelnen Terme dieser Gleichung, bzw. besonders auf deren numerische Berechnung eingegangen.
+
+\subsection{Finite Volumen}
+Als Erstes eröffnet sich die Frage, wie die finiten Volumen $\Delta V_{j}$ zu wählen sind. Es werden drei Bedingungen an diese gestellt:
+\begin{enumerate}
+\item $\bigcup\limits_{j}\Delta V_{j}\stackrel{!}{=}\Omega$, d.h. die Summe aller finiten Volumen spannen das gesamte Integrationsgebiet auf.
+\item $\Delta V_{i} \cup \Delta V_{j}=\emptyset,\quad \forall i\neq j$, d.h. die finiten Volumen überschneiden sich nicht. Außerdem gehört jede Begrenzungskante oder -fläche zu zwei finiten Volumen gleichzeitig.
+\item Die Berechnung der Flüsse über die Zellflächen muss unabhängig von den Zellen geschehen, so dass sicher gestellt ist, dass der eintretende Fluss über eine Zellfläche der einen Zelle, gleich dem austretenden Fluss der benachbarten Zelle über die selbe Zellfläche ist.
+\end{enumerate}
+Im Folgenden wird eine zellzentrierte Interpretation gewählt, sprich die diskreten Werte der Bilanzgröße $\Phi$ werden innerhalb eines finiten Volumens/ einer Zelle angenommen und nicht an den Knotenpunten mehrerer Zellen.
+
+\subsection{Numerischer Fluss}
+Es wird eine numerische Berechnung für den in \ref{eq:bilanz_fv} beschriebenen Fluss gesucht. Betrachtet man die Kante zwischen den Punkten $P_{1}$ und $P_{2}$ einer Zelle, so ist der Fluss über diese Oberfläche gegeben durch:
+\begin{equation} \label{eq:fluss_oberfläche}
+\vec{F}_{P_{1}P_{2}}=\begin{bmatrix}
+   f\\
+   g
+\end{bmatrix}.,
+\end{equation}
+wobei $f$ und $g$ jeweils die horizontale bzw. vertikale Komponenten sind (vgl. \eqref{eq:flüsse_konv_hor}, \eqref{eq:flüsse_diff_hor},\eqref{eq:flüsse_konv_ver},\eqref{eq:flüsse_diff_ver}). Mit dem Normalenvektor der betrachteten Kante $\vec{n}_{P_{1}P_{2}}=\dfrac{1}{\sqrt{\Delta x^{2}+\Delta y^{2}}}\begin{bmatrix}
+   \Delta y\\
+   -\Delta x
+\end{bmatrix},$ folgt für den Fluss über die Kante $\overline{P_{1}P_{2}}$:
+\begin{equation}
+\vec{F}_{P_{1}P_{2}}\cdot\vec{n}_{P_{1}P_{2}}=\left(f\Delta y-g\Delta x\right)_{P_{1}P_{2}}.
+\end{equation}
+Eingesetzt in \eqref{eq:bilanz_fv} folgt:
+\begin{equation} \label{bilanz_fv_numfluss}
+\dfrac{\partial}{\partial t}\left(\rho\Phi_{j}\right)\Delta V_{j} + \sum_{Seiten}\left(f\Delta y-g\Delta x\right)=s_{j}\Delta V_{j},\quad \forall j.
+\end{equation}
+
+\subsubsection{Flusskomponenten} \label{sec:flusskomponenten_2}
+In Gleichung \eqref{bilanz_fv_numfluss} ist noch unklar, wie sich die numerischen Flusskomponenten $f*$ bzw. $g*$ über eine Zellfläche berechnen. \\
+Es gibt beispielsweise folgende Möglichkeiten für den konvektiven Anteil:
+\begin{enumerate}
+\item $f_{P_{1}P_{2}}*=\dfrac{f_{j}+f_{j+1}}{2}$, wobei $j$ und $j+1$ die Zellen bezeichnen die sich die gemeinsame Kante $\overline{P_{1}P_{2}}$ teilen.
+\item $f_{P_{1}P_{2}}*=f\left(\dfrac{\Phi_{j}+\Phi_{j+1}}{2}\right)$, mit $j$ und $j+1$ wie bei $1.$.
+\item $f_{P_{1}P_{2}}*=\dfrac{f_{P_{1}+f_{P_{2}}}}{2}$.
+\end{enumerate}
+Es existieren wesentlich mehr Möglichkeiten, an dieser Stelle wird nicht auf diese eingangen. \\
+Der diffusive Anteil, der sich mittels $\vec{F}_{diff}=-\alpha\cdot\nabla\Phi$ berechnet, wird in seine $x$- und $y$-Anteile aufgespalten, so dass sich folgende Approximation ergibt:
+\begin{equation} \label{eq:numfluss_diff_einzeln}
+f_{P_{1}P_{2}}\approx-\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i+1,j}-\Phi_{i,j}}{\Delta x}, \quad g_{P_{1}P_{2}}\approx-\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i,j+1}-\Phi_{i,j}}{\Delta 1}.
+\end{equation}
+Somit ergibt sich für die Summe der diffusiven Flüsse der Zelle \{$P_{1},P_{2},P_{3},P_{4}$\} folgende zentrale Approximation:
+\begin{align}
+f_{P_{1}P_{2}}-f_{P_{3}P_{4}}\approx\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i+1,j}-2\Phi_{i,j}+\Phi_{i-1,j}}{\Delta x}, \label{eq:numfluss_diff_hor} \\
+g_{P_{2}P_{3}}-f_{P_{4}P_{1}}\approx\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i,j+1}-2\Phi_{i,j}+\Phi_{i,j-1}}{\Delta y}, \label{eq:numfluss_diff_ver}
+\end{align}
+wobei $i,j$ den Wert von $\Phi$ in der bilanzierten Zelle entspricht, $i,j+1$ dem Wert der Zelle darüber usw..
+
+\subsection{Zeit-Evolution}
+Für den Term $\dfrac{\partial}{\partial t}$ in \eqref{eq:bilanz_fv} zu approximieren, wird die explizite Euler-Methode verwendet, so dass:
+\begin{equation}
+\dfrac{\partial}{\partial t}\left(\rho\Phi_{j}\right)\approx\dfrac{\Phi_{j}^{n+1}-\Phi_{j}^{n}}{\Delta t},
+\end{equation}
+wobei $n$ der Zeit-Index ist und $j$ wie bereits beschrieben, das finite Volumen indiziert.. Eingesetzt ergibt sich nun folgendes Verfahren, für $\rho=const$, sprich eine inkompressible Strömung:
+\begin{equation} \label{eq:konv_diff_fv_verfahren}
+\Phi_{j}^{n+1}\approx\Phi_{j}^{n}+\dfrac{\Delta t}{\rho}\cdot s_{j}-\dfrac{\Delta t\Delta V_{j}}{\rho}\cdot\sum_{Seiten}\left(f\Delta y-g\Delta x\right).
+\end{equation}
+Die Flusskomponenten $f$ und $g$ setzen sich, wie in Kapitel \ref{sec:flusskomponenten_2} beschrieben, aus diffusiven und konvektiven Anteilen zusammen.
+
+\subsection{Rekonstruktion und Upwind-Diskretisierung}
+Nachdem alle neuen Werte von $\Phi$ mittels \eqref{eq:konv_diff_fv_verfahren} berechnet worden sind, stellt sich die Frage, wie diese interpretiert bzw. rekonstruiert werden sollen. Einerseits besteht die Möglichkeit, die Zellmittelwerte benachbarter Zellen linear miteinander zu verbinden, andererseits besteht beispielsweise die Möglichkeit der Verwendung eines Stufenprofils mit Sprungstellen an den entsprechenden Zellübergängen. \\
+Dies führt zu der Idee der \textbf{Upwind}-Diskretisierung, da das Stufenprofil die physikalischen Eigenschaften des konvektiven Transportes besser abbildet. Daher wird nun diese Diskretisierungsmöglichkeit näher beleuchtet. \\
+Es wird im eindimensionalen Fall die Kante mit Indes $i+\dfrac{1}{2}$ betrachtet, welche die Zellen mit Werten $\Phi_{i}$ und $\Phi_{i+1}$ verbindet. Es gilt folgender Zusammenhang:
+\begin{equation}
+\left(\rho u \Phi\right)_{i+\frac{1}{2}} = \begin{cases}
+    \left(\rho u\right)_{i+\frac{1}{2}}\cdot \Phi_{i} & \text{, } u_{i+\frac{1}{2}}\geq0 \\
+     \left(\rho u\right)_{i+\frac{1}{2}}\cdot \Phi_{i+1} & \text{, } u_{i+\frac{1}{2}}<0
+   \end{cases},
+\end{equation}
+d.h. die Richtung der Transportgeschwindigkeit ist hier entscheidend. \\
+Nachteil dieser Methode ist, dass die Upwind-Diskretisierung lediglich erster Ordnung ist, die zentrale Diskretisierung hingegen zweiter Ordnung. Verbesserungsmöglichkeiten werden in Kapitel \ref{sec:höhere_ordnung_2} diskutiert.
+\textcolor{red}{SEITE 4-11: Übungsaufgabe! Konsistenz, Stabilität, Ordnung + vergleichen mit zentral}
+
+\subsubsection{Höhere Ordnung} \label{sec:höhere_ordnung_2}
+Es existieren optimierte Upwind-Methoden, wie z.b. QUICK. Hier wird statt eines treppenförmigen Profils eine quadratische Rekonstruktion von $\Phi$ auf drei stromauf versetzten Knotenpunkten angesetzt. So wird eine Approximation zweiter Ordnung für äquidistante Gitter erreicht, im Gegensatz zu der ersten Ordnung der "normalen" Upwind-Diskretisierung.
+
+\section{Konvergenzanalyse}
+\subsection{Konsistenz}
+\subsection{Stabilität}
+
+\section{Validierung des Programms}
