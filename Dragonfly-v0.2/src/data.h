@@ -48,6 +48,10 @@
 #define M	0
 #define P	1
 
+// solvertypes
+#define CENTRAL 0
+#define UPWIND 1
+
 // boundary types
 #define INNERCELL 0
 #define DIRICHLET 1
@@ -136,6 +140,7 @@ struct sData {
 
    // numerical settings
    double maxTime;           // maximum physical time
+   int    solverType;           // solver type
    int    maxIter;           // maximum iterations
    double residuum;          // maximum residuum
 

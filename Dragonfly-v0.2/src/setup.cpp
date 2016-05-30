@@ -19,120 +19,130 @@
  ***************************************************************************/
 #include <iostream>
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 
-#include "setup.h"
 #include "data.h"
 #include "output.h"
+#include "setup.h"
 
 //------------------------------------------------------
 bool setup(sData* data)
 {
 
-   sCell* curCell = NULL;
-   sFace* curFace = NULL;
-   int i, j;
+    sCell* curCell = NULL;
+    sFace* curFace = NULL;
+    int i, j;
 
-   /////////////////////////////////
-   // construct mesh connectivity //
-   /////////////////////////////////
-   for (int cId = 0; cId < data->nCells; cId++) {
-      // assign points to cells
-      i = cId % (data->nPointsX - 1);
-      j = cId / (data->nPointsX - 1);
-      curCell = &data->cells[cId];
-      curCell->points[XMYM] = &data->points[j * data->nPointsX + i];
-      curCell->points[XPYM] = &data->points[j * data->nPointsX + i + 1];
-      curCell->points[XMYP] = &data->points[(j + 1) * data->nPointsX + i];
-      curCell->points[XPYP] = &data->points[(j + 1) * data->nPointsX + i + 1];
+    /////////////////////////////////
+    // construct mesh connectivity //
+    /////////////////////////////////
+    for(int cId = 0; cId < data->nCells; cId++) {
+        // assign points to cells
+        i = cId % (data->nPointsX - 1);
+        j = cId / (data->nPointsX - 1);
+        curCell = &data->cells[cId];
+        curCell->points[XMYM] = &data->points[j * data->nPointsX + i];
+        curCell->points[XPYM] = &data->points[j * data->nPointsX + i + 1];
+        curCell->points[XMYP] = &data->points[(j + 1) * data->nPointsX + i];
+        curCell->points[XPYP] = &data->points[(j + 1) * data->nPointsX + i + 1];
 
-      // assign faces to cells
-      curCell->faces[YM] = &data->faces[cId];
-      curCell->faces[YP] = &data->faces[cId + data->nPointsX - 1];
-      curCell->faces[XM] = &data->faces[(data->nPointsX - 1) * data->nPointsY + cId + j];
-      curCell->faces[XP] = &data->faces[(data->nPointsX - 1) * data->nPointsY + cId + j + 1];
+        // assign faces to cells
+        curCell->faces[YM] = &data->faces[cId];
+        curCell->faces[YP] = &data->faces[cId + data->nPointsX - 1];
+        curCell->faces[XM] = &data->faces[(data->nPointsX - 1) * data->nPointsY + cId + j];
+        curCell->faces[XP] = &data->faces[(data->nPointsX - 1) * data->nPointsY + cId + j + 1];
 
-      curCell->faces[YM]->id = cId;
-      curCell->faces[YP]->id = cId + data->nCellsX;
-      curCell->faces[XM]->id = cId + data->nCellsX * (data->nCellsY + 1);
-      curCell->faces[XP]->id = cId + data->nCellsX * (data->nCellsY + 1) + 1;
+        curCell->faces[YM]->id = cId;
+        curCell->faces[YP]->id = cId + data->nCellsX;
+        curCell->faces[XM]->id = cId + data->nCellsX * (data->nCellsY + 1) + (cId - (cId % data->nCellsX))/data->nCellsX;
+        curCell->faces[XP]->id = cId + data->nCellsX * (data->nCellsY + 1) + (cId - (cId % data->nCellsX))/data->nCellsX + 1;
 
-      // assign cells to faces
-      curCell->faces[YM]->neighCells[P] = curCell;
-      curCell->faces[YP]->neighCells[M] = curCell;
-      curCell->faces[XM]->neighCells[P] = curCell;
-      curCell->faces[XP]->neighCells[M] = curCell;
+        // assign cells to faces
+        curCell->faces[YM]->neighCells[P] = curCell;
+        curCell->faces[YP]->neighCells[M] = curCell;
+        curCell->faces[XM]->neighCells[P] = curCell;
+        curCell->faces[XP]->neighCells[M] = curCell;
 
-      // assign points to faces
-      curCell->faces[YM]->points[M] = curCell->points[XMYM];
-      curCell->faces[YM]->points[P] = curCell->points[XPYM];
-      curCell->faces[YP]->points[M] = curCell->points[XMYP];
-      curCell->faces[YP]->points[P] = curCell->points[XPYP];
-      curCell->faces[XM]->points[M] = curCell->points[XMYM];
-      curCell->faces[XM]->points[P] = curCell->points[XMYP];
-      curCell->faces[XP]->points[M] = curCell->points[XPYM];
-      curCell->faces[XP]->points[P] = curCell->points[XPYP];
+        // assign points to faces
+        curCell->faces[YM]->points[M] = curCell->points[XMYM];
+        curCell->faces[YM]->points[P] = curCell->points[XPYM];
+        curCell->faces[YP]->points[M] = curCell->points[XMYP];
+        curCell->faces[YP]->points[P] = curCell->points[XPYP];
+        curCell->faces[XM]->points[M] = curCell->points[XMYM];
+        curCell->faces[XM]->points[P] = curCell->points[XMYP];
+        curCell->faces[XP]->points[M] = curCell->points[XPYM];
+        curCell->faces[XP]->points[P] = curCell->points[XPYP];
 
-      // assign neighboring cells to cells
-      if (i != 0) {
-         curCell->neighCells[XM] = &data->cells[cId - 1];
-      }
-      if (i != data->nPointsX - 2) {
-         curCell->neighCells[XP] = &data->cells[cId + 1];
-      }
-      if (j != 0) {
-         curCell->neighCells[YM] = &data->cells[cId - (data->nPointsX - 1)];
-      }
-      if (j != data->nPointsY - 2) {
-         curCell->neighCells[YP] = &data->cells[cId + (data->nPointsX - 1)];
-      }
-   }
+        // assign neighboring cells to cells
+        if(i != 0) {
+            curCell->neighCells[XM] = &data->cells[cId - 1];
+        }
+        if(i != data->nPointsX - 2) {
+            curCell->neighCells[XP] = &data->cells[cId + 1];
+        }
+        if(j != 0) {
+            curCell->neighCells[YM] = &data->cells[cId - (data->nPointsX - 1)];
+        }
+        if(j != data->nPointsY - 2) {
+            curCell->neighCells[YP] = &data->cells[cId + (data->nPointsX - 1)];
+        }
+    }
 
-   /////////////////////////////////////
-   // compute face centers and deltas //
-   /////////////////////////////////////
-   for (int fId = 0; fId < data->nFaces; fId++) {
-      curFace = &data->faces[fId];
-      curFace->dx = curFace->points[P]->x - curFace->points[M]->x;
-      curFace->dy = curFace->points[P]->y - curFace->points[M]->y;
-      curFace->x = (curFace->points[P]->x + curFace->points[M]->x) / 2.;
-      curFace->y = (curFace->points[P]->y + curFace->points[M]->y) / 2.;
-   }
+    /////////////////////////////////////
+    // compute face centers and deltas //
+    /////////////////////////////////////
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
+        curFace->dx = curFace->points[P]->x - curFace->points[M]->x;
+        curFace->dy = curFace->points[P]->y - curFace->points[M]->y;
+        curFace->x = (curFace->points[P]->x + curFace->points[M]->x) / 2.;
+        curFace->y = (curFace->points[P]->y + curFace->points[M]->y) / 2.;
+    }
 
-   //////////////////////////////////////
-   // compute cell centers and volumes //
-   //////////////////////////////////////
-   for (int cId = 0; cId < data->nCells; cId++) {
-      curCell = &data->cells[cId];
-      curCell->x =
-          curCell->points[XMYM]->x + curCell->points[XPYM]->x + curCell->points[XMYP]->x + curCell->points[XPYP]->x;
-      curCell->y /= 4.;
-      curCell->y =
-          curCell->points[XMYM]->y + curCell->points[XPYM]->y + curCell->points[XMYP]->y + curCell->points[XPYP]->y;
-      curCell->y /= 4.;
+    //////////////////////////////////////
+    // compute cell centers and volumes //
+    //////////////////////////////////////
+    for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+        curCell->x =
+            curCell->points[XMYM]->x + curCell->points[XPYM]->x + curCell->points[XMYP]->x + curCell->points[XPYP]->x;
+        curCell->y /= 4.;
+        curCell->y =
+            curCell->points[XMYM]->y + curCell->points[XPYM]->y + curCell->points[XMYP]->y + curCell->points[XPYP]->y;
+        curCell->y /= 4.;
 
-      curCell->volume = curCell->faces[XP]->dx * curCell->faces[YP]->dy;
-   }
+        curCell->volume = curCell->faces[XP]->dy * curCell->faces[YP]->dx;
+    }
 
-   ///////////////////////
-   // set face velocity //
-   ///////////////////////
-   for (int fId = 0; fId < data->nFaces; fId++) {
-      curFace = &data->faces[fId];
-      curFace->u = data->u;
-      curFace->v = data->v;
-   }
+    ///////////////////////
+    // set face velocity //
+    ///////////////////////
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
+        curFace->u = data->u;
+        curFace->v = data->v;
+    }
 
-   /////////////////////////////
-   // set boundary conditions //
-   /////////////////////////////
-   for (int cId = 0; cId < data->nCells; cId++) {
-      curCell = &data->cells[cId];
-      if(curCell->bType==1)
-         curCell->phi = curCell->bValue;
-   }
+    /////////////////////////////
+    // set boundary conditions //
+    /////////////////////////////
+    for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+        if(curCell->bType == 1) {
+            curCell->phi = curCell->bValue;
+            if(cId < data->nCellsX) {
+                curCell->faces[YM]->bType = 1;
+            } else if(data->nCells - (cId + 1) < data->nCellsX) {
+                curCell->faces[YP]->bType = 1;
+            }
+            if((cId + data->nCellsX) % data->nCellsX == 0) {
+                curCell->faces[XM]->bType = 1;
+            } else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) {
+                curCell->faces[XP]->bType = 1;
+            }
+        }
+    }
 
-
-   return true;
+    return true;
 }

@@ -22,7 +22,7 @@
 
 #include "data.h"
 
-bool output(sData* data);
-bool saveDataVtk(const sData* data, const char* vtkFilePath);
+bool output(sData* data, int curIter);
+bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter);
 
 #endif

@@ -24,5 +24,6 @@
 
 bool   solve(sData* data);
 void   calcFluxCentral(sData* data);
+void   calcFluxUpwind(sData* data);
 
 #endif

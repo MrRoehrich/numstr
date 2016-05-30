@@ -61,14 +61,6 @@ int main(int, char**)
     return 1;
   }
 
-  // output data
-  std::cout << "Output...\n";
-  if(!output(data)) {
-    std::cout << "ERROR while data output...exiting";
-    getchar();
-    return 1;
-  }
-
   std::cout << "Success...";
   delete data;
   return 0;
