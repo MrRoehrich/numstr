@@ -33,7 +33,6 @@ int main(int, char**)
         const char* cfgFilePath  = "spider.in";
 
     std::cout << "=== Spider ===" << std::endl;
-                          
 
   // read config from input file
   if(!input(cfgFilePath, data)) {

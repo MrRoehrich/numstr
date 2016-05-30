@@ -6,11 +6,18 @@ xMax     3
 yMin     0
 yMax     3
 
-nCellsX  3
-nCellsY  3
+nCellsX  51
+nCellsY  101
 
 # --- Boundary conditions --- #
-# FIXME
+typeN 1
+valueN 42
+typeE 1
+valueE 42
+typeS 1
+valueS 42
+typeW 1
+valueW 42
 
 # --- Initial conditions --- #
-# FIXME
+initConds 4711.

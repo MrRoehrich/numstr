@@ -48,9 +48,16 @@
 #define M	0
 #define P	1
 
+// solver method
+#define CALCFLUX 0
+#define PE 1
+
 // solvertypes
 #define CENTRAL 0
 #define UPWIND 1
+#define HYBRID 2
+#define POWER 3
+#define EXPONENTIAL 4
 
 // boundary types
 #define INNERCELL 0
@@ -140,6 +147,7 @@ struct sData {
 
    // numerical settings
    double maxTime;           // maximum physical time
+   int    solverMethod;           // solver method
    int    solverType;           // solver type
    int    maxIter;           // maximum iterations
    double residuum;          // maximum residuum

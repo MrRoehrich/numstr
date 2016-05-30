@@ -22,8 +22,11 @@
 
 #include "data.h"
 
-bool   solve(sData* data);
-void   calcFluxCentral(sData* data);
-void   calcFluxUpwind(sData* data);
+bool solveCalcFlux(sData* data);
+bool solvePe(sData* data);
+void calcFluxCentral(sData* data);
+void calcFluxUpwind(sData* data);
+double A(double Pe);
+double calcPe(sData* data, double velocity);
 
 #endif

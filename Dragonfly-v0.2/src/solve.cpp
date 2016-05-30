@@ -27,7 +27,37 @@
 #include "solve.h"
 
 //------------------------------------------------------
-bool solve(sData* data)
+double A(double Pe, sData* data)
+{
+    if(data->solverType == CENTRAL)
+        return 1. - ABS(Pe) / 2.;
+    else if(data->solverType == UPWIND)
+        return 1.;
+    else if(data->solverType == HYBRID)
+        return MAX(0., 1. - ABS(Pe) / 2.);
+    else if(data->solverType == POWER)
+        return MAX(0., powf(1. - ABS(Pe) / 10., 5.));
+    else if(data->solverType == EXPONENTIAL)
+        if(data->alpha == 0)
+            return 1.;
+    return ABS(Pe) / (exp(ABS(Pe)) - 1.);
+}
+
+//------------------------------------------------------
+double calcPe(sData* data, double velocity)
+{
+    if(data->alpha > EPS) {
+        return data->rho * velocity / data->alpha;
+    } else {
+        if(velocity > 0.)
+            return MAXDOUBLE;
+        else
+            return -MAXDOUBLE;
+    }
+}
+
+//------------------------------------------------------
+bool solveCalcFlux(sData* data)
 {
     std::cout << "\nCalculation:\n------------\n";
     static sCell* curCell = 0;
@@ -66,6 +96,92 @@ bool solve(sData* data)
             curCell->fluxBalance += xp->numFlux[P] * xp->dx - xp->numFlux[M] * xp->dy;
 
             curCell->phi -= deltaT / (curCell->volume * data->rho) * curCell->fluxBalance;
+        }
+
+        curTime += deltaT;
+        // write output
+        std::cout << "Output... " << curIter << "\n";
+        if(!output(data, curIter)) {
+            std::cout << "ERROR while data output...exiting";
+            getchar();
+            return 1;
+        }
+    }
+
+    std::cout << "\n";
+    return true;
+}
+
+bool solvePe(sData* data)
+{
+    std::cout << "\nCalculation:\n------------\n";
+    static sCell* curCell = 0;
+
+    double apTilde = 0.;
+    double ap = 0.;
+    double an = 0.;
+    double ae = 0.;
+    double as = 0.;
+    double aw = 0.;
+    double b = 0.;
+
+    double D = 0.;
+    double Pe = 0.;
+    double f = 0.;
+    double g = 0.;
+
+    double curTime = 0.;
+    int curIter = 0.;
+    double deltaT = data->maxTime / data->maxIter;
+
+    // write initial conditions
+    std::cout << "Output... " << curIter << "\n";
+    if(!output(data, curIter)) {
+        std::cout << "ERROR while data output...exiting";
+        getchar();
+        return 1;
+    }
+
+    while(curTime < data->maxTime && curIter < data->maxIter) {
+        curIter++;
+        if(curTime + deltaT > data->maxTime)
+            deltaT = data->maxTime - curTime;
+
+        for(int cId = 0; cId < data->nCells; cId++) {
+            curCell = &data->cells[cId];
+            if(curCell->bType != 0)
+                continue;
+
+            // an
+            D = data->alpha / curCell->faces[YP]->dx;
+            Pe = calcPe(data, curCell->faces[YP]->v);
+            g = data->rho * curCell->faces[YP]->v;
+            an = D * curCell->faces[YP]->dx * A(Pe, data) + MAX(-g * curCell->faces[YP]->dx, 0.);
+            // ae
+            D = data->alpha / curCell->faces[XP]->dy;
+            Pe = calcPe(data, curCell->faces[XP]->u);
+            f = data->rho * curCell->faces[XP]->u;
+            ae = D * curCell->faces[XP]->dy * A(Pe, data) + MAX(-f * curCell->faces[XP]->dy, 0.);
+            // as
+            D = data->alpha / curCell->faces[YM]->dx;
+            Pe = calcPe(data, curCell->faces[YM]->v);
+            g = data->rho * curCell->faces[YM]->v;
+            as = D * curCell->faces[YM]->dx * A(Pe, data) + MAX(g * curCell->faces[YM]->dx, 0.);
+            // aw
+            D = data->alpha / curCell->faces[XM]->dy;
+            Pe = calcPe(data, curCell->faces[XM]->u);
+            f = data->rho * curCell->faces[XM]->u;
+            aw = D * curCell->faces[XM]->dy * A(Pe, data) + MAX(f * curCell->faces[XM]->dy, 0.);
+            // ap
+            ap = data->rho * curCell->faces[XM]->dy * curCell->faces[YM]->dx / deltaT;
+            // b
+            b = ap * curCell->phi;
+            // apTilde
+            apTilde = an + ae + as + aw + ap;
+
+            curCell->phi = an * curCell->neighCells[YP]->phi + ae * curCell->neighCells[XP]->phi +
+                as * curCell->neighCells[YM]->phi + aw * curCell->neighCells[XM]->phi + b;
+            curCell->phi /= apTilde;
         }
 
         curTime += deltaT;

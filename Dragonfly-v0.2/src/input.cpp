@@ -65,15 +65,19 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
         if(!strcmp(token, "#")) {
             // skip comment lines
             // numerical settings
-        }  else if(!strcmp(token, "maxTime")) {
+        } else if(!strcmp(token, "maxTime")) {
             if(sscanf(line, "%15s %lf", token, &data->maxTime) != 2) {
+                return error(cfgFilePath, lineNo, line);
+            };
+        } else if(!strcmp(token, "solverMethod")) {
+            if(sscanf(line, "%15s %d", token, &data->solverMethod) != 2) {
                 return error(cfgFilePath, lineNo, line);
             };
         } else if(!strcmp(token, "solverType")) {
             if(sscanf(line, "%15s %d", token, &data->solverType) != 2) {
                 return error(cfgFilePath, lineNo, line);
             };
-        }else if(!strcmp(token, "maxIter")) {
+        } else if(!strcmp(token, "maxIter")) {
             if(sscanf(line, "%15s %d", token, &data->maxIter) != 2) {
                 return error(cfgFilePath, lineNo, line);
             };

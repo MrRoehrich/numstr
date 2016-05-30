@@ -17,45 +17,39 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <stdio.h>
 #include <iostream>
 #include <math.h>
+#include <stdio.h>
 
-#include "setup.h"
 #include "data.h"
 #include "output.h"
+#include "setup.h"
 
 //------------------------------------------------------
 bool setup(sData* data)
 {
-  std::cout << "\nSetup:\n-------\n";
-  
-  data->nPointsX = data->nCellsX+1;
-  data->nPointsY = data->nCellsY+1;
-  
-  // allocate memory
-  data->pointsX = new double*[data->nPointsX];
-  data->pointsY = new double*[data->nPointsX];
-  for(int i=0; i < data->nPointsX; i++) {
-    data->pointsX[i] = new double[data->nPointsY];
-    data->pointsY[i] = new double[data->nPointsY];
-  }
-  
-  // calculate point coordinates
-  double deltaX = (data->xMax - data->xMin) / data->nCellsX;
-  double deltaY = (data->yMax - data->yMin) / data->nCellsY; 
-  for(int i=0; i < data->nPointsX; i++) {
-    for(int j=0; j < data->nPointsY; j++) {
-      data->pointsX[i][j] = data->xMin + deltaX*i;
-      data->pointsY[i][j] = data->yMin + deltaY*j;
-    }
-  }
+    std::cout << "\nSetup:\n-------\n";
 
-  // do bc stuff
-  // FIXME
-  
-  // do initial stuff
-  // FIXME
-  
-  return true;
+    data->nPointsX = data->nCellsX + 1;
+    data->nPointsY = data->nCellsY + 1;
+
+    // allocate memory
+    data->pointsX = new double*[data->nPointsX];
+    data->pointsY = new double*[data->nPointsX];
+    for(int i = 0; i < data->nPointsX; i++) {
+        data->pointsX[i] = new double[data->nPointsY];
+        data->pointsY[i] = new double[data->nPointsY];
+    }
+
+    // calculate point coordinates
+    double deltaX = (data->xMax - data->xMin) / data->nCellsX;
+    double deltaY = (data->yMax - data->yMin) / data->nCellsY;
+    for(int i = 0; i < data->nPointsX; i++) {
+        for(int j = 0; j < data->nPointsY; j++) {
+            data->pointsX[i][j] = data->xMin + deltaX * i;
+            data->pointsY[i][j] = data->yMin + deltaY * j;
+        }
+    }
+
+    return true;
 }

@@ -17,51 +17,59 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <stdio.h>
 #include <iostream>
+#include <stdio.h>
 
 #include "data.h"
 #include "input.h"
+#include "output.h"
 #include "setup.h"
 #include "solve.h"
-#include "output.h"
 
 //------------------------------------------------------
 int main(int, char**)
 {
-  sData* data = new sData;
-  const char* cfgFilePath   = "dragonfly.in";
-  const char* meshFilePath  = "dragonfly.mesh";
-  //const char* cellFilePath  = "mesh.cells";
+    sData* data = new sData;
+    const char* cfgFilePath = "dragonfly.in";
+    const char* meshFilePath = "dragonfly.mesh";
+    // const char* cellFilePath  = "mesh.cells";
 
-  std::cout << "\t Numerische Strömungsmechanik\n"
-            << "\t====== FlowSim ======\n";
+    std::cout << "\t Numerische Strömungsmechanik\n"
+              << "\t====== FlowSim ======\n";
 
-  // read config from input file
-  std::cout << "Input ...\n";
-  if(!input(cfgFilePath, meshFilePath, data)) {
-    std::cout << "ERROR while reading *.in files ...exiting";
-    getchar();
-    return 1;
-  }
+    // read config from input file
+    std::cout << "Input ...\n";
+    if(!input(cfgFilePath, meshFilePath, data)) {
+        std::cout << "ERROR while reading *.in files ...exiting";
+        getchar();
+        return 1;
+    }
 
-  std::cout << "Setup...\n";
-  // setup data (boundaries, initial data, etc.)
-  if(!setup(data)) {
-    std::cout << "ERROR while data setup...exiting";
-    getchar();
-    return 1;
-  }
+    std::cout << "Setup...\n";
+    // setup data (boundaries, initial data, etc.)
+    if(!setup(data)) {
+        std::cout << "ERROR while data setup...exiting";
+        getchar();
+        return 1;
+    }
 
-  std::cout << "Solve...\n";
-  // iterativ solver
-  if(!solve(data)) {
-    std::cout << "ERROR while solving...exiting";
-    getchar();
-    return 1;
-  }
+    std::cout << "Solve...\n";
+    // iterativ solver
+    if(data->solverMethod == CALCFLUX) {
+        if(!solveCalcFlux(data)) {
+            std::cout << "ERROR while solving...exiting";
+            getchar();
+            return 1;
+        }
+    } else if(data->solverMethod == PE) {
+        if(!solvePe(data)) {
+            std::cout << "ERROR while solving...exiting";
+            getchar();
+            return 1;
+        }
+    }
 
-  std::cout << "Success...";
-  delete data;
-  return 0;
+    std::cout << "Success...";
+    delete data;
+    return 0;
 }
