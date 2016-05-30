@@ -8,10 +8,10 @@
 double ContourMax(double x)
 {
     double cmax;
-     cmax = 100.;
+     // cmax = 100.;
     // cmax = 1. +(3.-1.)/(1.-0.) * (x-0.);
     // cmax = atanl(x) + 1.;
-    // cmax = atanl(x) + 2.;
+    cmax = atanl(x) + 2.;
     // cmax = atanl(x) + 8.;
     return cmax;
 }
@@ -19,10 +19,10 @@ double ContourMax(double x)
 double ContourMin(double x)
 {
     double cmin;
-    cmin = 0.01;
+    // cmin = 0.01;
     // cmin = -1 +(-3.-(-1))/(30.-0) * (x-0);
     // cmin = 0.;
-    // cmin = atanl(x) - 2.;
+    cmin = -atanl(x) - 2.;
     return cmin;
 }
 

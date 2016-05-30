@@ -49,12 +49,12 @@ bool setup(sData* data)
     printValue(data, "y", data->y);
 
     // set inital values of scalars s1 and s2
-    /*for (int i = 0; i < data->nX; ++i) {
+    for (int i = 0; i < data->nX; ++i) {
        for (int j = 0; j < data->nY; ++j) {
           data->s1[i][j] = data->uInfty*data->x[i][j]+data->vInfty*data->y[i][j];
           data->s2[i][j] = -data->vInfty*data->x[i][j]+data->uInfty*data->y[i][j];
        }
-    }*/
+    }
 
     // precompute derivatives for coordinate transformation
     double x, y, dx, dy;
