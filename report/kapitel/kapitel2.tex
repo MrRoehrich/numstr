@@ -133,8 +133,177 @@ Nachteil dieser Methode ist, dass die Upwind-Diskretisierung lediglich erster Or
 \subsubsection{Höhere Ordnung} \label{sec:höhere_ordnung_2}
 Es existieren optimierte Upwind-Methoden, wie z.b. QUICK. Hier wird statt eines treppenförmigen Profils eine quadratische Rekonstruktion von $\Phi$ auf drei stromauf versetzten Knotenpunkten angesetzt. So wird eine Approximation zweiter Ordnung für äquidistante Gitter erreicht, im Gegensatz zu der ersten Ordnung der "normalen" Upwind-Diskretisierung.
 
+\subsection{Vereinheitliche Programmierung}
+Wir betrachten die bereits beschrieben diskretisierte Gleichung
+\begin{equation}
+\rho\dfrac{\Phi_{i,j}^{k+1}-\Phi_{i,j}^{k}}{\Delta t}\Delta x \Delta y = -a_{i,j}\cdot\Phi_{i,j}+a_{i,j+1}\cdot\Phi_{i,j+1}^{k}+a_{i+1,j}\cdot\Phi_{i+1,j}^{k}+a_{i,j-1}\cdot\Phi_{i,j-1}^{k}+a_{i-1,j}\cdot\Phi_{i-1,j}^{k}.
+\end{equation}
+Es gilt weiterhin:
+\begin{equation} \label{eq:a_ij}
+a_{i,j}=a_{i,j+1}+a_{i+1,j}+a_{i,j-1}+a_{i-1,j}+\left(f_{i+\frac{1}{2},j}-f_{i-\frac{1}{2},j}\right)\Delta y +\left(g_{i,j+\frac{1}{2}}-g_{i,j-\frac{1}{2}}\right)\Delta x.
+\end{equation}
+Da die Kontinuitätsgleichung
+\begin{equation}
+\left(f_{i+\frac{1}{2},j}-f_{i-\frac{1}{2},j}\right)\Delta y +\left(g_{i,j+\frac{1}{2}}-g_{i,j-\frac{1}{2}}\right)\Delta x=0
+\end{equation}
+erfüllt sein muss, vereinfacht sich Gleichung \eqref{eq:a_ij} dementsprechend.
+Für die Berechnung eines Zellmittelwerts im nächsten Zeitschritt, kann folgende verallgemeinerte Formel angenommen werden:
+\begin{align} \label{eq:verallg_zellmittelformel}
+\tilde{a}_{i,j}\Phi_{i,j}^{k+1}=a_{i,j+1}\cdot\Phi_{i,j+1}^{k}+a_{i+1,j}\cdot\Phi_{i+1,j}^{k}+a_{i,j-1}\cdot\Phi_{i,j-1}^{k}+a_{i-1,j}\cdot\Phi_{i-1,j}^{k}+b, \\
+b=a_{i,j}^{k}\cdot\Phi_{i,j}^{k}, \\
+a_{i,j}^{k}=\dfrac{\rho\Delta x\Delta y}{\Delta t}, \\
+\tilde{a}_{i,j}=a_{i,j+1}+a_{i+1,j}+a_{i,j-1}+a_{i-1,j}+a_{i,j}.
+\end{align}
+wobei $i$,$j$ die Ortsindizes und $k$ der Zeitindex sind. Das Einflussgebiet sieht also wie folgt aus:
+\FloatBarrier
+\begin{table}[!htb]
+\centering
+  \begin{tabular}{ c c c }
+      & i, j+1 &  \\
+    i-1, j & \textbf{i, j} & i+1, j \\
+     & i, j-1. &  \\
+  \end{tabular}
+  \caption{Einflussgebiet von Zelle $i,j$}
+\end{table}
+\FloatBarrier
+Die Koeffizienten $a_{\bullet,\bullet}$ errechnen sich wie folgt:
+\begin{align}
+a_{i,j+1}=D_{i,j+1}\cdot\Delta x\cdot A\left(|Pe_{i,j+1}|\right)+max\left(-g_{i,j+1}\Delta x,0\right), \\
+a_{i+1,j}=D_{i+1,j}\cdot\Delta y\cdot A\left(|Pe_{i+1,j1}|\right)+max\left(-f_{i+1,j}\Delta y,0\right), \\
+a_{i,j-1}=D_{i,j-1}\cdot\Delta x\cdot A\left(|Pe_{i,j-1}|\right)+max\left(g_{i,j-1}\Delta x,0\right), \\
+a_{i-1,j}=D_{i-1,j}\cdot\Delta y\cdot A\left(|Pe_{i-1,j}|\right)+max\left(f_{i-1,j}\Delta y,0\right),
+\end{align}
+wobei $f_{\bullet,\bullet}=\rho\cdot u_{\bullet,\bullet}$ und $g_{\bullet,\bullet}=\rho\cdot v_{\bullet,\bullet}$. Für die Peclet-Zahl gilt $Pe_{\bullet,\bullet}=\dfrac{\rho u_{\bullet,\bullet} l}{\alpha}$, mit charakteristischer Länge $l$, die hier zu Eins gesetzt worde ist, und es gilt zum Beispiel $D_{i,j+1}=\dfrac{\alpha}{\Delta x}$. Für die Berechnung von $A\left(|Pe|\right)$ können die folgenden verschiedenen Schemata verwendet werden:
+\FloatBarrier
+\begin{table}[!htb]
+\centering
+  \begin{tabular}{ c | c }
+  \textbf{Schema} & \textbf{$A\left(|Pe|\right)$} \\
+  \hline
+  Zentrale Differenzen & $1-\dfrac{|Pe|}{2}$ \\
+  Upwind, 1. Ordnung & $1$ \\
+  Hybrid & $max\left(0,1-\dfrac{|Pe|}{2}\right)$ \\
+  Potenzgesetz & $max\left(0,\left(1-\dfrac{|Pe|}{10}\right)^{5}\right)$ \\
+  Exponentialgesetz & $\dfrac{|Pe|}{exp\left(|Pe|\right)-1}$ \\
+  \end{tabular}
+  \caption{Berechnung von $A\left(|Pe|\right)$}
+\end{table}
+\FloatBarrier
+Es ist ersichtlich, dass für das Zentrale Differenzen-Schema $A\left(|Pe|\right)$ kleiner Null wird, sobald $|Pe|>2$ ist. Da stabile Verfahren ein positives $A$ vorraussetzen, ist bei Verwendung dieses Schemas stets auf die Peclet-Zahl zu achten.
+
 \section{Konvergenzanalyse}
 \subsection{Konsistenz}
 \subsection{Stabilität}
 
 \section{Validierung des Programms}
+\subsection{Konvektion}
+Zunächst wird nur eine konvektive Strömung verwendet um das Programm zu validieren, d.h. der Diffusionskoeffizient $\alpha$ wird zu Null.
+\begin{enumerate}
+\item Es wird ein $3\times3$-Gitter verwendet mit folgenden Initial- bzw. Randwerten (lediglich Dirichlet-Ränder):
+\FloatBarrier
+\begin{table}[!htb]
+\centering
+  \begin{tabular}{ | c | c | c | }
+  \hline
+1 & 1 & 1 \\
+\hline
+1 & 4711 & 1 \\
+\hline
+1 & 1 & 1 \\
+\hline
+  \end{tabular}
+\end{table}
+\FloatBarrier
+Zunächst wird die Zentrale-Differenzen-Methode verwendet, danach die Upwind-Methode. Bei der ersten Variante sollte sich der mittlere Wert nicht ändern, da er zu gleichen Teilen vom oberen, unteren, rechten und linken Wert abhängt, die alle den gleichen numerischen Wert haben. Bei der Upwind-Methode sollte sich der Wert der linken Zelle durchsetzen, da dies die Zelle stromauf der konvektiven Strömung ist. Die Ergebnisse zeigen genau dieses Resultat:
+\FloatBarrier
+\begin{minipage}[b]{7.5cm}
+\includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_4}
+\captionof{figure}{Zentrale-Differenzen-Methode, stationäre Endlösung}
+\end{minipage}
+\begin{minipage}[b]{7.5cm}
+\includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_5}
+\captionof{figure}{Upwind-Methode, stationäre Endlösung}
+\end{minipage}
+\FloatBarrier
+
+\item Es wird ein $3\times3$-Gitter verwendet mit folgenden Initial- bzw. Randwerten (lediglich Dirichlet-Ränder):
+\FloatBarrier
+\begin{table}[!htb]
+\centering
+  \begin{tabular}{ | c | c | c | }
+  \hline
+1 & 0 & -1 \\
+\hline
+1 & 10 & -1 \\
+\hline
+1 & 0 & -1 \\
+\hline
+  \end{tabular}
+\end{table}
+\FloatBarrier
+Das Strömungsfeld wird vorgegeben, zunächst sei $u=1$\textcolor{red}{EINHEITEN SCHREIBEN??!!} und $v=0$. Es wird die Upwind-Methode verwendet, d.h. als stationärer Endwert in der mittleren Zelle muss sich der Wert der linken Zelle, sprich der Wert $1$, durchsetzen. Die Resultate der numerischen Berechnung geben genau dieses Ergebnis wieder:
+\FloatBarrier
+\begin{minipage}[t]{7.5cm}
+\includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_1}
+\captionof{figure}{Upwind-Methode, Initialzustand}
+\end{minipage}
+\begin{minipage}[t]{7.5cm}
+\includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_2}
+\captionof{figure}{Upwind-Methode, stationäre Endlösung ($v=0$)}
+\end{minipage}
+\FloatBarrier
+Nun wird das Geschwindigkeitsfeld zu $u=0$ und $v=1$ geändert\textcolor{red}{EINHEITEN SCHREIBEN??!!}. Aufgrund der gleichen Argumentation, muss sich jetzt der Wert der unteren Zelle, sprich der Wert $0$ in der mittleren Zelle durchsetzen. Die numerische Simulation stimmt mit dieser Überlegung überein:
+\FloatBarrier
+\begin{minipage}[t]{7.5cm}
+\includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_1}
+\captionof{figure}{Upwind-Methode, Initialzustand}
+\end{minipage}
+\begin{minipage}[t]{7.5cm}
+\includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_3}
+\captionof{figure}{Upwind-Methode, stationäre Endlösung ($u=0$)}
+\end{minipage}
+\FloatBarrier
+
+\item Die Software gibt anscheinend für das Konvektionsproblem das richtige Ergebnis aus. Abschließend wird eine konvektive Strömung auf einem größeren Gitter der Größe $100\times100$ mit Geschwindigkeiten $u=1$ und $v=2$\textcolor{red}{EINHEITEN SCHREIBEN??!!}. Das Integrationsgebiet ist ebenfalls $100\times100$\textcolor{red}{EINHEITEN SCHREIBEN??!!} groß. Im Folgenden wird die zeitliche Evolution des skalaren Wertes $\Phi$ über das gesamte Integrationsgebiet dargestellt. Hierfür ist die Upwind-Methode verwendet worden:
+\begin{figure}[!htb]
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_0sek}
+\subcaption*{$t=0sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_8sek}
+\subcaption*{$t=8sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_16sek}
+\subcaption*{$t=16sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_24sek}
+\subcaption*{$t=24sek$}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_32sek}
+\subcaption*{$t=32sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_40sek}
+\subcaption*{$t=40sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_48sek}
+\subcaption*{$t=48sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_final}
+\subcaption*{$t\rightarrow\infty sek$}
+\end{minipage}
+\captionof{figure}{zeitliche Evolution konvektiver Strömung}
+\end{figure}
+\FloatBarrier
+Im stationären Endfall werden im gesamten Integrationsgebiet die Werte der Dirchichlet-Ränder, nämlich $42$, angenommen, was auch der richtigen Lösung für die Upwind-Methode entspricht.
+\end{enumerate}
+
+\subsection{Diffusion}
+
+\subsection{Konvektion-Diffusion}

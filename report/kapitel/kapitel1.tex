@@ -226,12 +226,15 @@ Für Stabilität wird folgendes gefordert:
 \begin{equation}
 |G^{k}|\leq1,
 \end{equation}
-mit Verstärkungsfaktor $G^{k}=\dfrac{\zeta_{i,j}^{k+1}}{\zeta_{i,j}^{k}}$ und Fehler $\zeta_{i,j}^{k}=\tilde{\Phi}_{i,j}^{k}-\Phi_{i,j}^{k}$, sprich die Differenz aus im Computer dargesteller Lösung und exakter numerischer Lösunng. Mittels Fourier folgt $\zeta_{i,j}^{k}=V_{\nu}^{k}\cdot e^{\sqrt{-1}\left(\nu_{x}i\Delta x+\nu_{y}j\Delta y\right)}$ folgt beispielsweise für das Jacobi-Verfahren (siehe \eqref{eq:phi_jacobi}) nach Einsetzen und Umstellen:
+mit Verstärkungsfaktor $G^{k}=\dfrac{\zeta_{i,j}^{k+1}}{\zeta_{i,j}^{k}}$ und Fehler $\zeta_{i,j}^{k}=\tilde{\Phi}_{i,j}^{k}-\Phi_{i,j}^{k}$, sprich die Differenz aus im Computer dargesteller Lösung und exakter numerischer Lösunng. Mittels Fourier $\zeta_{i,j}^{k}=V_{\nu}^{k}\cdot e^{\sqrt{-1}\left(\nu_{x}i\Delta x+\nu_{y}j\Delta y\right)}$ folgt beispielsweise für das Jacobi-Verfahren (siehe \eqref{eq:phi_jacobi}) ohne Transformation nach Einsetzen und Umstellen:
 \begin{equation}
-\dfrac{V_{\nu}^{k+1}}{V_{\nu}^{k}}=e^{\sqrt{-1}\nu_{x}i\Delta x}+e^{\sqrt{-1}\nu_{y}j\Delta y}+\dfrac{\Delta y^{2}}{\Delta x^{2}+\Delta y^{2}}\cdot cos\left(\nu_{x}\Delta x\right)+\dfrac{\Delta y^{2}}{\Delta x^{2}+\Delta y^{2}}\cdot cos\left(\nu_{y}\Delta y\right),
+\dfrac{V_{\nu}^{k+1}}{V_{\nu}^{k}}=\dfrac{1}{\Delta x^{2}+\Delta y^{2}}\cdot\left[\Delta y^{2}cos\left(\nu_{x}\Delta x\right)+\Delta x^{2}cos\left(\nu_{y}\Delta y\right)\right],
 \end{equation}
-wobei $cos(x)=\dfrac{e^{\sqrt{-1}x}+e^{-\sqrt{-1}x}}{2}$ verwendet worden ist. Für Stabilität muss nun gelten, dass $|\dfrac{V_{\nu}^{k+1}}{V_{\nu}^{k}}|\leq 1$ ist.
-\textcolor{red}{TODO!!!!}
+wobei $cos(x)=\dfrac{e^{\sqrt{-1}x}+e^{-\sqrt{-1}x}}{2}$ verwendet worden ist. Für Stabilität muss nun gelten, dass $|\dfrac{V_{\nu}^{k+1}}{V_{\nu}^{k}}|\leq 1$ ist. Mittels der Abschätzung $|cos\left(x\right)|\leq1$ folgt, dass
+\begin{equation}
+|\dfrac{V_{\nu}^{k+1}}{V_{\nu}^{k}}|\leq\dfrac{1}{\Delta x^{2}+\Delta y^{2}}\left[\Delta y^{2}\cdot 1+\Delta x^{2}\cdot 1\right]=1,
+\end{equation}
+da $\Delta x$ und $\Delta y$ stets positiv sind. Somit ist die Stabilität des Jacobi-Verfahrens ohne Transformation nachgewiesen. Für die anderen zwei Lösungsverfahren und bei Anwendung der Transformation für krummlinige Gebiete folgt das selbe Ergebnis. Da diese Formeln wesentlich komplizierter bzw. undurchsichtiger sind, wird hier nicht näher drauf eingegangen.
 
 \section{Validierung des Programms}
 \subsection{Potentialströmungen}
@@ -253,11 +256,11 @@ Zunächst werden die Ergebnisse für einzelne Potentialströmungen diskutiert bzw. 
 Es wird lediglich ein Iterationsschritt ausgeführt.
 \textcolor{red}{prüfen..hat nicht funktioniert}
 \item Visualisierungen: \\[0.3cm]
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=6cm]{bilder/kapitel1/parallel1}
 \captionof{figure}{Äquipotentiallinien, Parallelströmung}
 \end{minipage}
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=6cm]{bilder/kapitel1/parallel2}
 \captionof{figure}{Stromlinien, Parallelströmung}
 \end{minipage}
@@ -273,11 +276,11 @@ Es wird lediglich ein Iterationsschritt ausgeführt.
 \end{align}
 Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat nicht funktioniert}
 \item Visualisierungen: \\[0.3cm]
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/staupunkt1}
 \captionof{figure}{Äquipotentiallinien, Ebene Staupunktströmung}
 \end{minipage}
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/staupunkt2}
 \captionof{figure}{Stromlinien, Ebene Staupunktströmunge}
 \end{minipage}
@@ -293,19 +296,19 @@ Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat n
 \end{align}
 Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat nicht funktioniert}
 \item Visualisierungen: \\[0.3cm]
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/quelle1}
 \captionof{figure}{Äquipotentiallinien, Quelle}
 \end{minipage}
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/quelle2}
 \captionof{figure}{Stromlinien, Quelle}
 \end{minipage} \\
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/senke1}
 \captionof{figure}{Äquipotentiallinien, Senke}
 \end{minipage}
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/senke2}
 \captionof{figure}{Stromlinien, Senke}
 \end{minipage}
@@ -322,11 +325,11 @@ Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_p
 \end{align}
 Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat nicht funktioniert}
 \item Visualisierungen: \\[0.3cm]
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/wirbel1}
 \captionof{figure}{Äquipotentiallinien, Potentialwirbel}
 \end{minipage}
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/wirbel2}
 \captionof{figure}{Stromlinien, Potentialwirbel}
 \end{minipage}
@@ -343,11 +346,11 @@ Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_p
 \end{align}
 \textcolor{red}{prüfen..hat nicht funktioniert}
 \item Visualisierungen: \\[0.3cm]
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/dipol1}
 \captionof{figure}{Äquipotentiallinien, Dipol}
 \end{minipage}
-\begin{minipage}[c]{7.5cm}
+\begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/dipol2}
 \captionof{figure}{Stromlinien, Dipol}
 \end{minipage}
@@ -476,12 +479,11 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
 
 \end{enumerate}
 \FloatBarrier
-\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte könnten für Fall 2) beispielsweise wie folgt aussehen:
-\textcolor{red}{EINFÜGEN!!!}
-%\FloatBarrier
-%\begin{figure}[!htb] 
-%  \centering
-%     \includegraphics[width=15cm]%{bilder/kapitel1/grid}
-%  \caption{Kanal 2: erzeugtes/%berechnetes Gitter}
-%  \label{fig:channel2_grid}
-%\end{figure}
+\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte für Kanal 2) könnten beispielsweise wie folgt aussehen:
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel2_3}
+  \caption{Kanal 2: erzeugtes/berechnetes Gitter}
+  \label{fig:channel2_grid}
+\end{figure}
