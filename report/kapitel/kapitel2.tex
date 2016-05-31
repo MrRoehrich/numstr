@@ -214,7 +214,7 @@ Zunächst wird nur eine konvektive Strömung verwendet um das Programm zu validier
   \end{tabular}
 \end{table}
 \FloatBarrier
-Zunächst wird die Zentrale-Differenzen-Methode verwendet, danach die Upwind-Methode. Bei der ersten Variante sollte sich der mittlere Wert nicht ändern, da er zu gleichen Teilen vom oberen, unteren, rechten und linken Wert abhängt, die alle den gleichen numerischen Wert haben. Bei der Upwind-Methode sollte sich der Wert der linken Zelle durchsetzen, da dies die Zelle stromauf der konvektiven Strömung ist. Die Ergebnisse zeigen genau dieses Resultat:
+Zunächst wird die Zentrale-Differenzen-Methode verwendet, danach die Upwind-Methode. Bei beiden sind beide Geschwindigkeitskomponenten größer Null. Bei der ersten Variante sollte sich der mittlere Wert nicht ändern, da er zu gleichen Teilen vom oberen, unteren, rechten und linken Wert abhängt, die alle den gleichen numerischen Wert haben. Bei der Upwind-Methode sollte sich der Wert der linken Zelle durchsetzen, da dies die Zelle stromauf der konvektiven Strömung ist. Die Ergebnisse zeigen genau dieses Resultat:
 \FloatBarrier
 \begin{minipage}[b]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_4}
@@ -264,7 +264,7 @@ Nun wird das Geschwindigkeitsfeld zu $u=0$ und $v=1$ geändert\textcolor{red}{EIN
 \end{minipage}
 \FloatBarrier
 
-\item Die Software gibt anscheinend für das Konvektionsproblem das richtige Ergebnis aus. Abschließend wird eine konvektive Strömung auf einem größeren Gitter der Größe $100\times100$ mit Geschwindigkeiten $u=1$ und $v=2$\textcolor{red}{EINHEITEN SCHREIBEN??!!}. Das Integrationsgebiet ist ebenfalls $100\times100$\textcolor{red}{EINHEITEN SCHREIBEN??!!} groß. Im Folgenden wird die zeitliche Evolution des skalaren Wertes $\Phi$ über das gesamte Integrationsgebiet dargestellt. Hierfür ist die Upwind-Methode verwendet worden:
+\item Die Software gibt anscheinend für das Konvektionsproblem das richtige Ergebnis aus. Abschließend wird eine konvektive Strömung auf einem größeren Gitter der Größe $100\times100$ mit Geschwindigkeiten $u=1$ und $v=2$\textcolor{red}{EINHEITEN SCHREIBEN??!!} simuliert. Das Integrationsgebiet ist ebenfalls $100\times100$\textcolor{red}{EINHEITEN SCHREIBEN??!!} groß. Im Folgenden wird die zeitliche Evolution des skalaren Wertes $\Phi$ über das gesamte Integrationsgebiet dargestellt. Hierfür ist die Upwind-Methode verwendet worden:
 \begin{figure}[!htb]
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_0sek}
@@ -305,5 +305,113 @@ Im stationären Endfall werden im gesamten Integrationsgebiet die Werte der Dirch
 \end{enumerate}
 
 \subsection{Diffusion}
+Nun werden die Geschwindigkeiten $u$ und $v$ zu Null gesetzt, der Diffusionskoeffizient $\alpha$ hat nun einen Wert ungleich Null.
+\begin{enumerate}
+\item Es gilt $\alpha=1$ und es wird ein $3\times3$-Gitter verwendet mit folgenden Initial- bzw. Randwerten (lediglich Dirichlet-Ränder):
+\FloatBarrier
+\begin{table}[!htb]
+\centering
+  \begin{tabular}{ | c | c | c | }
+  \hline
+1 & 1 & 1 \\
+\hline
+1 & 4711 & 1 \\
+\hline
+1 & 1 & 1 \\
+\hline
+  \end{tabular}
+\end{table}
+\FloatBarrier
+Da die Randwerte fest sind ist der Mittelwert der mittleren Zelle für die stationäre Endlösung gleich Eins, da alles über die Ränder hinaus diffundiert ist. Diese Überlegung stimmt mit dem berechneten Ergebnis überein:
+\FloatBarrier
+\begin{minipage}[b]{7.5cm}
+\includegraphics[height=5cm]{bilder/kapitel2/diffusion_1}
+\captionof{figure}{Initialwerte}
+\end{minipage}
+\begin{minipage}[b]{7.5cm}
+\includegraphics[height=5cm]{bilder/kapitel2/diffusion_2}
+\captionof{figure}{stationäre Endlösung}
+\end{minipage}
+\FloatBarrier
+
+\item Die Software gibt anscheinend für das Diffusionsproblem das richtige Ergebnis aus. Abschließend wird eine diffusive Strömung auf einem größeren Gitter der Größe $100\times100$ mit Diffusionskoeffizient $\alpha=50$\textcolor{red}{EINHEITEN SCHREIBEN??!!} simuliert. Das Integrationsgebiet ist ebenfalls $100\times100$\textcolor{red}{EINHEITEN SCHREIBEN??!!} groß. Im Folgenden wird die zeitliche Evolution des skalaren Wertes $\Phi$ über das gesamte Integrationsgebiet dargestellt:
+\begin{figure}[!htb]
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_0sek}
+\subcaption*{$t=0sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_100sek}
+\subcaption*{$t=100$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_200sek}
+\subcaption*{$t=200sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_500sek}
+\subcaption*{$t=500sek$}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_1000sek}
+\subcaption*{$t=1000sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_2000sek}
+\subcaption*{$t=2000sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_5000sek}
+\subcaption*{$t=5000sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_10000sek}
+\subcaption*{$t=10000sek$}
+\end{minipage}
+\captionof{figure}{zeitliche Evolution diffusiver Strömung}
+\end{figure}
+\FloatBarrier
+Im stationären Endfall, der hier nicht visualisiert ist, werden im gesamten Integrationsgebiet die Werte der Dirchichlet-Ränder, nämlich $42$, angenommen, was auch der richtigen Lösung entspricht.
+\end{enumerate}
 
 \subsection{Konvektion-Diffusion}
+\begin{enumerate}
+\item Im Folgenden wird eine Konvektion-Diffusions-Strömung visualisiert. Die Parameter sind $\alpha=50$, $u=5$ und $v=10$. Das Gebiet ist das selbe $100\times100$-Gebiet, wie in den vorherigen Testfällen, wo Konvektion und Diffusion getrennt betrachtet wurden. Das Ergebnis der Simulation sieht wie folgt aus:
+\begin{figure}[!htb]
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_0sek}
+\subcaption*{$t=0sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_100sek}
+\subcaption*{$t=100$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_200sek}
+\subcaption*{$t=200sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_500sek}
+\subcaption*{$t=500sek$}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_1000sek}
+\subcaption*{$t=1000sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_2000sek}
+\subcaption*{$t=2000sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_5000sek}
+\subcaption*{$t=5000sek$}
+\end{minipage}
+\begin{minipage}[t]{3.9cm}
+\includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_10000sek}
+\subcaption*{$t=10000sek$}
+\end{minipage}
+\captionof{figure}{zeitliche Evolution konvektiv-diffusiver Strömung}
+\end{figure}
+\FloatBarrier
+Im stationären Endfall, der hier nicht visualisiert ist, werden im gesamten Integrationsgebiet die Werte der Dirchichlet-Ränder, nämlich $42$, angenommen, was auch der richtigen Lösung entspricht. Weiterhin ist erkennbar, dass sich die Randwerte von unten und links in das Gebiet hineinpflanzen und dass am Ende der skalare Wert $\Phi$ mit der Zeit hinaus-diffundiert.
+\end{enumerate}
