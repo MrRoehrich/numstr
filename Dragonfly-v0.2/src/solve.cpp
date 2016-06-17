@@ -44,10 +44,10 @@ double A(double Pe, sData* data)
 }
 
 //------------------------------------------------------
-double calcPe(sData* data, double velocity)
+double calcPe(sData* data, double velocity, double length)
 {
     if(data->alpha > EPS) {
-        return data->rho * velocity / data->alpha;
+        return data->rho * velocity / data->alpha * length;
     } else {
         if(velocity > 0.)
             return MAXDOUBLE;
@@ -70,7 +70,16 @@ bool solveCalcFlux(sData* data)
     int curIter = 0.;
     double deltaT = data->maxTime / data->maxIter;
 
+    // write initial conditions
+    std::cout << "\nOutput... " << curIter << "\n";
+    if(!output(data, curIter)) {
+        std::cout << "ERROR while data output...exiting";
+        getchar();
+        return 1;
+    }
+
     while(curTime < data->maxTime && curIter < data->maxIter) {
+
         curIter++;
         if(curTime + deltaT > data->maxTime)
             deltaT = data->maxTime - curTime;
@@ -82,22 +91,21 @@ bool solveCalcFlux(sData* data)
 
         for(int cId = 0; cId < data->nCells; cId++) {
             curCell = &data->cells[cId];
-            if(curCell->bType != 0)
+            if(curCell->bType == 1)
                 continue;
             ym = curCell->faces[YM];
             yp = curCell->faces[YP];
             xm = curCell->faces[XM];
             xp = curCell->faces[XP];
 
-            // fluxes f* (horizontally)
+            // fluxes f* (horizontally) and g* (vertically)
             curCell->fluxBalance = ym->numFlux[M] * ym->dy - ym->numFlux[P] * ym->dx;
-            curCell->fluxBalance += yp->numFlux[P] * yp->dx - yp->numFlux[M] * yp->dy;
-            curCell->fluxBalance += xm->numFlux[M] * xm->dy - xm->numFlux[P] * xm->dx;
-            curCell->fluxBalance += xp->numFlux[P] * xp->dx - xp->numFlux[M] * xp->dy;
+            curCell->fluxBalance += -yp->numFlux[M] * yp->dy + yp->numFlux[P] * yp->dx;
+            curCell->fluxBalance += -xm->numFlux[M] * xm->dy - xm->numFlux[P] * xm->dx;
+            curCell->fluxBalance += xp->numFlux[M] * xp->dy + xp->numFlux[P] * xp->dx;
 
             curCell->phi -= deltaT / (curCell->volume * data->rho) * curCell->fluxBalance;
         }
-
         curTime += deltaT;
         // write output
         std::cout << "Output... " << curIter << "\n";
@@ -107,8 +115,6 @@ bool solveCalcFlux(sData* data)
             return 1;
         }
     }
-
-    std::cout << "\n";
     return true;
 }
 
@@ -154,22 +160,22 @@ bool solvePe(sData* data)
 
             // an
             D = data->alpha / curCell->faces[YP]->dx;
-            Pe = calcPe(data, curCell->faces[YP]->v);
+            Pe = calcPe(data, curCell->faces[YP]->v, curCell->faces[YP]->dx);
             g = data->rho * curCell->faces[YP]->v;
             an = D * curCell->faces[YP]->dx * A(Pe, data) + MAX(-g * curCell->faces[YP]->dx, 0.);
             // ae
             D = data->alpha / curCell->faces[XP]->dy;
-            Pe = calcPe(data, curCell->faces[XP]->u);
+            Pe = calcPe(data, curCell->faces[XP]->u, curCell->faces[XP]->dy);
             f = data->rho * curCell->faces[XP]->u;
             ae = D * curCell->faces[XP]->dy * A(Pe, data) + MAX(-f * curCell->faces[XP]->dy, 0.);
             // as
             D = data->alpha / curCell->faces[YM]->dx;
-            Pe = calcPe(data, curCell->faces[YM]->v);
+            Pe = calcPe(data, curCell->faces[YM]->v, curCell->faces[YM]->dx);
             g = data->rho * curCell->faces[YM]->v;
             as = D * curCell->faces[YM]->dx * A(Pe, data) + MAX(g * curCell->faces[YM]->dx, 0.);
             // aw
             D = data->alpha / curCell->faces[XM]->dy;
-            Pe = calcPe(data, curCell->faces[XM]->u);
+            Pe = calcPe(data, curCell->faces[XM]->u, curCell->faces[XM]->dy);
             f = data->rho * curCell->faces[XM]->u;
             aw = D * curCell->faces[XM]->dy * A(Pe, data) + MAX(f * curCell->faces[XM]->dy, 0.);
             // ap
@@ -211,7 +217,7 @@ void calcFluxCentral(sData* data)
         if(curFace->bType == 0) {
 
             // convective part of f*
-            conv = data->rho * curFace->u + (curFace->neighCells[P]->phi + curFace->neighCells[M]->phi) / 2.;
+            conv = data->rho * curFace->u * (curFace->neighCells[P]->phi + curFace->neighCells[M]->phi) / 2.;
             // diffusive part of f*
             dx = curFace->neighCells[P]->x - curFace->neighCells[M]->x;
             if(dx != 0)
@@ -220,13 +226,16 @@ void calcFluxCentral(sData* data)
             curFace->numFlux[M] = conv + diff;
 
             // convective part of g*
-            conv = data->rho * curFace->v + (curFace->neighCells[P]->phi + curFace->neighCells[M]->phi) / 2.;
+            conv = data->rho * curFace->v * (curFace->neighCells[P]->phi + curFace->neighCells[M]->phi) / 2.;
             // diffusive part of g*
             dy = curFace->neighCells[P]->y - curFace->neighCells[M]->y;
             if(dy != 0)
                 diff = -data->alpha * (curFace->neighCells[P]->phi - curFace->neighCells[M]->phi) / dy;
             // g* = g*(conv) + g*(diff)
             curFace->numFlux[P] = conv + diff;
+        } else if(curFace->bType == 2) {
+            curFace->numFlux[M] = curFace->bValueX;
+            curFace->numFlux[P] = curFace->bValueY;
         }
     }
 }
@@ -245,9 +254,9 @@ void calcFluxUpwind(sData* data)
 
             // convective part of f*
             if(curFace->u >= 0)
-                conv = data->rho * curFace->u + curFace->neighCells[M]->phi;
+                conv = data->rho * curFace->u * curFace->neighCells[M]->phi;
             else
-                conv = data->rho * curFace->u + curFace->neighCells[P]->phi;
+                conv = data->rho * curFace->u * curFace->neighCells[P]->phi;
             // diffusive part of f*
             dx = curFace->neighCells[P]->x - curFace->neighCells[M]->x;
             if(dx != 0)
@@ -256,16 +265,19 @@ void calcFluxUpwind(sData* data)
             curFace->numFlux[M] = conv + diff;
 
             // convective part of g*
-            if(curFace->u >= 0)
-                conv = data->rho * curFace->v + curFace->neighCells[M]->phi;
+            if(curFace->v >= 0)
+                conv = data->rho * curFace->v * curFace->neighCells[M]->phi;
             else
-                conv = data->rho * curFace->v + curFace->neighCells[P]->phi;
+                conv = data->rho * curFace->v * curFace->neighCells[P]->phi;
             // diffusive part of g*
             dy = curFace->neighCells[P]->y - curFace->neighCells[M]->y;
             if(dy != 0)
                 diff = -data->alpha * (curFace->neighCells[P]->phi - curFace->neighCells[M]->phi) / dy;
             // g* = g*(conv) + g*(diff)
             curFace->numFlux[P] = conv + diff;
+        } else if(curFace->bType == 2) {
+            curFace->numFlux[M] = curFace->bValueX;
+            curFace->numFlux[P] = curFace->bValueY;
         }
     }
 }

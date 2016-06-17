@@ -53,12 +53,20 @@ struct sData {
 
     int typeN;
     double valueN;
+    double valueNX;
+    double valueNY;
     int typeE;
     double valueE;
+    double valueEX;
+    double valueEY;
     int typeS;
     double valueS;
+    double valueSX;
+    double valueSY;
     int typeW;
     double valueW;
+    double valueWX;
+    double valueWY;
 
     double initialCondition;
 

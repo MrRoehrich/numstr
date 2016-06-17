@@ -6,18 +6,18 @@ xMax     3
 yMin     0
 yMax     3
 
-nCellsX  51
-nCellsY  101
+nCellsX  3
+nCellsY  3
 
 # --- Boundary conditions --- #
-typeN 1
-valueN 42
-typeE 1
-valueE 42
-typeS 1
-valueS 42
-typeW 1
-valueW 42
+typeN 2
+valueN 0. 0.
+typeE 2
+valueE 4.711 0.
+typeS 2
+valueS 0. 0.
+typeW 2
+valueW 42. 0.
 
 # --- Initial conditions --- #
-initConds 4711.
+initConds 4.711

@@ -80,7 +80,7 @@ struct sPoint {
 //------------------------------------------------------
 struct sFace {
 
-   sFace() : id(-1), bType(0), bValue(42) {}
+   sFace() : id(-1), bType(0), bValueX(42), bValueY(42) {}
    int     id;
 
    // grid settings
@@ -93,8 +93,9 @@ struct sFace {
    
    // boundary settings
    int    bType;             // boundary type
-   double bValue;            // boundary value
-
+   double bValueX;            // boundary value
+   double bValueY;            // boundary value
+   
    // numerical settings
    double numFlux[2];        // numerical flux in x,y
 
@@ -119,6 +120,8 @@ struct sCell {
    // numeric quantities
    int     bType;            // boundary type
    double  bValue;           // boundary value
+   double  bValueX;           // boundary value
+   double  bValueY;           // boundary value
 
    // physical quantities
    double	 volume;          // cell volume

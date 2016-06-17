@@ -81,7 +81,7 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
     resultFile << "SCALARS "
                << "phi "
                << "float" << std::endl;
-    resultFile << "LOOKUP_TABLE dafault " << std::endl;
+    resultFile << "LOOKUP_TABLE default " << std::endl;
     for(int i = 0; i < data->nCells; i++) {
         resultFile << data->cells[i].phi << std::endl;
     }

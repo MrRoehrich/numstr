@@ -38,6 +38,8 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
     char token[32] = " ";
     int pointId;
     double bValue;
+    double bValueX;
+    double bValueY;
     int bType;
     double x;
     double y;
@@ -173,13 +175,21 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
             curPoint->x = x;
             curPoint->y = y;
         } else if(section == 3) { // reading boundary condition section
-            if(sscanf(line, "%d %d %lf", &cellId, &bType, &bValue) != 3) {
+            if(sscanf(line, "%d %d %lf %lf", &cellId, &bType, &bValueX, &bValueY) == 4) {
+                curCell = &data->cells[cellId];
+                // curCell->id = cellId;
+                curCell->bType = bType;
+                curCell->bValueX = bValueX;
+                curCell->bValueY = bValueY;
+
+            } else if(sscanf(line, "%d %d %lf", &cellId, &bType, &bValue) != 3)
                 return error(meshFilePath, lineNo, line);
+            else {
+                curCell = &data->cells[cellId];
+                // curCell->id = cellId;
+                curCell->bType = bType;
+                curCell->bValue = bValue;
             }
-            curCell = &data->cells[cellId];
-            // curCell->id = cellId;
-            curCell->bType = bType;
-            curCell->bValue = bValue;
         } else if(section == 4) { // reading initial condition section
             if(sscanf(line, "%d %lf", &cellId, &initPhi) != 2) {
                 return error(meshFilePath, lineNo, line);

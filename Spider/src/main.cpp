@@ -58,7 +58,7 @@ int main(int, char**)
   // delete structure
   delete data;
 
-  std::cout << "Success...";
+  std::cout << "\nSuccess...\n";
   //getchar();
   return 0;
 }

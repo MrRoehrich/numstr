@@ -74,20 +74,52 @@ bool saveMesh(const sData* data)
     for(int j = 0; j < data->nCellsY; ++j)
         for(int i = 0; i < data->nCellsX; ++i) {
             cId = i + j * data->nCellsX;
-            if(cId < data->nCellsX && data->typeS) {
-                meshFile << cId << " " << data->typeS << " " << data->valueS << std::endl;
-                continue;
+            if(cId < data->nCellsX) {
+                if(data->typeS == 1)
+                    meshFile << cId << " " << data->typeS << " " << data->valueS << std::endl;
+                else if(data->typeS == 2) {
+                    if((cId + data->nCellsX) % data->nCellsX == 0 && data->typeW == 2) {
+                        meshFile << cId << " " << data->typeS << " " << data->valueWX << " " << data->valueSY
+                                 << std::endl;
+                        continue;
+                    } else if((cId - (data->nCellsX - 1)) % data->nCellsX == 0 && data->typeE == 2) {
+                        meshFile << cId << " " << data->typeS << " " << data->valueEX << " " << data->valueSY
+                                 << std::endl;
+                        continue;
+                    } else
+                        meshFile << cId << " " << data->typeS << " " << data->valueSX << " " << data->valueSY
+                                 << std::endl;
+                }
             } else if((data->nCellsX * data->nCellsY) - (cId + 1) < data->nCellsX && data->typeN) {
-                meshFile << cId << " " << data->typeN << " " << data->valueN << std::endl;
-                continue;
+                if(data->typeN == 1)
+                    meshFile << cId << " " << data->typeN << " " << data->valueN << std::endl;
+                else if(data->typeN == 2) {
+                    if((cId + data->nCellsX) % data->nCellsX == 0 && data->typeW == 2) {
+                        meshFile << cId << " " << data->typeN << " " << data->valueWX << " " << data->valueNY
+                                 << std::endl;
+                        continue;
+                    } else if((cId - (data->nCellsX - 1)) % data->nCellsX == 0 && data->typeE == 2) {
+                        meshFile << cId << " " << data->typeN << " " << data->valueEX << " " << data->valueNY
+                                 << std::endl;
+                        continue;
+                    } else
+                        meshFile << cId << " " << data->typeN << " " << data->valueNX << " " << data->valueNY
+                                 << std::endl;
+                }
             }
-            if((cId + data->nCellsX) % data->nCellsX == 0 && data->typeW) {
-                meshFile << cId << " " << data->typeW << " " << data->valueW << std::endl;
-            } else if((cId - (data->nCellsX - 1)) % data->nCellsX == 0 && data->typeE) {
-                meshFile << cId << " " << data->typeE << " " << data->valueE << std::endl;
+            if((cId + data->nCellsX) % data->nCellsX == 0) {
+                if(data->typeW == 1)
+                    meshFile << cId << " " << data->typeW << " " << data->valueW << std::endl;
+                else if(data->typeW == 2)
+                    meshFile << cId << " " << data->typeW << " " << data->valueWX << " " << data->valueWY << std::endl;
+            } else if((cId - (data->nCellsX - 1)) % data->nCellsX == 0) {
+                if(data->typeE == 1)
+                    meshFile << cId << " " << data->typeE << " " << data->valueE << std::endl;
+                else if(data->typeE == 2)
+                    meshFile << cId << " " << data->typeE << " " << data->valueEX << " " << data->valueEY << std::endl;
             }
         }
-        meshFile << std::endl;
+    meshFile << std::endl;
 
     // initial conditions conditions
     meshFile << "initialConditions" << std::endl;
