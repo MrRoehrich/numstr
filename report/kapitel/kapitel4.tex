@@ -1,11 +1,27 @@
-\chapter{Viertes Kapitel}
-\section{Eine Sektion}
+\chapter{Berechnung des Druck- und Geschwindigkeitsfeldes}
 
-Hier mal eine Auflistung von Elementen
-\begin{itemize}
- \item erstes Element
- \item zweites Element
- \item noch ein Element
-\end{itemize}
+\section{Aufgabenstellung}
+Im vorherigen Kapitel ist das Geschwindigkeitsfeld mit Hilfe eines gegebenen Druckfeldes bestimmt worden. Zuletzt wird nun ebenfalls das Druckfeld berechnet und nicht vorgegeben. Der Aufbau dieses Kapitels befasst sich zun\"achst mit der Herleitung des \texttt{SIMPLER}-Algorithmus und anschlie\ss{}end mit Testf\"allen bzw. Anwendungsf\"allen zur Validierung. 
 
-Und Schluss mit der Vorlage ...
+
+\section{Mathematische Modellbildung und Diskretisierung}
+Zur Bestimmung des Druckfeldes muss die Kontinuit\"atsgleichung benutzt werden, da dies die einzig bisher nicht verwendete Gleichung ist. Aus dem vorherigen Kapitel folgen folgende vorl\"aufige Gleichungen f\"ur die Geschwindigkeitskomponenten $u$ und $v$:
+\begin{align}
+\tilde{a}_{i+\frac{1}{2},j}\cdot u_{i+\frac{1}{2},j}^{*}=\sum\limits_{n}a_{n}\cdot u_{n}^{*} + b + \left(p_{i,j}^{*}-p_{i+1,j}^{*}\right)\cdot A_{i+\frac{1}{2},j}, \\
+\tilde{a}_{i,j+\frac{1}{2}}\cdot v_{i,j+\frac{1}{2}}^{*}=\sum\limits_{n}a_{n}\cdot v_{n}^{*} + b + \left(p_{i,j}^{*}-p_{i,j+1}^{*}\right)\cdot A_{i,j+\frac{1}{2}}.
+\end{align}
+Der Index * bezeichnet die zun\"achst gesch\"atzten Gr\"o\ss{}en f\"ur Geschwindigkeit und Druck, d.h. diese Gr\"o\ss{} sind noch nicht korrekt. F\"ur die korrekten Werte ist noch ein Korrekturterm (Index ') hinzuzuf\"ugen:
+\begin{align}
+p=p^{*}+p', \\
+u=u^{*}+u', \\
+v=v^{*}+v'.
+\end{align}
+Die Summe \"uber alle $u$ bzw. $v$ koppeln s\"amtliche Geschwindigkeiten miteinander, sodass das L\"osen f\"ur die Korrekturterme zu einem impliziten Gleichungssystem f\"uhrt, welches rechenintensiv gel\"ost werden m\"usste. Aus diesem Grund werden diese Summenterme einfach fallen gelassen, was nicht die Genauigkeit verschlechtert:
+\begin{align}
+u_{i+\frac{1}{2},j}'= \left(p_{i,j}'-p_{i+1,j}'\right)\cdot \dfrac{A_{i+\frac{1}{2},j}}{\tilde{a}_{i+\frac{1}{2},j}}, \\
+v_{i,j+\frac{1}{2}}'= \left(p_{i,j}'-p_{i,j+1}'\right)\cdot \dfrac{A_{i,j+\frac{1}{2}}}{\tilde{a}_{i,j+\frac{1}{2}}}.
+\end{align}
+Es fehlt nun lediglich der Druckkorrekturterm $p'$.
+
+\section{Validierung}
+sdf
