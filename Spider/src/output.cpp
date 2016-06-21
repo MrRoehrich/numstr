@@ -129,6 +129,11 @@ bool saveMesh(const sData* data)
             cId = i + j * data->nCellsX;
             meshFile << cId << " " << data->initialCondition << std::endl;
         }
+    meshFile << std::endl;
+
+    // sources
+    meshFile << "sources" << std::endl;
+    meshFile << "# cellId value" << std::endl;
 
     meshFile.close();
 

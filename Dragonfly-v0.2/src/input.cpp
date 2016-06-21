@@ -45,6 +45,7 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
     double y;
     int cellId;
     double initPhi;
+    double source;
 
     //////////////////////
     // READ JOB FILE  //
@@ -140,16 +141,26 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
                 return error(meshFilePath, lineNo, line);
             };
             section = 2;
-        } else if(!strcmp(token, "boundaryConditions")) {
+        } else if(!strcmp(token, "boundaryConditionsScalar")) {
             if(sscanf(line, "%31s", token) != 1) {
                 return error(meshFilePath, lineNo, line);
             };
             section = 3;
-        } else if(!strcmp(token, "initialConditions")) {
+        } else if(!strcmp(token, "boundaryConditionsVelocity")) {
             if(sscanf(line, "%31s", token) != 1) {
                 return error(meshFilePath, lineNo, line);
             };
             section = 4;
+        } else if(!strcmp(token, "initialConditions")) {
+            if(sscanf(line, "%31s", token) != 1) {
+                return error(meshFilePath, lineNo, line);
+            };
+            section = 5;
+        } else if(!strcmp(token, "sources")) {
+            if(sscanf(line, "%31s", token) != 1) {
+                return error(meshFilePath, lineNo, line);
+            };
+            section = 6;
         } else if(section == 1) { // reading dimensions
             if(sscanf(line, "%d %d", &nX, &nY) != 2) {
                 return error(meshFilePath, lineNo, line);
@@ -163,8 +174,10 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
             data->nFaces = 2 * nX * nY - nX - nY;
             data->points = new sPoint[data->nPoints];
             data->cells = new sCell[data->nCells];
-            for(int cId = 0; cId < data->nCells; cId++)
+            for(int cId = 0; cId < data->nCells; cId++) {
                 data->cells[cId].id = cId;
+                data->cells[cId].p = 0. + (cId - (data->nCellsX - 1)) % (data->nCellsX);
+            }
             data->faces = new sFace[data->nFaces];
         } else if(section == 2) { // reading point data section
             if(sscanf(line, "%d %lf %lf", &pointId, &x, &y) != 3) {
@@ -178,25 +191,43 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
             if(sscanf(line, "%d %d %lf %lf", &cellId, &bType, &bValueX, &bValueY) == 4) {
                 curCell = &data->cells[cellId];
                 // curCell->id = cellId;
-                curCell->bType = bType;
-                curCell->bValueX = bValueX;
-                curCell->bValueY = bValueY;
+                curCell->bTypeScalar = bType;
+                curCell->bValueScalarX = bValueX;
+                curCell->bValueScalarY = bValueY;
 
             } else if(sscanf(line, "%d %d %lf", &cellId, &bType, &bValue) != 3)
                 return error(meshFilePath, lineNo, line);
             else {
                 curCell = &data->cells[cellId];
-                // curCell->id = cellId;
-                curCell->bType = bType;
-                curCell->bValue = bValue;
+                curCell->bTypeScalar = bType;
+                curCell->bValueScalar = bValue;
             }
-        } else if(section == 4) { // reading initial condition section
+        } else if(section == 4) { // reading boundary condition section
+            if(sscanf(line, "%d %d %lf %lf", &cellId, &bType, &bValueX, &bValueY) == 4) {
+                curCell = &data->cells[cellId];
+                curCell->bTypeVelocity = bType;
+                curCell->bValueU = bValueX;
+                curCell->bValueV = bValueY;
+
+            } else if(sscanf(line, "%d %d", &cellId, &bType) != 2) {
+                return error(meshFilePath, lineNo, line);
+            } else {
+                curCell = &data->cells[cellId];
+                curCell->bTypeVelocity = bType;
+            }
+        } else if(section == 5) { // reading initial condition section
             if(sscanf(line, "%d %lf", &cellId, &initPhi) != 2) {
                 return error(meshFilePath, lineNo, line);
             }
-
             curCell = &data->cells[cellId];
             curCell->phi = initPhi;
+        } else if(section == 6) { // reading source terms
+            if(sscanf(line, "%d %lf", &cellId, &source) != 2) {
+                return error(meshFilePath, lineNo, line);
+            } else {
+                curCell = &data->cells[cellId];
+                curCell->s = source;
+            }
         }
     }
     meshFile.close();

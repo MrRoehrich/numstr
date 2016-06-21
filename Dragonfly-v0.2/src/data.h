@@ -107,7 +107,7 @@ struct sFace {
 //------------------------------------------------------
 struct sCell {
 
-   sCell(): id(-1), bType(0), bValue(42) {}
+   sCell(): id(-1), bTypeScalar(0), bTypeVelocity(0), s(0.) {}
    int      id;
 
    // grid quantities
@@ -118,15 +118,20 @@ struct sCell {
    sCell*   neighCells[4];   // neighbour cells
 
    // numeric quantities
-   int     bType;            // boundary type
-   double  bValue;           // boundary value
-   double  bValueX;           // boundary value
-   double  bValueY;           // boundary value
+   int     bTypeScalar;             // boundary type for scalar
+   int     bTypeVelocity;         // boundary type for velocity
+   double  bValueScalar;      // boundary value
+   double  bValueScalarX;   // boundary value
+   double  bValueScalarY;   // boundary value
+   double  bValueU;             // boundary value
+   double  bValueV;             // boundary value
 
    // physical quantities
    double	 volume;          // cell volume
    double	 fluxBalance;     // flux balance of cell
    double	 phi;             // phi at cell center
+   double  s; // source term
+   double  p; // pressure
 };
 
 //------------------------------------------------------

@@ -84,6 +84,8 @@ bool solveCalcFlux(sData* data)
         if(curTime + deltaT > data->maxTime)
             deltaT = data->maxTime - curTime;
 
+        calcVelocityField(data, deltaT);
+
         if(data->solverType == CENTRAL)
             calcFluxCentral(data);
         else if(data->solverType == UPWIND)
@@ -91,7 +93,7 @@ bool solveCalcFlux(sData* data)
 
         for(int cId = 0; cId < data->nCells; cId++) {
             curCell = &data->cells[cId];
-            if(curCell->bType == 1)
+            if(curCell->bTypeScalar == 1)
                 continue;
             ym = curCell->faces[YM];
             yp = curCell->faces[YP];
@@ -104,8 +106,35 @@ bool solveCalcFlux(sData* data)
             curCell->fluxBalance += -xm->numFlux[M] * xm->dy - xm->numFlux[P] * xm->dx;
             curCell->fluxBalance += xp->numFlux[M] * xp->dy + xp->numFlux[P] * xp->dx;
 
+            curCell->phi += deltaT / data->rho * curCell->s;
             curCell->phi -= deltaT / (curCell->volume * data->rho) * curCell->fluxBalance;
         }
+
+        for(int cId = 0; cId < data->nCells; cId++) {
+            curCell = &data->cells[cId];
+            if((cId + data->nCellsX) % data->nCellsX == 0) { // linker Rand
+                if(curCell->bTypeVelocity == 2) {
+                    curCell->faces[XM]->u = curCell->faces[XP]->u;
+                    curCell->faces[XM]->v = curCell->faces[XP]->v;
+                }
+            } else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
+                if(curCell->bTypeVelocity == 2) {
+                    curCell->faces[XP]->u = curCell->faces[XM]->u;
+                    curCell->faces[XP]->v = curCell->faces[XM]->v;
+                }
+            } else if(cId < data->nCellsX) { // unterer Rand
+                if(curCell->bTypeVelocity == 2) {
+                    curCell->faces[YM]->u = curCell->faces[YP]->u;
+                    curCell->faces[YM]->v = curCell->faces[YP]->v;
+                }
+            } else if(data->nCells - (cId + 1) < data->nCellsX) { // oberer Rand
+                if(curCell->bTypeVelocity == 2) {
+                    curCell->faces[YP]->u = curCell->faces[YM]->u;
+                    curCell->faces[YP]->v = curCell->faces[YM]->v;
+                }
+            }
+        }
+
         curTime += deltaT;
         // write output
         std::cout << "Output... " << curIter << "\n";
@@ -153,9 +182,11 @@ bool solvePe(sData* data)
         if(curTime + deltaT > data->maxTime)
             deltaT = data->maxTime - curTime;
 
+        calcVelocityField(data, deltaT);
+
         for(int cId = 0; cId < data->nCells; cId++) {
             curCell = &data->cells[cId];
-            if(curCell->bType != 0)
+            if(curCell->bTypeScalar != 0)
                 continue;
 
             // an
@@ -188,6 +219,31 @@ bool solvePe(sData* data)
             curCell->phi = an * curCell->neighCells[YP]->phi + ae * curCell->neighCells[XP]->phi +
                 as * curCell->neighCells[YM]->phi + aw * curCell->neighCells[XM]->phi + b;
             curCell->phi /= apTilde;
+        }
+
+        for(int cId = 0; cId < data->nCells; cId++) {
+            curCell = &data->cells[cId];
+            if((cId + data->nCellsX) % data->nCellsX == 0) { // linker Rand
+                if(curCell->bTypeVelocity == 2) {
+                    curCell->faces[XM]->u = curCell->faces[XP]->u;
+                    curCell->faces[XM]->v = curCell->faces[XP]->v;
+                }
+            } else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
+                if(curCell->bTypeVelocity == 2) {
+                    curCell->faces[XP]->u = curCell->faces[XM]->u;
+                    curCell->faces[XP]->v = curCell->faces[XM]->v;
+                }
+            } else if(cId < data->nCellsX) { // unterer Rand
+                if(curCell->bTypeVelocity == 2) {
+                    curCell->faces[YM]->u = curCell->faces[YP]->u;
+                    curCell->faces[YM]->v = curCell->faces[YP]->v;
+                }
+            } else if(data->nCells - (cId + 1) < data->nCellsX) { // oberer Rand
+                if(curCell->bTypeVelocity == 2) {
+                    curCell->faces[YP]->u = curCell->faces[YM]->u;
+                    curCell->faces[YP]->v = curCell->faces[YM]->v;
+                }
+            }
         }
 
         curTime += deltaT;
@@ -278,6 +334,103 @@ void calcFluxUpwind(sData* data)
         } else if(curFace->bType == 2) {
             curFace->numFlux[M] = curFace->bValueX;
             curFace->numFlux[P] = curFace->bValueY;
+        }
+    }
+}
+
+//------------------------------------------------------
+void calcVelocityField(sData* data, double deltaT)
+{
+    sCell* curCell = 0;
+    int cId;
+
+    double apTilde = 0.;
+    double ap = 0.;
+    double an = 0.;
+    double ae = 0.;
+    double as = 0.;
+    double aw = 0.;
+    double b = 0.;
+
+    double D = 0.;
+    double Pe = 0.;
+    double f = 0.;
+    double g = 0.;
+
+    for(int nY = 2; nY < data->nCellsY; ++nY) {
+        for(int nX = 2; nX < data->nCellsX; ++nX) {
+            cId = (nX - 1) + (nY - 1) * data->nCellsX;
+            curCell = &data->cells[cId];
+
+            // u
+            // an
+            D = data->alpha / (curCell->neighCells[XP]->x - curCell->x);
+            Pe = calcPe(data, curCell->neighCells[YP]->faces[XP]->v, (curCell->neighCells[XP]->x - curCell->x));
+            g = data->rho * curCell->neighCells[YP]->faces[XP]->v;
+            an = D * (curCell->neighCells[XP]->x - curCell->x) * A(Pe, data) +
+                MAX(-g * (curCell->neighCells[XP]->x - curCell->x), 0.);
+            // ae
+            D = data->alpha / curCell->faces[XP]->dy;
+            Pe = calcPe(data, curCell->neighCells[XP]->faces[XP]->u, curCell->faces[XP]->dy);
+            f = data->rho * curCell->neighCells[XP]->faces[XP]->u;
+            ae = D * curCell->faces[XP]->dy * A(Pe, data) + MAX(-f * curCell->faces[XP]->dy, 0.);
+            // as
+            D = data->alpha / (curCell->neighCells[XP]->x - curCell->x);
+            Pe = calcPe(data, curCell->neighCells[YM]->faces[XP]->v, (curCell->neighCells[XP]->x - curCell->x));
+            g = data->rho * curCell->neighCells[YM]->faces[XP]->v;
+            as = D * (curCell->neighCells[XP]->x - curCell->x) * A(Pe, data) +
+                MAX(g * (curCell->neighCells[XP]->x - curCell->x), 0.);
+            // aw
+            D = data->alpha / curCell->faces[XM]->dy;
+            Pe = calcPe(data, curCell->faces[XM]->u, curCell->faces[XM]->dy);
+            f = data->rho * curCell->faces[XM]->u;
+            aw = D * curCell->faces[XM]->dy * A(Pe, data) + MAX(f * curCell->faces[XM]->dy, 0.);
+            // ap
+            ap = data->rho * curCell->faces[XM]->dy * (curCell->neighCells[XP]->x - curCell->x) / deltaT;
+            // b
+            b = ap * curCell->faces[XP]->u;
+            // apTilde
+            apTilde = an + ae + as + aw + ap;
+
+            curCell->faces[XP]->u = an * curCell->neighCells[YP]->faces[XP]->u +
+                ae * curCell->neighCells[XP]->faces[XP]->u + as * curCell->neighCells[YM]->faces[XP]->u +
+                aw * curCell->faces[XM]->u + b;
+            curCell->faces[XP]->u /= apTilde;
+
+            // v
+            // an
+            D = data->alpha / curCell->faces[YP]->dx;
+            Pe = calcPe(data, curCell->neighCells[YP]->faces[XP]->v, curCell->faces[YP]->dx);
+            g = data->rho * curCell->neighCells[YP]->faces[XP]->v;
+            an = D * curCell->faces[YP]->dx * A(Pe, data) + MAX(-g * curCell->faces[YP]->dx, 0.);
+            // ae
+            D = data->alpha / (curCell->neighCells[YP]->y - curCell->y);
+            Pe = calcPe(data, curCell->neighCells[XP]->faces[XP]->u, (curCell->neighCells[YP]->y - curCell->y));
+            f = data->rho * curCell->neighCells[XP]->faces[XP]->u;
+            ae = D * (curCell->neighCells[YP]->y - curCell->y) * A(Pe, data) +
+                MAX(-f * (curCell->neighCells[YP]->y - curCell->y), 0.);
+            // as
+            D = data->alpha / curCell->faces[YP]->dx;
+            Pe = calcPe(data, curCell->neighCells[YM]->faces[XP]->v, curCell->faces[YP]->dx);
+            g = data->rho * curCell->neighCells[YM]->faces[XP]->v;
+            as = D * curCell->faces[YP]->dx * A(Pe, data) + MAX(g * curCell->faces[YP]->dx, 0.);
+            // aw
+            D = data->alpha / (curCell->neighCells[YP]->y - curCell->y);
+            Pe = calcPe(data, curCell->faces[XM]->u, (curCell->neighCells[YP]->y - curCell->y));
+            f = data->rho * curCell->faces[XM]->u;
+            aw = D * (curCell->neighCells[YP]->y - curCell->y) * A(Pe, data) +
+                MAX(f * (curCell->neighCells[YP]->y - curCell->y), 0.);
+            // ap
+            ap = data->rho * (curCell->neighCells[YP]->y - curCell->y) * curCell->faces[YP]->dx / deltaT;
+            // b
+            b = ap * curCell->faces[YP]->v;
+            // apTilde
+            apTilde = an + ae + as + aw + ap;
+
+            curCell->faces[YP]->v = an * curCell->neighCells[YP]->faces[YP]->v +
+                ae * curCell->neighCells[XP]->faces[YP]->v + as * curCell->faces[YM]->v +
+                aw * curCell->neighCells[XM]->faces[YP]->v + b;
+            curCell->faces[YP]->v /= apTilde;
         }
     }
 }
