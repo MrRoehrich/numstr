@@ -165,7 +165,7 @@ bool setup(sData* data)
                 curCell->faces[YP]->u = curCell->bValueU;
                 curCell->faces[YP]->v = curCell->bValueV;
             }   
-        } else if(cId < data->nCellsX) { // unterer Rand
+        } if(cId < data->nCellsX) { // unterer Rand
             if(curCell->bTypeScalar == 1) {
                 curCell->faces[YM]->bType = 1;
                 curCell->phi = curCell->bValueScalar;

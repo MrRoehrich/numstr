@@ -84,7 +84,7 @@ bool solveCalcFlux(sData* data)
         if(curTime + deltaT > data->maxTime)
             deltaT = data->maxTime - curTime;
 
-        calcVelocityField(data, deltaT);
+        //calcVelocityField(data, deltaT);
 
         if(data->solverType == CENTRAL)
             calcFluxCentral(data);
@@ -265,7 +265,9 @@ void calcFluxCentral(sData* data)
 {
     static sFace* curFace = 0;
 
-    double conv, diff, dx, dy;
+    double conv = 0;
+    double diff = 0;
+    double dx, dy;
     // compute numerical flux of each face
     for(int fId = 0; fId < data->nFaces; fId++) {
         curFace = &data->faces[fId];
@@ -301,7 +303,9 @@ void calcFluxUpwind(sData* data)
 {
     static sFace* curFace = 0;
 
-    double conv, diff, dx, dy;
+    double conv = 0;
+    double diff = 0;
+    double dx, dy;
     // compute numerical flux of each face
     for(int fId = 0; fId < data->nFaces; fId++) {
         curFace = &data->faces[fId];
