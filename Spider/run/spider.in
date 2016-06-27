@@ -2,22 +2,32 @@
 
 # --- Numerical settings --- #
 xMin     0
-xMax     3
+xMax     5
 yMin     0
-yMax     3
+yMax     5
 
-nCellsX  3
-nCellsY  3
+nCellsX  5
+nCellsY  5
 
-# --- Boundary conditions --- #
-typeN 2
-valueN 0. 0.
-typeE 2
-valueE 4.711 0.
-typeS 2
-valueS 0. 0.
-typeW 2
-valueW 42. 0.
+# --- Boundary conditions scalar --- #
+scalarTypeN 1
+valueN 0.
+scalarTypeE 1
+valueE 1.
+scalarTypeS 1
+valueS 2.
+scalarTypeW 1
+valueW 3.
+
+# --- Boundary conditions velocity --- #
+velocityTypeN 1
+valueN 0. 1.
+velocityTypeE 1
+valueE 2. 3.
+velocityTypeS 1
+valueS 4. 5.
+velocityTypeW 1
+valueW 6. 7.
 
 # --- Initial conditions --- #
 initConds 4.711

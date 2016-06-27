@@ -65,42 +65,74 @@ bool input(const char* cfgFilePath, sData* data)
             sscanf(line, "%15s %lf", token, &data->yMin);
         } else if(!strcmp(token, "yMax")) {
             sscanf(line, "%15s %lf", token, &data->yMax);
-        } else if(!strcmp(token, "typeN")) {
-            sscanf(line, "%15s %d", token, &data->typeN);
+        } else if(!strcmp(token, "scalarTypeN")) {
+            sscanf(line, "%15s %d", token, &data->scalarTypeN);
             cfgFile.getline(line, 255);
-            if(sscanf(line, "%15s %*Lf", token))
-                if(data->typeN == 2) {
+            if(sscanf(line, "%15s", token)) {
+                if(data->scalarTypeN == 2) {
                     if(!strcmp(token, "valueN"))
                         sscanf(line, "%15s %lf %lf", token, &data->valueNX, &data->valueNY);
-                } else if(data->typeN == 1)
+                } else if(data->scalarTypeN == 1)
                     sscanf(line, "%15s %lf", token, &data->valueN);
-        } else if(!strcmp(token, "typeE")) {
-            sscanf(line, "%15s %d", token, &data->typeE);
+            }
+        } else if(!strcmp(token, "scalarTypeE")) {
+            sscanf(line, "%15s %d", token, &data->scalarTypeE);
             cfgFile.getline(line, 255);
-            if(sscanf(line, "%15s", token))
-                if(data->typeE == 2) {
+            if(sscanf(line, "%15s", token)) {
+                if(data->scalarTypeE == 2) {
                     if(!strcmp(token, "valueE"))
                         sscanf(line, "%15s %lf %lf", token, &data->valueEX, &data->valueEY);
-                } else if(data->typeE == 1)
+                } else if(data->scalarTypeE == 1)
                     sscanf(line, "%15s %lf", token, &data->valueE);
-        } else if(!strcmp(token, "typeS")) {
-            sscanf(line, "%15s %d", token, &data->typeS);
+            }
+        } else if(!strcmp(token, "scalarTypeS")) {
+            sscanf(line, "%15s %d", token, &data->scalarTypeS);
             cfgFile.getline(line, 255);
-            if(sscanf(line, "%15s", token))
-                if(data->typeS == 2) {
+            if(sscanf(line, "%15s", token)) {
+                if(data->scalarTypeS == 2) {
                     if(!strcmp(token, "valueS"))
                         sscanf(line, "%15s %lf %lf", token, &data->valueSX, &data->valueSY);
-                } else if(data->typeS == 1)
+                } else if(data->scalarTypeS == 1)
                     sscanf(line, "%15s %lf", token, &data->valueS);
-        } else if(!strcmp(token, "typeW")) {
-            sscanf(line, "%15s %d", token, &data->typeW);
+            }
+        } else if(!strcmp(token, "scalarTypeW")) {
+            sscanf(line, "%15s %d", token, &data->scalarTypeW);
             cfgFile.getline(line, 255);
-            if(sscanf(line, "%15s", token))
-                if(data->typeW == 2) {
+            if(sscanf(line, "%15s", token)) {
+                if(data->scalarTypeW == 2) {
                     if(!strcmp(token, "valueW"))
                         sscanf(line, "%15s %lf %lf", token, &data->valueWX, &data->valueWY);
-                } else if(data->typeW == 1)
+                } else if(data->scalarTypeW == 1)
                     sscanf(line, "%15s %lf", token, &data->valueW);
+            }
+        } else if(!strcmp(token, "velocityTypeN")) {
+            sscanf(line, "%15s %d", token, &data->velocityTypeN);
+            cfgFile.getline(line, 255);
+            if(sscanf(line, "%15s", token))
+                if(data->velocityTypeN == 1)
+                    if(!strcmp(token, "valueN"))
+                        sscanf(line, "%15s %lf %lf", token, &data->valueNU, &data->valueNV);
+        } else if(!strcmp(token, "velocityTypeE")) {
+            sscanf(line, "%15s %d", token, &data->velocityTypeE);
+            cfgFile.getline(line, 255);
+            if(sscanf(line, "%15s", token))
+                if(data->velocityTypeE == 1)
+                    if(!strcmp(token, "valueE"))
+                        sscanf(line, "%15s %lf %lf", token, &data->valueEU, &data->valueEV);
+        } else if(!strcmp(token, "velocityTypeS")) {
+            sscanf(line, "%15s %d", token, &data->velocityTypeS);
+            cfgFile.getline(line, 255);
+            if(sscanf(line, "%15s", token))
+                if(data->velocityTypeS == 1)
+                    if(!strcmp(token, "valueS"))
+                        sscanf(line, "%15s %lf %lf", token, &data->valueSU, &data->valueSV);
+        } else if(!strcmp(token, "velocityTypeW")) {
+            sscanf(line, "%15s %d", token, &data->velocityTypeW);
+            cfgFile.getline(line, 255);
+            if(sscanf(line, "%15s", token))
+                if(data->velocityTypeW == 1)
+                    if(!strcmp(token, "valueW"))
+                        sscanf(line, "%15s %lf %lf", token, &data->valueWU, &data->valueWV);
         } else if(!strcmp(token, "initConds")) {
             sscanf(line, "%15s %lf", token, &data->initialCondition);
         } else {

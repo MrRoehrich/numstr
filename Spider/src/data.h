@@ -51,22 +51,35 @@ struct sData {
     double yMin;
     double yMax;
 
-    int typeN;
+    int scalarTypeN;
     double valueN;
     double valueNX;
     double valueNY;
-    int typeE;
+    int scalarTypeE;
     double valueE;
     double valueEX;
     double valueEY;
-    int typeS;
+    int scalarTypeS;
     double valueS;
     double valueSX;
     double valueSY;
-    int typeW;
+    int scalarTypeW;
     double valueW;
     double valueWX;
     double valueWY;
+    
+     int velocityTypeN;
+    double valueNU;
+    double valueNV;
+    int velocityTypeE;
+    double valueEU;
+    double valueEV;
+    int velocityTypeS;
+    double valueSU;
+    double valueSV;
+    int velocityTypeW;
+    double valueWU;
+    double valueWV;
 
     double initialCondition;
 
