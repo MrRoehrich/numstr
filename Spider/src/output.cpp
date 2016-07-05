@@ -128,7 +128,7 @@ bool saveMesh(const sData* data)
         }
     meshFile << std::endl;
 
-    // cell boundary conditions
+    // cell velocity boundary conditions
     meshFile << std::endl;
     meshFile << "boundaryConditionsVelocity" << std::endl;
     meshFile << "# type: 1=DIRICHLET" << std::endl;
@@ -139,43 +139,40 @@ bool saveMesh(const sData* data)
             cId = i + j * data->nCellsX;
             if(cId < data->nCellsX) { // unterer Rand
                 if(data->velocityTypeS == 1) {
-                    if((cId + data->nCellsX) % data->nCellsX == 0 && data->velocityTypeW == 1) { // linker Rand
-                        meshFile << cId << " " << data->velocityTypeS << " " << data->valueWU << " " << data->valueSV
-                                 << std::endl;
-                        continue;
-                    } else if((cId - (data->nCellsX - 1)) % data->nCellsX == 0 &&
-                        data->velocityTypeE == 1) { // rechter Rand
-                        meshFile << cId << " " << data->velocityTypeS << " " << data->valueEU << " " << data->valueSV
-                                 << std::endl;
-                        continue;
-                    } else
-                        meshFile << cId << " " << data->velocityTypeS << " " << data->valueSU << " " << data->valueSV
-                                 << std::endl;
+                    meshFile << cId << " " << data->velocityTypeS << " " << data->valueSU << " " << data->valueSV
+                             << std::endl;
+                    continue;
+                } else if(data->velocityTypeS == 2) {
+                    meshFile << cId << " " << data->velocityTypeS << std::endl;
+                    continue;
                 }
-            } else if((data->nCellsX * data->nCellsY) - (cId + 1) < data->nCellsX &&
-                data->velocityTypeN) { // oberer Rand
+            } else if((data->nCellsX * data->nCellsY) - (cId + 1) < data->nCellsX) { // oberer Rand
                 if(data->velocityTypeN == 1) {
-                    if((cId + data->nCellsX) % data->nCellsX == 0 && data->velocityTypeN == 1) { // linker Rand
-                        meshFile << cId << " " << data->velocityTypeN << " " << data->valueWU << " " << data->valueNV
-                                 << std::endl;
-                        continue;
-                    } else if((cId - (data->nCellsX - 1)) % data->nCellsX == 0 &&
-                        data->velocityTypeE == 1) { // rechter Rand
-                        meshFile << cId << " " << data->velocityTypeN << " " << data->valueEU << " " << data->valueNV
-                                 << std::endl;
-                        continue;
-                    } else
-                        meshFile << cId << " " << data->velocityTypeN << " " << data->valueNU << " " << data->valueNV
-                                 << std::endl;
+                    meshFile << cId << " " << data->velocityTypeN << " " << data->valueNU << " " << data->valueNV
+                             << std::endl;
+                    continue;
+                } else if(data->velocityTypeN == 2) {
+                    meshFile << cId << " " << data->velocityTypeN << std::endl;
+                    continue;
                 }
-            } else if((cId + data->nCellsX) % data->nCellsX == 0 && data->velocityTypeW == 1) { // linker Rand
-                meshFile << cId << " " << data->velocityTypeN << " " << data->valueWU << " " << data->valueWV
-                         << std::endl;
-                continue;
-            } else if((cId - (data->nCellsX - 1)) % data->nCellsX == 0 && data->velocityTypeE == 1) { // rechter Rand
-                meshFile << cId << " " << data->velocityTypeN << " " << data->valueEU << " " << data->valueEV
-                         << std::endl;
-                continue;
+            } else if((cId + data->nCellsX) % data->nCellsX == 0) { // linker Rand
+                if(data->velocityTypeW == 1) {
+                    meshFile << cId << " " << data->velocityTypeW << " " << data->valueWU << " " << data->valueWV
+                             << std::endl;
+                    continue;
+                } else if(data->velocityTypeW == 2) {
+                    meshFile << cId << " " << data->velocityTypeW << std::endl;
+                    continue;
+                }
+            } else if((cId - (data->nCellsX - 1)) % data->nCellsX == 0) { // rechter Rand
+                if(data->velocityTypeE == 1) {
+                    meshFile << cId << " " << data->velocityTypeE << " " << data->valueEU << " " << data->valueEV
+                             << std::endl;
+                    continue;
+                } else if(data->velocityTypeE == 2) {
+                    meshFile << cId << " " << data->velocityTypeE << std::endl;
+                    continue;
+                }
             }
         }
     meshFile << std::endl;

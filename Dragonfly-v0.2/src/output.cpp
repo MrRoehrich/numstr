@@ -40,14 +40,10 @@
 bool output(sData* data, int curIter)
 {
     char savePath[80];
-    char buffer [33];
 
     strcpy(savePath, "OutParaview");
     strcat(savePath, OS_SEP);
     strcat(savePath, "dragonfly");
-    sprintf(buffer,"%i",curIter);
-    strcat(savePath, buffer);
-    strcat(savePath, ".vtk");
     if(!saveDataVtk(data, savePath, curIter))
         return false;
 
@@ -57,35 +53,118 @@ bool output(sData* data, int curIter)
 //--------------------vtk/paraview output----------------------
 bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
 {
-    char buffer [33];
-
-    std::ofstream resultFile(vtkFilePath);
-    if(!resultFile) {
+    char buffer[33];
+    char savePath[80];
+    strcpy(savePath, vtkFilePath);
+    strcat(savePath, "Phi");
+    sprintf(buffer, "%i", curIter);
+    strcat(savePath, buffer);
+    strcat(savePath, ".vtk");
+    std::ofstream resultFilePhi(savePath);
+    if(!resultFilePhi) {
         return false;
     }
-    resultFile.clear();
+    resultFilePhi.clear();
 
-    resultFile << "# vtk DataFile Version 3.0" << std::endl;
-    resultFile << "vtk output" << curIter << std::endl;
-    resultFile << "ASCII" << std::endl;
-    resultFile << "DATASET STRUCTURED_GRID" << std::endl;
-    resultFile << "DIMENSIONS " << data->nPointsX << " " << data->nPointsY << " 1" << std::endl;
-    resultFile << "POINTS " << data->nPoints << " float" << std::endl;
+    resultFilePhi << "# vtk DataFile Version 3.0" << std::endl;
+    resultFilePhi << "vtk output" << curIter << std::endl;
+    resultFilePhi << "ASCII" << std::endl;
+    resultFilePhi << "DATASET STRUCTURED_GRID" << std::endl;
+    resultFilePhi << "DIMENSIONS " << data->nPointsX << " " << data->nPointsY << " 1" << std::endl;
+    resultFilePhi << "POINTS " << data->nPoints << " float" << std::endl;
     for(int pointId = 0; pointId < data->nPoints; pointId++) {
-        resultFile << data->points[pointId].x << " " << data->points[pointId].y << " "
-                   << "0" << std::endl;
+        resultFilePhi << data->points[pointId].x << " " << data->points[pointId].y << " "
+                      << "0" << std::endl;
     }
-    resultFile << std::endl;
+    resultFilePhi << std::endl;
 
-    resultFile << "CELL_DATA " << data->nCells << std::endl;
-    resultFile << "SCALARS "
-               << "phi "
-               << "float" << std::endl;
-    resultFile << "LOOKUP_TABLE default " << std::endl;
+    resultFilePhi << "CELL_DATA " << data->nCells << std::endl;
+    resultFilePhi << "SCALARS "
+                  << "phi "
+                  << "float" << std::endl;
+    resultFilePhi << "LOOKUP_TABLE default " << std::endl;
     for(int i = 0; i < data->nCells; i++) {
-        resultFile << data->cells[i].phi << std::endl;
+        resultFilePhi << data->cells[i].phi << std::endl;
     }
-    resultFile << std::endl;
-    resultFile.close();
+    resultFilePhi << std::endl;
+
+    resultFilePhi << "SCALARS "
+                  << "p "
+                  << "float" << std::endl;
+    resultFilePhi << "LOOKUP_TABLE default " << std::endl;
+    for(int i = 0; i < data->nCells; i++) {
+        resultFilePhi << data->cells[i].p << std::endl;
+    }
+    resultFilePhi << std::endl;
+    resultFilePhi.close();
+
+    // u
+    strcpy(savePath, vtkFilePath);
+    strcat(savePath, "U");
+    sprintf(buffer, "%i", curIter);
+    strcat(savePath, buffer);
+    strcat(savePath, ".vtk");
+    std::ofstream resultFileU(savePath);
+    if(!resultFileU) {
+        return false;
+    }
+    resultFileU.clear();
+
+    resultFileU << "# vtk DataFile Version 3.0" << std::endl;
+    resultFileU << "vtk output" << curIter << std::endl;
+    resultFileU << "ASCII" << std::endl;
+    resultFileU << "DATASET STRUCTURED_GRID" << std::endl;
+    resultFileU << "DIMENSIONS " << data->nPointsX << " " << data->nPointsY << " 1" << std::endl;
+    resultFileU << "POINTS " << data->nPoints << " float" << std::endl;
+    for(int pointId = 0; pointId < data->nPoints; pointId++) {
+        resultFileU << data->points[pointId].x << " " << data->points[pointId].y << " "
+                    << "0" << std::endl;
+    }
+    resultFileU << std::endl;
+
+    resultFileU << "CELL_DATA " << data->nCells << std::endl;
+    resultFileU << "SCALARS "
+                << "u "
+                << "float" << std::endl;
+    resultFileU << "LOOKUP_TABLE default " << std::endl;
+    for(int i = 0; i < data->nCells; i++) {
+        resultFileU << data->cells[i].faces[XM]->u << std::endl;
+    }
+    resultFileU << std::endl;
+    resultFileU.close();
+
+    strcpy(savePath, vtkFilePath);
+    strcat(savePath, "V");
+    sprintf(buffer, "%i", curIter);
+    strcat(savePath, buffer);
+    strcat(savePath, ".vtk");
+    std::ofstream resultFileV(savePath);
+    if(!resultFileV) {
+        return false;
+    }
+    resultFileV.clear();
+
+    resultFileV << "# vtk DataFile Version 3.0" << std::endl;
+    resultFileV << "vtk output" << curIter << std::endl;
+    resultFileV << "ASCII" << std::endl;
+    resultFileV << "DATASET STRUCTURED_GRID" << std::endl;
+    resultFileV << "DIMENSIONS " << data->nPointsX << " " << data->nPointsY << " 1" << std::endl;
+    resultFileV << "POINTS " << data->nPoints << " float" << std::endl;
+    for(int pointId = 0; pointId < data->nPoints; pointId++) {
+        resultFileV << data->points[pointId].x << " " << data->points[pointId].y << " "
+                    << "0" << std::endl;
+    }
+    resultFileV << std::endl;
+
+    resultFileV << "CELL_DATA " << data->nCells << std::endl;
+    resultFileV << "SCALARS "
+                << "v "
+                << "float" << std::endl;
+    resultFileV << "LOOKUP_TABLE default " << std::endl;
+    for(int i = 0; i < data->nCells; i++) {
+        resultFileV << data->cells[i].faces[YM]->v << std::endl;
+    }
+    resultFileV << std::endl;
+    resultFileV.close();
     return true;
 }

@@ -176,7 +176,7 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
             data->cells = new sCell[data->nCells];
             for(int cId = 0; cId < data->nCells; cId++) {
                 data->cells[cId].id = cId;
-                data->cells[cId].p = 0. + (cId - (data->nCellsX - 1)) % (data->nCellsX);
+                data->cells[cId].p = 0. + 0.1 * (cId % (data->nCellsX));
             }
             data->faces = new sFace[data->nFaces];
         } else if(section == 2) { // reading point data section

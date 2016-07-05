@@ -147,7 +147,14 @@ bool setup(sData* data)
                 curCell->faces[YM]->v = curCell->bValueV;
                 curCell->faces[YP]->u = curCell->bValueU;
                 curCell->faces[YP]->v = curCell->bValueV;
-            }            
+            }
+            // Vpunkt = K * min(b,h)³ * max(b,h) / (12*eta*l) * deltaP mit K = 0.937 für b = 1, h = 1, l = 10
+            // Vpunkt = 0.937 * 1³ * 1 / (12*1*10) * 10 = 0.937/12
+            // u = Vpunkt/A = 0.937/12 / 1
+            curCell->faces[XM]->u = 0.937/12;
+            curCell->faces[XM]->v = 0.;
+            curCell->faces[YM]->v = 0.;
+            curCell->faces[YP]->v = 0.;
         } else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
             if(curCell->bTypeScalar == 1) {
                 curCell->faces[XP]->bType = 1;
@@ -164,8 +171,13 @@ bool setup(sData* data)
                 curCell->faces[YM]->v = curCell->bValueV;
                 curCell->faces[YP]->u = curCell->bValueU;
                 curCell->faces[YP]->v = curCell->bValueV;
-            }   
-        } if(cId < data->nCellsX) { // unterer Rand
+            }            
+            curCell->faces[XM]->u = 0.937/12;
+            curCell->faces[XM]->v = 0.;
+            curCell->faces[YM]->v = 0.;
+            curCell->faces[YP]->v = 0.;
+        }
+        if(cId < data->nCellsX) { // unterer Rand
             if(curCell->bTypeScalar == 1) {
                 curCell->faces[YM]->bType = 1;
                 curCell->phi = curCell->bValueScalar;
