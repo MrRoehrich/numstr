@@ -40,11 +40,20 @@ bool setup(sData* data)
         // assign points to cells
         i = cId % (data->nPointsX - 1);
         j = cId / (data->nPointsX - 1);
+
         curCell = &data->cells[cId];
         curCell->points[XMYM] = &data->points[j * data->nPointsX + i];
         curCell->points[XPYM] = &data->points[j * data->nPointsX + i + 1];
         curCell->points[XMYP] = &data->points[(j + 1) * data->nPointsX + i];
         curCell->points[XPYP] = &data->points[(j + 1) * data->nPointsX + i + 1];
+
+        if(cId == 0) {
+            data->xMin = curCell->points[XMYM]->x;
+            data->yMin = curCell->points[XMYM]->y;
+        } else if(cId == data->nCells - 1) {
+            data->xMax = curCell->points[XPYM]->x;
+            data->yMax = curCell->points[XPYP]->y;
+        }
 
         // assign faces to cells
         curCell->faces[YM] = &data->faces[cId];
@@ -151,9 +160,19 @@ bool setup(sData* data)
             // Vpunkt = K * min(b,h)³ * max(b,h) / (12*eta*l) * deltaP mit K = 0.937 für b = 1, h = 1, l = 10
             // Vpunkt = 0.937 * 1³ * 1 / (12*1*10) * 10 = 0.937/12
             // u = Vpunkt/A = 0.937/12 / 1
-            curCell->faces[XM]->u = 0.937/12;
+            // curCell->faces[XM]->u = 0.937/12;
+            // u = 1/(2*eta) * dpdx * (y² - y*h)
+            double h = (data->yMax - data->yMin) * (1. - 1. / data->nCellsY);
+            double ybar = curCell->y - (data->yMax - data->yMin) / (2. * data->nCellsY);
+            double dpdx = (data->nCellsX - 1.) / (data->xMax - data->xMin);
+
+            curCell->faces[XM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
             curCell->faces[XM]->v = 0.;
+            ybar = curCell->faces[YM]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+            curCell->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
             curCell->faces[YM]->v = 0.;
+            ybar = curCell->faces[YP]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+            curCell->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
             curCell->faces[YP]->v = 0.;
         } else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
             if(curCell->bTypeScalar == 1) {
@@ -171,10 +190,18 @@ bool setup(sData* data)
                 curCell->faces[YM]->v = curCell->bValueV;
                 curCell->faces[YP]->u = curCell->bValueU;
                 curCell->faces[YP]->v = curCell->bValueV;
-            }            
-            curCell->faces[XM]->u = 0.937/12;
-            curCell->faces[XM]->v = 0.;
+            }
+            double h = (data->yMax - data->yMin) * (1. - 1. / data->nCellsY);
+            double ybar = curCell->y - (data->yMax - data->yMin) / (2. * data->nCellsY);
+            double dpdx = (data->nCellsX - 1.) / (data->xMax - data->xMin);
+
+            curCell->faces[XP]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+            curCell->faces[XP]->v = 0.;
+            ybar = curCell->faces[YM]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+            curCell->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
             curCell->faces[YM]->v = 0.;
+            ybar = curCell->faces[YP]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+            curCell->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
             curCell->faces[YP]->v = 0.;
         }
         if(cId < data->nCellsX) { // unterer Rand
@@ -212,6 +239,18 @@ bool setup(sData* data)
                 curCell->faces[YP]->v = curCell->bValueV;
             }
         }
+        double h = (data->yMax - data->yMin) * (1. - 1. / data->nCellsY);
+        double ybar = curCell->y - (data->yMax - data->yMin) / (2. * data->nCellsY);
+        double dpdx = (data->nCellsX - 1.) / (data->xMax - data->xMin);
+
+        curCell->faces[XM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+        curCell->faces[XM]->v = 0.;
+        ybar = curCell->faces[YM]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+        curCell->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+        curCell->faces[YM]->v = 0.;
+        ybar = curCell->faces[YP]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+        curCell->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+        curCell->faces[YP]->v = 0.;
     }
 
     return true;

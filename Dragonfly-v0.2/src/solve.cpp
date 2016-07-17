@@ -29,16 +29,16 @@
 //------------------------------------------------------
 double A(double Pe, sData* data)
 {
-    if(data->solverType == CENTRAL)
+    if(data->solverType == CENTRAL) {
         return 1. - ABS(Pe) / 2.;
-    else if(data->solverType == UPWIND)
+    } else if(data->solverType == UPWIND)
         return 1.;
     else if(data->solverType == HYBRID)
         return MAX(0., 1. - ABS(Pe) / 2.);
     else if(data->solverType == POWER)
         return MAX(0., powf(1. - ABS(Pe) / 10., 5.));
     else if(data->solverType == EXPONENTIAL)
-        if(data->alpha == 0)
+        if(data->eta == 0)
             return 1.;
     return ABS(Pe) / (exp(ABS(Pe)) - 1.);
 }
@@ -46,8 +46,8 @@ double A(double Pe, sData* data)
 //------------------------------------------------------
 double calcPe(sData* data, double velocity, double length)
 {
-    if(data->alpha > EPS) {
-        return data->rho * velocity / data->alpha * length;
+    if(data->eta > EPS) {
+        return data->rho * velocity / data->eta * length;
     } else {
         if(velocity > 0.)
             return MAXDOUBLE;
@@ -375,28 +375,28 @@ void calcVelocityField(sData* data, double deltaT)
 
             // an
             dx = curCell->neighCells[XP]->x - curCell->x;
-            D = data->alpha / dx;
+            D = data->eta / dx;
             vn = (curCell->faces[YP]->v + curCell->neighCells[XP]->faces[YP]->v) / 2.;
             Pe = calcPe(data, vn, dx);
             g = data->rho * vn;
             an = D * dx * A(Pe, data) + MAX(-g * dx, 0.);
             // ae
             dy = curCell->faces[XP]->dy;
-            D = data->alpha / dy;
+            D = data->eta / dy;
             ue = (curCell->neighCells[XP]->faces[YM]->u + curCell->neighCells[XP]->faces[YP]->u) / 2.;
             Pe = calcPe(data, ue, dy);
             f = data->rho * ue;
             ae = D * dy * A(Pe, data) + MAX(-f * dy, 0.);
             // as
             dx = curCell->neighCells[XP]->x - curCell->x;
-            D = data->alpha / dx;
+            D = data->eta / dx;
             vs = (curCell->faces[YM]->v + curCell->neighCells[XP]->faces[YM]->v) / 2.;
             Pe = calcPe(data, vs, dx);
             g = data->rho * vs;
             as = D * dx * A(Pe, data) + MAX(g * dx, 0.);
             // aw
             dy = curCell->faces[XM]->dy;
-            D = data->alpha / dy;
+            D = data->eta / dy;
             uw = (curCell->faces[YM]->u + curCell->faces[YP]->u) / 2.;
             Pe = calcPe(data, uw, dy);
             f = data->rho * uw;
@@ -426,28 +426,28 @@ void calcVelocityField(sData* data, double deltaT)
 
             // an
             dx = curCell->faces[YP]->dx;
-            D = data->alpha / dx;
+            D = data->eta / dx;
             vn = (curCell->neighCells[YP]->faces[XM]->v + curCell->neighCells[YP]->faces[XP]->v) / 2.;
             Pe = calcPe(data, vn, dx);
             g = data->rho * vn;
             an = D * dx * A(Pe, data) + MAX(-g * dx, 0.);
             // ae
             dy = curCell->neighCells[YP]->y - curCell->y;
-            D = data->alpha / dy;
+            D = data->eta / dy;
             ue = (curCell->faces[XP]->u + curCell->neighCells[YP]->faces[XP]->u) / 2.;
             Pe = calcPe(data, ue, dy);
             f = data->rho * ue;
             ae = D * dy * A(Pe, data) + MAX(-f * dy, 0.);
             // as
             dx = curCell->faces[YM]->dx;
-            D = data->alpha / dx;
+            D = data->eta / dx;
             vs = (curCell->faces[XM]->v + curCell->faces[XP]->v) / 2.;
             Pe = calcPe(data, vs, dx);
             g = data->rho * vs;
             as = D * dx * A(Pe, data) + MAX(g * dx, 0.);
             // aw
             dy = curCell->neighCells[YP]->y - curCell->y;
-            D = data->alpha / dy;
+            D = data->eta / dy;
             uw = (curCell->faces[XM]->u + curCell->neighCells[YP]->faces[XM]->u) / 2.;
             Pe = calcPe(data, uw, dy);
             f = data->rho * uw;
@@ -464,6 +464,100 @@ void calcVelocityField(sData* data, double deltaT)
                 ae * curCell->neighCells[XP]->faces[YP]->v + as * curCell->faces[YM]->v +
                 aw * curCell->neighCells[XM]->faces[YP]->v + b + (curCell->neighCells[YP]->p - curCell->p) * dx;
             curCell->faces[YP]->v /= apTilde;
+        }
+    }
+}
+
+void solveSimpler(sData* data, double deltaT)
+{
+    // 1. Estimate velocity*
+    sFace* curFace;
+
+    for(int fId = 0; fId < data->nFaces; ++fId) {
+        curFace = &data->faces[fId];
+        curFace->u = 1.;
+        curFace->v = 1.;
+    }
+
+    // 2. determine pseudo-velocities
+    sCell* curCell;
+    int cId;
+    double sum;
+    double dx = 0.;
+    double dy = 0.;
+
+    double apTilde = 0.;
+    double ap = 0.;
+    double an = 0.;
+    double vn = 0.;
+    double ae = 0.;
+    double ue = 0.;
+    double as = 0.;
+    double vs = 0.;
+    double aw = 0.;
+    double uw = 0.;
+    double b = 0.;
+
+    double D = 0.;
+    double Pe = 0.;
+    double f = 0.;
+    double g = 0.;
+
+    // u
+    for(int nY = 2; nY < data->nCellsY; ++nY) {
+        for(int nX = 1; nX < data->nCellsX; ++nX) {
+            cId = (nX - 1) + (nY - 1) * data->nCellsX;
+            curCell = &data->cells[cId];
+// an
+            dx = curCell->neighCells[XP]->x - curCell->x;
+            D = data->eta / dx;
+            vn = (curCell->faces[YP]->v + curCell->neighCells[XP]->faces[YP]->v) / 2.;
+            Pe = calcPe(data, vn, dx);
+            g = data->rho * vn;
+            an = D * dx * A(Pe, data) + MAX(-g * dx, 0.);
+            // ae
+            dy = curCell->faces[XP]->dy;
+            D = data->eta / dy;
+            ue = (curCell->neighCells[XP]->faces[YM]->u + curCell->neighCells[XP]->faces[YP]->u) / 2.;
+            Pe = calcPe(data, ue, dy);
+            f = data->rho * ue;
+            ae = D * dy * A(Pe, data) + MAX(-f * dy, 0.);
+            // as
+            dx = curCell->neighCells[XP]->x - curCell->x;
+            D = data->eta / dx;
+            vs = (curCell->faces[YM]->v + curCell->neighCells[XP]->faces[YM]->v) / 2.;
+            Pe = calcPe(data, vs, dx);
+            g = data->rho * vs;
+            as = D * dx * A(Pe, data) + MAX(g * dx, 0.);
+            // aw
+            dy = curCell->faces[XM]->dy;
+            D = data->eta / dy;
+            uw = (curCell->faces[YM]->u + curCell->faces[YP]->u) / 2.;
+            Pe = calcPe(data, uw, dy);
+            f = data->rho * uw;
+            aw = D * dy * A(Pe, data) + MAX(f * dy, 0.);
+            // ap
+            dx = curCell->neighCells[XP]->x - curCell->x;
+            dy = curCell->faces[XP]->dy;
+            ap = data->rho * dx * dy / deltaT;
+            // apTilde
+            apTilde = an + ae + as + aw + ap;
+            // ueHat
+            sum = an * curCell->neighCells[YP]->faces[XP]->u + ae * curCell->neighCells[XP]->faces[XP]->u +
+                as * curCell->neighCells[YM]->faces[XP]->u + aw * curCell->faces[XM]->u;
+            sum += b;
+            curCell->faces[XP]->uPseudo = sum / apTilde;
+        }
+    }
+
+    // v
+    for(int nY = 1; nY < data->nCellsY; ++nY) {
+        for(int nX = 2; nX < data->nCellsX; ++nX) {
+            cId = (nX - 1) + (nY - 1) * data->nCellsX;
+            curCell = &data->cells[cId];
+
+            sum += b;
+            curCell->faces[YP]->vPseudo = sum / apTilde;
         }
     }
 }

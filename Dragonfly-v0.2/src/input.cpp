@@ -93,6 +93,10 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
             if(sscanf(line, "%15s %lf", token, &data->alpha) != 2) {
                 return error(cfgFilePath, lineNo, line);
             };
+        } else if(!strcmp(token, "eta")) {
+            if(sscanf(line, "%15s %lf", token, &data->eta) != 2) {
+                return error(cfgFilePath, lineNo, line);
+            };
         } else if(!strcmp(token, "rho")) {
             if(sscanf(line, "%15s %lf", token, &data->rho) != 2) {
                 return error(cfgFilePath, lineNo, line);
@@ -176,7 +180,7 @@ bool input(const char* cfgFilePath, const char* meshFilePath, sData* data)
             data->cells = new sCell[data->nCells];
             for(int cId = 0; cId < data->nCells; cId++) {
                 data->cells[cId].id = cId;
-                data->cells[cId].p = 0. + 0.1 * (cId % (data->nCellsX));
+                data->cells[cId].p = 0. + 1. * ((cId+data->nCellsX) % (data->nCellsX));
             }
             data->faces = new sFace[data->nFaces];
         } else if(section == 2) { // reading point data section

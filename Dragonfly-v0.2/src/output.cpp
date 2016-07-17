@@ -96,6 +96,7 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
         resultFilePhi << data->cells[i].p << std::endl;
     }
     resultFilePhi << std::endl;
+    
     resultFilePhi.close();
 
     // u
