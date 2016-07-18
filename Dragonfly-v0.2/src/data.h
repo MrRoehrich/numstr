@@ -51,8 +51,9 @@
 // solver method
 #define CALCFLUX 0
 #define PE 1
+#define SIMPLE 2
 
-// solvertypes
+// solver types
 #define CENTRAL 0
 #define UPWIND 1
 #define HYBRID 2
@@ -87,7 +88,8 @@ struct sFace {
 
     sFace()
         : id(-1)
-        , bType(0)
+        , bTypeScalar(0)
+        , bTypeVelocity(0)
         , bValueX(42)
         , bValueY(42)
     {
@@ -103,7 +105,8 @@ struct sFace {
     sCell* neighCells[2]; // two neighbor cells
 
     // boundary settings
-    int bType;      // boundary type
+    int bTypeScalar;      // boundary type scalar
+    int bTypeVelocity;      // boundary type velocity
     double bValueX; // boundary value
     double bValueY; // boundary value
 
@@ -113,8 +116,11 @@ struct sFace {
     // physical settings
     double u;       // velocity
     double v;       // velocity
-    double uPseudo; // velocity
-    double vPseudo; // velocity
+    double uNext; // velocity
+    double vNext; // velocity
+    
+    // coefficient for simple
+    double apTilde;
 };
 
 //------------------------------------------------------
@@ -151,6 +157,7 @@ struct sCell {
     double phi;         // phi at cell center
     double s;           // source term
     double p;           // pressure
+    double pCorrect;    // pressure corrector
 };
 
 //------------------------------------------------------

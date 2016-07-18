@@ -23,5 +23,6 @@
 #include "data.h"
 
 bool setup(sData* data);
+void setRigidBodyBoundaries(sData* data);
 
 #endif

@@ -66,7 +66,7 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
     }
     resultFilePhi.clear();
 
-    resultFilePhi << "# vtk DataFile Version 3.0" << std::endl;
+    resultFilePhi << "# vtk resultFilePhi Version 3.0" << std::endl;
     resultFilePhi << "vtk output" << curIter << std::endl;
     resultFilePhi << "ASCII" << std::endl;
     resultFilePhi << "DATASET STRUCTURED_GRID" << std::endl;
@@ -96,10 +96,42 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
         resultFilePhi << data->cells[i].p << std::endl;
     }
     resultFilePhi << std::endl;
+
+    sCell* curCell;
+    double u, v;
     
+    resultFilePhi << "SCALARS  u float" << std::endl;
+    resultFilePhi << "LOOKUP_TABLE default " << std::endl;
+    for(int cId = 0; cId < data->nCells; ++cId) {
+        curCell = &data->cells[cId];
+        u = (curCell->faces[YP]->u + curCell->faces[XP]->u + curCell->faces[YM]->u + curCell->faces[XM]->u)/4.;
+        resultFilePhi << u  << std::endl;
+    }
+    resultFilePhi << std::endl;
+    
+    resultFilePhi << "SCALARS  v float" << std::endl;
+    resultFilePhi << "LOOKUP_TABLE default " << std::endl;
+    for(int cId = 0; cId < data->nCells; ++cId) {
+        curCell = &data->cells[cId];
+        v = (curCell->faces[YP]->v + curCell->faces[XP]->v + curCell->faces[YM]->v + curCell->faces[XM]->v)/4.;
+        resultFilePhi << v  << std::endl;
+    }
+    resultFilePhi << std::endl;
+    
+    resultFilePhi << "VECTORS  velocity float" << std::endl;
+    for(int cId = 0; cId < data->nCells; ++cId) {
+        curCell = &data->cells[cId];
+        u = (curCell->faces[YP]->u + curCell->faces[XP]->u + curCell->faces[YM]->u + curCell->faces[XM]->u)/4.;
+        v = (curCell->faces[YP]->v + curCell->faces[XP]->v + curCell->faces[YM]->v + curCell->faces[XM]->v)/4.;
+        resultFilePhi << u << " ";
+        resultFilePhi << v << " ";
+        resultFilePhi << 0. << std::endl;
+    }
+    resultFilePhi << std::endl;
+
     resultFilePhi.close();
 
-    // u
+    /*// u
     strcpy(savePath, vtkFilePath);
     strcat(savePath, "U");
     sprintf(buffer, "%i", curIter);
@@ -111,7 +143,7 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
     }
     resultFileU.clear();
 
-    resultFileU << "# vtk DataFile Version 3.0" << std::endl;
+    resultFileU << "# vtk resultFilePhi Version 3.0" << std::endl;
     resultFileU << "vtk output" << curIter << std::endl;
     resultFileU << "ASCII" << std::endl;
     resultFileU << "DATASET STRUCTURED_GRID" << std::endl;
@@ -145,7 +177,7 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
     }
     resultFileV.clear();
 
-    resultFileV << "# vtk DataFile Version 3.0" << std::endl;
+    resultFileV << "# vtk resultFilePhi Version 3.0" << std::endl;
     resultFileV << "vtk output" << curIter << std::endl;
     resultFileV << "ASCII" << std::endl;
     resultFileV << "DATASET STRUCTURED_GRID" << std::endl;
@@ -166,6 +198,6 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
         resultFileV << data->cells[i].faces[YM]->v << std::endl;
     }
     resultFileV << std::endl;
-    resultFileV.close();
+    resultFileV.close();*/
     return true;
 }
