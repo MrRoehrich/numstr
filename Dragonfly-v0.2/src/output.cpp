@@ -66,7 +66,7 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
     }
     resultFilePhi.clear();
 
-    resultFilePhi << "# vtk resultFilePhi Version 3.0" << std::endl;
+    resultFilePhi << "# vtk DataFile Version 3.0" << std::endl;
     resultFilePhi << "vtk output" << curIter << std::endl;
     resultFilePhi << "ASCII" << std::endl;
     resultFilePhi << "DATASET STRUCTURED_GRID" << std::endl;
@@ -96,7 +96,7 @@ bool saveDataVtk(const sData* data, const char* vtkFilePath, int curIter)
         resultFilePhi << data->cells[i].p << std::endl;
     }
     resultFilePhi << std::endl;
-
+    
     sCell* curCell;
     double u, v;
     
