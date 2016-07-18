@@ -29,8 +29,11 @@ void calcFluxUpwind(sData* data);
 double A(double Pe);
 double calcPe(sData* data, double velocity, double length);
 void calcVelocityField(sData* data, double deltaT);
+void calcScalarField(sData* data, double deltaT);
 bool solveSimple(sData* data);
 void calcCoeff(sData* data,
+    double diffCoef,
+    double deltaT,
     double dx,
     double dy,
     double vn,

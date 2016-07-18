@@ -24,5 +24,7 @@
 
 bool setup(sData* data);
 void setRigidBodyBoundaries(sData* data);
+void setCouetteBoundaries(sData* data);
+void setPoiseuilleBoundaries(sData* data);
 
 #endif

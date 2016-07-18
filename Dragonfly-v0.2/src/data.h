@@ -92,6 +92,8 @@ struct sFace {
         , bTypeVelocity(0)
         , bValueX(42)
         , bValueY(42)
+        , u(0)
+        , v(0)
     {
     }
     int id;
