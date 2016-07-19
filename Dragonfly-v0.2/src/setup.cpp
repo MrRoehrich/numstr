@@ -40,11 +40,20 @@ bool setup(sData* data)
         // assign points to cells
         i = cId % (data->nPointsX - 1);
         j = cId / (data->nPointsX - 1);
+
         curCell = &data->cells[cId];
         curCell->points[XMYM] = &data->points[j * data->nPointsX + i];
         curCell->points[XPYM] = &data->points[j * data->nPointsX + i + 1];
         curCell->points[XMYP] = &data->points[(j + 1) * data->nPointsX + i];
         curCell->points[XPYP] = &data->points[(j + 1) * data->nPointsX + i + 1];
+
+        if(cId == 0) {
+            data->xMin = curCell->points[XMYM]->x;
+            data->yMin = curCell->points[XMYM]->y;
+        } else if(cId == data->nCells - 1) {
+            data->xMax = curCell->points[XPYM]->x;
+            data->yMax = curCell->points[XPYP]->y;
+        }
 
         // assign faces to cells
         curCell->faces[YM] = &data->faces[cId];
@@ -133,77 +142,110 @@ bool setup(sData* data)
 
         if((cId + data->nCellsX) % data->nCellsX == 0) { // linker Rand
             if(curCell->bTypeScalar == 1) {
-                curCell->faces[XM]->bType = 1;
+                curCell->faces[XM]->bTypeScalar = 1;
                 curCell->phi = curCell->bValueScalar;
             } else if(curCell->bTypeScalar == 2) {
-                curCell->faces[XM]->bType = 2;
+                curCell->faces[XM]->bTypeScalar = 2;
                 curCell->faces[XM]->bValueX = curCell->bValueScalarX;
                 curCell->faces[XM]->bValueY = curCell->bValueScalarY;
             }
             if(curCell->bTypeVelocity == 1) {
+                curCell->faces[XM]->bTypeVelocity = 1;
+                curCell->faces[YM]->bTypeVelocity = 1;
+                curCell->faces[YP]->bTypeVelocity = 1;
                 curCell->faces[XM]->u = curCell->bValueU;
                 curCell->faces[XM]->v = curCell->bValueV;
                 curCell->faces[YM]->u = curCell->bValueU;
                 curCell->faces[YM]->v = curCell->bValueV;
                 curCell->faces[YP]->u = curCell->bValueU;
                 curCell->faces[YP]->v = curCell->bValueV;
-            }
+            } else if(curCell->bTypeVelocity == 2)
+                curCell->faces[XM]->bTypeVelocity = 2;
             // Vpunkt = K * min(b,h)³ * max(b,h) / (12*eta*l) * deltaP mit K = 0.937 für b = 1, h = 1, l = 10
             // Vpunkt = 0.937 * 1³ * 1 / (12*1*10) * 10 = 0.937/12
             // u = Vpunkt/A = 0.937/12 / 1
-            curCell->faces[XM]->u = 0.937/12;
+            // curCell->faces[XM]->u = 0.937/12;
+            // u = 1/(2*eta) * dpdx * (y² - y*h)
+            /*double h = (data->yMax - data->yMin) * (1. - 1. / data->nCellsY);
+            double ybar = curCell->y - (data->yMax - data->yMin) / (2. * data->nCellsY);
+            double dpdx = (data->nCellsX - 1.) / (data->xMax - data->xMin);
+
+            curCell->faces[XM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
             curCell->faces[XM]->v = 0.;
+            ybar = curCell->faces[YM]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+            curCell->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
             curCell->faces[YM]->v = 0.;
-            curCell->faces[YP]->v = 0.;
+            ybar = curCell->faces[YP]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+            curCell->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+            curCell->faces[YP]->v = 0.;*/
         } else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
             if(curCell->bTypeScalar == 1) {
-                curCell->faces[XP]->bType = 1;
+                curCell->faces[XP]->bTypeScalar = 1;
                 curCell->phi = curCell->bValueScalar;
             } else if(curCell->bTypeScalar == 2) {
-                curCell->faces[XP]->bType = 2;
+                curCell->faces[XP]->bTypeScalar = 2;
                 curCell->faces[XP]->bValueX = curCell->bValueScalarX;
                 curCell->faces[XP]->bValueY = curCell->bValueScalarY;
             }
             if(curCell->bTypeVelocity == 1) {
+                curCell->faces[XP]->bTypeVelocity = 1;
+                curCell->faces[YM]->bTypeVelocity = 1;
+                curCell->faces[YP]->bTypeVelocity = 1;
                 curCell->faces[XP]->u = curCell->bValueU;
                 curCell->faces[XP]->v = curCell->bValueV;
                 curCell->faces[YM]->u = curCell->bValueU;
                 curCell->faces[YM]->v = curCell->bValueV;
                 curCell->faces[YP]->u = curCell->bValueU;
                 curCell->faces[YP]->v = curCell->bValueV;
-            }            
-            curCell->faces[XM]->u = 0.937/12;
-            curCell->faces[XM]->v = 0.;
+            } else if(curCell->bTypeVelocity == 2)
+                curCell->faces[XP]->bTypeVelocity = 2;
+            /*double h = (data->yMax - data->yMin) * (1. - 1. / data->nCellsY);
+            double ybar = curCell->y - (data->yMax - data->yMin) / (2. * data->nCellsY);
+            double dpdx = (data->nCellsX - 1.) / (data->xMax - data->xMin);
+
+            curCell->faces[XP]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+            curCell->faces[XP]->v = 0.;
+            ybar = curCell->faces[YM]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+            curCell->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
             curCell->faces[YM]->v = 0.;
-            curCell->faces[YP]->v = 0.;
+            ybar = curCell->faces[YP]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+            curCell->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+            curCell->faces[YP]->v = 0.;*/
         }
         if(cId < data->nCellsX) { // unterer Rand
             if(curCell->bTypeScalar == 1) {
-                curCell->faces[YM]->bType = 1;
+                curCell->faces[YM]->bTypeScalar = 1;
                 curCell->phi = curCell->bValueScalar;
             } else if(curCell->bTypeScalar == 2) {
-                curCell->faces[YM]->bType = 2;
+                curCell->faces[YM]->bTypeScalar = 2;
                 curCell->faces[YM]->bValueX = curCell->bValueScalarX;
                 curCell->faces[YM]->bValueY = curCell->bValueScalarY;
             }
             if(curCell->bTypeVelocity == 1) {
+                curCell->faces[XM]->bTypeVelocity = 1;
+                curCell->faces[XP]->bTypeVelocity = 1;
+                curCell->faces[YM]->bTypeVelocity = 1;
                 curCell->faces[XM]->u = curCell->bValueU;
                 curCell->faces[XM]->v = curCell->bValueV;
                 curCell->faces[XP]->u = curCell->bValueU;
                 curCell->faces[XP]->v = curCell->bValueV;
                 curCell->faces[YM]->u = curCell->bValueU;
                 curCell->faces[YM]->v = curCell->bValueV;
-            }
+            } else if(curCell->bTypeVelocity == 2)
+                curCell->faces[YM]->bTypeVelocity = 2;
         } else if(data->nCells - (cId + 1) < data->nCellsX) { // oberer Rand
             if(curCell->bTypeScalar == 1) {
-                curCell->faces[YP]->bType = 1;
+                curCell->faces[YP]->bTypeScalar = 1;
                 curCell->phi = curCell->bValueScalar;
             } else if(curCell->bTypeScalar == 2) {
-                curCell->faces[YP]->bType = 2;
+                curCell->faces[YP]->bTypeScalar = 2;
                 curCell->faces[YP]->bValueX = curCell->bValueScalarX;
                 curCell->faces[YP]->bValueY = curCell->bValueScalarY;
             }
             if(curCell->bTypeVelocity == 1) {
+                curCell->faces[XM]->bTypeVelocity = 1;
+                curCell->faces[XP]->bTypeVelocity = 1;
+                curCell->faces[YP]->bTypeVelocity = 1;
                 curCell->faces[XM]->u = curCell->bValueU;
                 curCell->faces[XM]->v = curCell->bValueV;
                 curCell->faces[XP]->u = curCell->bValueU;
@@ -211,8 +253,96 @@ bool setup(sData* data)
                 curCell->faces[YP]->u = curCell->bValueU;
                 curCell->faces[YP]->v = curCell->bValueV;
             }
-        }
+        } else if(curCell->bTypeVelocity == 2)
+            curCell->faces[YP]->bTypeVelocity = 2;
+        /*double h = (data->yMax - data->yMin) * (1. - 1. / data->nCellsY);
+        double ybar = curCell->y - (data->yMax - data->yMin) / (2. * data->nCellsY);
+        double dpdx = (data->nCellsX - 1.) / (data->xMax - data->xMin);
+
+        curCell->faces[XM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+        curCell->faces[XM]->v = 0.;
+        ybar = curCell->faces[YM]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+        curCell->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+        curCell->faces[YM]->v = 0.;
+        ybar = curCell->faces[YP]->y - (data->yMax - data->yMin) / (2 * data->nCellsY);
+        curCell->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (ybar * ybar - ybar * h);
+        curCell->faces[YP]->v = 0.;*/
     }
 
     return true;
+}
+
+void setRigidBodyBoundaries(sData* data)
+{
+
+    double omega = 5.;
+    double rSquared;
+
+    sCell* curCell;
+    for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+        if(curCell->bTypeVelocity == 1) {
+            rSquared = curCell->x * curCell->x + curCell->y * curCell->y;
+            curCell->p = 100. + 31.25 * rSquared;
+            // data->cells[cId].p = 100. + 0. * ((cId+data->nCellsX) % (data->nCellsX));
+        }
+    }
+
+    sFace* curFace;
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
+        if(curFace->bTypeVelocity == 1) {
+            curFace->u = -curFace->y * omega;
+            curFace->v = +curFace->x * omega;
+        }
+    }
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
+        std::cout << fId << ":   " << curFace->u << "   " << curFace->v << std::endl;
+    }
+    std::cout << "\nPressure:" << std::endl;
+    for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+        std::cout << cId << ":   " << curCell->p << std::endl;
+    }
+}
+
+void setCouetteBoundaries(sData* data)
+{
+    sCell* curCell;
+    for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+            curCell->p = 0.;
+    }
+
+    sFace* curFace;
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
+        std::cout << fId << ":   " << curFace->u << "   " << curFace->v << std::endl;
+    }
+    std::cout << "\nPressure:" << std::endl;
+    for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+        std::cout << cId << ":   " << curCell->p << std::endl;
+    }
+}
+
+void setPoiseuilleBoundaries(sData* data)
+{
+    sCell* curCell;
+    for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+        data->cells[cId].p =  (cId+data->nCellsX) % data->nCellsX;
+    }
+
+    sFace* curFace;
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
+        std::cout << fId << ":   " << curFace->u << "   " << curFace->v << std::endl;
+    }
+    std::cout << "\nPressure:" << std::endl;
+    for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+        std::cout << cId << ":   " << curCell->p << std::endl;
+    }
 }

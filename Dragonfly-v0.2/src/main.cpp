@@ -67,6 +67,12 @@ int main(int, char**)
             getchar();
             return 1;
         }
+    } else if(data->solverMethod == SIMPLE) {
+        if(!solveSimple(data)) {
+            std::cout << "ERROR while solving...exiting";
+            getchar();
+            return 1;
+        }
     }
 
     std::cout << "Success...";
