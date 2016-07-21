@@ -23,8 +23,14 @@
 #include "data.h"
 
 bool setup(sData* data);
+
 void setRigidBodyBoundaries(sData* data);
 void setCouetteBoundaries(sData* data);
 void setPoiseuilleBoundaries(sData* data);
+void setDrivenCavityBoundaries(sData* data);
+void setRiverFlowBoundariers1(sData* data);
+void setRiverFlowBoundariers2(sData* data);
+void setRiverFlowBoundariers3(sData* data);
+void setGartenschlauchBoundaries(sData* data);
 
 #endif
