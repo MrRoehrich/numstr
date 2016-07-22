@@ -6,27 +6,27 @@ Für die Kanalströmung werden vier verschiedene Kanalformen diskutiert:
 \begin{enumerate}
 \item 
 \begin{align*}
-h_{u}(x) = 0, \\
-h_{o}(x) = arctan(x)+2, \\
-x\in[-5,5],
+h_{u}(x) &= 0, \\
+h_{o}(x) &= arctan(x)+2, \\
+x&\in[-5,5],
 \end{align*}
 \item 
 \begin{align*}
-h_{u}(x) = -arctan(x)-2, \\
-h_{o}(x) = arctan(x)+2, \\
-x\in[-5,5],
+h_{u}(x) &= -arctan(x)-2, \\
+h_{o}(x) &= arctan(x)+2, \\
+x&\in[-5,5],
 \end{align*}
 \item 
 \begin{align*}
-h_{u}(x) = arctan(x)-2, \\
-h_{o}(x) = -arctan(x)+2, \\
-x\in[-5,5].
+h_{u}(x) &= arctan(x)-2, \\
+h_{o}(x) &= -arctan(x)+2, \\
+x&\in[-5,5].
 \end{align*}
 \item 
 \begin{align*}
-h_{u}(x) = arctan(x), \\
-h_{o}(x) = arctan(x)+2, \\
-x\in[-5,5].
+h_{u}(x) &= arctan(x), \\
+h_{o}(x) &= arctan(x)+2, \\
+x&\in[-5,5].
 \end{align*}
 \end{enumerate}
 Die Ergebnisse sehen wie folgt aus: \textcolor{red}{BLOCKSATZ IN AUFZÄHLUNG!!!}
@@ -41,7 +41,7 @@ Zunächst werden die Ableitungen, die beispielsweise in \eqref{eq:fd_laplace_phi_
 & \dfrac{\partial^{2}\xi}{\partial y^{2}}=0, & \dfrac{\partial^{2}\eta}{\partial y^{2}}=0.
 \end{align*}
 Diese Ableitungen wurden an mehreren Knotenpunkten analytisch berechnet und mit den, vom Programm berechneten, Werten verglichen. \textcolor{red}{RESULTATE!!} \\ 
-
+\FloatBarrier
 \begin{figure}[!htb] 
   \centering
      \includegraphics[width=15cm]{bilder/kapitel1/channel1_1}
@@ -83,6 +83,7 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
   \caption{Kanal 2: Geschwindigkeitsfeld}
   \label{fig:channel2_2}
 \end{figure}
+\FloatBarrier
 
 \item
 \FloatBarrier
@@ -101,6 +102,7 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
   \caption{Kanal 3: Geschwindigkeitsfeld}
   \label{fig:channel3_2}
 \end{figure}
+\FloatBarrier
 
 \item
 \FloatBarrier
@@ -119,7 +121,7 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
   \caption{Kanal 4: Geschwindigkeitsfeld}
   \label{fig:channel4_2}
 \end{figure}
-
+\FloatBarrier
 \end{enumerate}
 \FloatBarrier
 \underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte für Kanal 2) könnten beispielsweise wie folgt aussehen (die Linien mit $\Phi=const$ bzw. $\Psi=const$ sind logarithmisch verteilt, wäre dies nicht der Fall, wären die erzeugten Gitterpunkte zum Rand des Kanals hin enger als in der Mitte):
@@ -260,14 +262,53 @@ Die Simulationseinstellungen bleiben ansonsten die gleichen wie in \ref{sec:flus
 \includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river22_50sek}
 \subcaption*{t=$50$ sek}
 \end{minipage} \\[0.3cm]
-\captionof{figure}{Vergleich Flussströmungen: links mit Quelle, rechts mit Quelle und Senke}
+\captionof{figure}{Vergleich Flussströmungen mit verschiedenen Ergiebigkeiten der Quellen und Senken}
 \end{figure}
 \FloatBarrier
 
 Links wird, aufgrund der stärkeren Quelle, das neue Fluid entlang des Kanals transportiert, da die Senke \texttt{zu schwach} ist, um es komplett wieder abzusaugen. Hingegen wird beim rechten Fall sogar fast alles aus der Quelle wieder abgesaugt. Hier wird allerdings auch viel Fluid des Flusses abgesaugt. Da die Skala nicht neu skaliert worden ist, wird das hier nicht komplett ersichtlich. Dies ist bewusst gemacht worden, da so zum Einen die drei Fälle besser verglichen werden können und zum Anderen das Reskalieren den Effekt nicht so deutlich erscheinen lässt. Gleiches gilt auch für die Grafiken aus \ref{sec:fluss}.
 
 \subsection{Berechnung des Geschwindigkeitsfeldes bei gegebenem Druck}
-\subsection{Couette-Strömung}
+\subsection{Couette-Strömung} \label{sec:couette}
+Es wird eine Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (Ausdehnung in $x$-Richtung) betrachtet, die mit Abstand $b$ (in $y$-Richtung) zueinander stehen. Die untere Platte ist starr und bewegt sich nicht, die obere hingegen bewegt sich in $x$-Richtung mit Geschwindigkeit $u_{Wand}$. Links strömt ein Fluid mit der Geschwindigkeit $u_{\infty}$ über die komplette Breite in den Zwischenraum der beiden ebenen Platten ein. Dargestellt wird der stationäre Endzustand der Lösung. Die analytische Lösung sieht mit Hilfe der Haftbedingung $u_{Fluid}|_{Wand}\stackrel{!}=u_{Wand}$ und konstantem Druckfeld wie folgt aus:
+\begin{align*}
+\left.
+\begin{array}{l l}
+& \eta\dfrac{\partial^{2}u}{\partial y^{2}}=\dfrac{\partial p}{\partial x} \\
+& p=const \Rightarrow \dfrac{\partial p}{\partial x}=0 \\
+& u\left(y=0\right)\stackrel{!}=0 \\
+& u\left(y=b\right)\stackrel{!}=u_{in}
+\end{array}
+\right\}
+u\left(y\right)=\dfrac{u_{in}}{b}\cdot y.
+\end{align*}
+Das heißt stationär stellt sich ein lineares Geschwindigkeitsprofil mit Steigung $\dfrac{u_{in}}{b}$ in $y$-Richtung ein. Das numerische Ergebnis stellt auch genau dies dar:
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+  \caption{Couette-Strömung: stationärer Endzustand}
+\end{figure}
 
 \subsection{Poiseuille-Strömung}
+Analog zur Couette-Strömung in \ref{sec:couette} wird wieder die Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (Ausdehnung in $x$-Richtung) betrachtet, die mit Abstand $b$ (in $y$-Richtung) zueinander stehen untersucht. Im Gegensatz zu \ref{sec:couette} bewegt sich jetzt allerdings keine der beiden Platten, allerdings herrscht ein linearer Druckgradient $\dfrac{\partial p}{\partial x}=const$ Somit stellt sich ein Geschwindigkeitsprofil folgender Form ein:
+\begin{align*}
+\left.
+\begin{array}{l l}
+& \eta\dfrac{\partial^{2}u}{\partial y^{2}}=\dfrac{\partial p}{\partial x} \\
+& \dfrac{\partial p}{\partial x}=const \\
+& u\left(y=0\right)\stackrel{!}=0 \\
+& u\left(y=b\right)\stackrel{!}=0
+\end{array}
+\right\}
+u\left(y\right)= \dfrac{1}{2\eta}\dfrac{\partial p}{\partial x}\left(y^{2}-yb\right).
+\end{align*}
+Als Randbedingungen wird dieses Geschwindigkeitsprofil am Einström- und Auströmrand vorgegeben. Als stationärer Endzustand sollte sich dieses Profil über die komplette Länge $L$ eingestellt haben. Das numerische Ergebnis gibt dies korrekt wieder:
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+  \caption{Poiseuille-Strömung: stationärer Endzustand}
+\end{figure}
+
 \subsection{Berechnung des Druck- und Geschwindigkeitsfeldes mit Hilfe vom \texttt{SIMPLE}-Algorithmus}
