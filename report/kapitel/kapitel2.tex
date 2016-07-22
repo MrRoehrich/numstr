@@ -456,41 +456,24 @@ Biser wurden in sämtlichen Testfällen Dirichlet-Randbedingungen verwendet. Im Fo
 \FloatBarrier
 
 \subsection{Quellen}
-Es wird wieder eine $50\times50$-Diskretisierung für ein $50\times50$ großes Integrationsgebiet verwendet. Es werden undruchlässige Wände an allen vier Wänden simuliert, die Konvektionsgeschwindigkeiten sind beide Null und der Diffusionskoeffizient beträgt $\alpha=10$. Als Initialwerte für den Skalar $\Phi$ wird wieder über dem gesamten Gebiet der Wert $4,711$ gesetzt. An der Stelle $(1,1)$ befindet eine Quelle, die pro Sekunde $10$ Einheiten des Skalars $\Phi$ in das Integrationsgebiet einbringt, an der Stelle $(2,2)$ befindet sich eine Senke die $10$ Einheiten des Skalars $\Phi$ pro Sekunde "absaugt". Es ergibt sich folgende, physikalisch korrektes, zeitliche Evolution.
-% 50x50 Diskretisierung, 3x3 physikalisches Gebiet, Zelle 816 s=+10, zelle 1683 s=-10
+Es wird wieder eine $50\times50$-Diskretisierung für ein $3\times3$ großes Integrationsgebiet verwendet. Es werden undruchlässige Wände an allen vier Wänden simuliert, die Konvektionsgeschwindigkeiten sind beide Null und der Diffusionskoeffizient beträgt $\alpha=10$. Als Initialwerte für den Skalar $\Phi$ wird wieder über dem gesamten Gebiet der Wert $4,711$ gesetzt. An der Stelle $(1,1)$ befindet eine Quelle, die pro Sekunde $100$ Einheiten des Skalars $\Phi$ in das Integrationsgebiet einbringt, an der Stelle $(2,2)$ befindet sich eine Senke die $15$ Einheiten des Skalars $\Phi$ pro Sekunde "absaugt". Es ergibt sich folgende, physikalisch korrektes, zeitliche Evolution (Bemerkung: Es werden nur positive Werte von $\Phi$ angezeigt, nicht die negativen Werte, welche aus der Senke resultieren. So wird deutlicher, welchen Einfluss die Senke bzw. die Quelle aufeinander haben).
 \begin{figure}[!htb]
 \begin{minipage}[t]{3.9cm}
-\includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_0sek}
-\subcaption*{$t=0sek$}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion4_4sek}
+\subcaption*{$t=4sek$}
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
-\includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_01sek}
-\subcaption*{$t=0,1$}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion4_20sek}
+\subcaption*{$t=20sek$}
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
-\includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_02sek}
-\subcaption*{$t=0,2sek$}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion4_40sek}
+\subcaption*{$t=40sek$}
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
-\includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_05sek}
-\subcaption*{$t=0,5sek$}
-\end{minipage} \\[0.3cm]
-\begin{minipage}[t]{3.9cm}
-\includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_1sek}
-\subcaption*{$t=1sek$}
+\includegraphics[width=3.8cm]{bilder/kapitel2/diffusion4_100sek}
+\subcaption*{$t=100sek$}
 \end{minipage}
-\begin{minipage}[t]{3.9cm}
-\includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_2sek}
-\subcaption*{$t=2sek$}
-\end{minipage}
-\begin{minipage}[t]{3.9cm}
-\includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_5sek}
-\subcaption*{$t=5sek$}
-\end{minipage}
-\begin{minipage}[t]{3.9cm}
-\includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_10sek}
-\subcaption*{$t=10sek$}
-\end{minipage}
-\captionof{figure}{zeitliche Evolution diffusiver Strömung mit 2 Quellen}
+\captionof{figure}{zeitliche Evolution diffusiver Strömung mit Quelle und Senke}
 \end{figure}
 \FloatBarrier

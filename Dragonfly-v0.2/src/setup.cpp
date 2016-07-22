@@ -326,22 +326,22 @@ void setCouetteBoundaries(sData* data)
          continue;
       
       if (fId%(data->nCellsX+1)==0) { // links
-         curFace->bTypeVelocity == DIRICHLET;
+         curFace->bTypeVelocity = DIRICHLET;
          curFace->u = Uin;
          curFace->v = 0.;
       }
       else if (fId%(data->nCellsX+1)==data->nCellsX) { // rechts
-         curFace->bTypeVelocity == NEUMANN;
+         curFace->bTypeVelocity = NEUMANN;
          curFace->u = 0.;
          curFace->v = 0.;     
       }
       if (fId<data->nCellsX) { // unten
-         curFace->bTypeVelocity == DIRICHLET;
+         curFace->bTypeVelocity = DIRICHLET;
          curFace->u = 0.;
          curFace->v = 0.;
       }
       else if (fId>=(data->nCellsX*data->nCellsY) && (fId<((data->nCellsX+1)*data->nCellsY)) ) { // oben
-         curFace->bTypeVelocity == DIRICHLET;
+         curFace->bTypeVelocity = DIRICHLET;
          curFace->u = U;
          curFace->v = 0.;
       }
@@ -516,12 +516,14 @@ void setRiverFlowBoundariers2(sData* data)
 
 void setRiverFlowBoundariers3(sData* data) {
    double U = 5.;
-   double V = 5.;
+   double Vin = 3.;
+   double Vout = -5.;
    double source1 = 100.;
-   double source2 = 0.;
+   double source2 = -200.;
 
    int tmp = (int)(data->nCellsX / 3 + 1);
-   int iter = 0;
+   int iter1 = 0;
+   int iter2 = 0;
    int idtmp;
    bool tmp2 = false;
    sFace* curFace;
@@ -529,19 +531,23 @@ void setRiverFlowBoundariers3(sData* data) {
       curFace = &data->faces[fId];
       curFace->u = U;
       curFace->v = 0.;
-      if ((fId + tmp) % (data->nCellsX + 1) == 0 && curFace->dx == 0 && curFace->y<0.3) {
-         curFace->v = V;
-         curFace->neighCells[M]->faces[YM]->v = V;
-         if (iter == 1) { 
+      if ((fId-7540)%(data->nCellsX+1)==0 && curFace->y<0.3 && curFace->dx==0) {
+         curFace->v = Vin;
+         curFace->neighCells[M]->faces[YM]->v = Vin;
+         if (iter1 == 1) { 
             curFace->neighCells[M]->s = source1;
             idtmp = fId;
             tmp2 = true;
          }
-         ++iter;
+         ++iter1;
       }
-      if (fId==idtmp+10 && tmp2) {
-         curFace->neighCells[M]->s = source2;
-         tmp2 = false;
+      if ((fId-7550)%(data->nCellsX+1)==0 && curFace->y<0.5 && curFace->dx==0) {
+         curFace->v = Vout;
+         curFace->neighCells[M]->faces[YM]->v = Vout;
+         if (iter2 == 1) { 
+            curFace->neighCells[M]->s = source2;
+         }
+         ++iter2;
       }
    }
 }

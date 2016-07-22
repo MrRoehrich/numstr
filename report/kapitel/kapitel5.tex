@@ -1,0 +1,273 @@
+\chapter{Anwendungsfälle} \label{chap:6}
+In diesem Kapitel werden Anwendungsfälle der in den vorangegangenen Kapiteln dargestellten Verfahren diskutiert.
+
+\section{Finite Differenzen: Potentialströmung - Kanalströmung}
+Für die Kanalströmung werden vier verschiedene Kanalformen diskutiert:
+\begin{enumerate}
+\item 
+\begin{align*}
+h_{u}(x) = 0, \\
+h_{o}(x) = arctan(x)+2, \\
+x\in[-5,5],
+\end{align*}
+\item 
+\begin{align*}
+h_{u}(x) = -arctan(x)-2, \\
+h_{o}(x) = arctan(x)+2, \\
+x\in[-5,5],
+\end{align*}
+\item 
+\begin{align*}
+h_{u}(x) = arctan(x)-2, \\
+h_{o}(x) = -arctan(x)+2, \\
+x\in[-5,5].
+\end{align*}
+\item 
+\begin{align*}
+h_{u}(x) = arctan(x), \\
+h_{o}(x) = arctan(x)+2, \\
+x\in[-5,5].
+\end{align*}
+\end{enumerate}
+Die Ergebnisse sehen wie folgt aus: \textcolor{red}{BLOCKSATZ IN AUFZÄHLUNG!!!}
+\begin{enumerate}
+\item
+Zunächst werden die Ableitungen, die beispielsweise in \eqref{eq:fd_laplace_phi_krummlinig} benötigt werden, überprüft. Die analytischen Lösungen sehen für das genannte Problem wie folgt aus (vgl. \eqref{trafo_xi_eta}):
+\begin{align*}
+& \xi\left(x,y\right)=10x+50, & \eta\left(x,y\right)=\dfrac{50y}{arctan(x)+2} \\
+& \dfrac{\partial\xi}{\partial x}=10, & \dfrac{\partial\eta}{\partial x}=\dfrac{-50y}{\left(1+x^{2}\right)\left(arctan(x)+2\right)^{2}}, \\
+& \dfrac{\partial^{2}\xi}{\partial x^{2}}=0, & \dfrac{\partial^{2}\eta}{\partial x^{2}}=\dfrac{100\left(x\cdot arctan(x)+1+2x\right)}{\left(1+x^{2}\right)^{2}\left(arctan(x)+2\right)^{3}}, \\
+& \dfrac{\partial\xi}{\partial y}=0, & \dfrac{\partial\eta}{\partial y}=\dfrac{50}{arctan(x)+2}, \\
+& \dfrac{\partial^{2}\xi}{\partial y^{2}}=0, & \dfrac{\partial^{2}\eta}{\partial y^{2}}=0.
+\end{align*}
+Diese Ableitungen wurden an mehreren Knotenpunkten analytisch berechnet und mit den, vom Programm berechneten, Werten verglichen. \textcolor{red}{RESULTATE!!} \\ 
+
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel1_1}
+  \caption{Kanal 1: Äquipotential- und Stromlinien}
+  \label{fig:channel1_1}
+\end{figure}
+\FloatBarrier
+Es ist ersichtlich, dass sich alle Äquipotential- und Stromlinien senkrecht schneiden, so wie es auch aus der Theorie vorgeschrieben wird. Desweiteren stehen die Äquipotentiallinien senkrecht auf der Kontur.
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel1_2}
+  \caption{Kanal 1: Geschwindigkeitsfeld}
+  \label{fig:channel1_2}
+\end{figure}
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel1_3}
+  \caption{Kanal 1: Druckfeld}
+  \label{fig:channel1_3}
+\end{figure}
+\FloatBarrier
+Am Auslauf des Kanals ist der Druckbeiwert bei circa Eins, da $u_{lokal}>u_{\infty}$. Am Einlauf gilt hingegen $u_{lokal}\approx u_{\infty}$, so dass der Druckbeiwert dort ungefährt gleich Null ist.
+\FloatBarrier
+
+\item
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel2_1}
+  \caption{Kanal 2: Äquipotential- und Stromlinien}
+  \label{fig:channel2_1}
+\end{figure}
+\FloatBarrier
+Es folgen die gleichen Ergebnisse wie bei Kanal 1.
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel2_2}
+  \caption{Kanal 2: Geschwindigkeitsfeld}
+  \label{fig:channel2_2}
+\end{figure}
+
+\item
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel3_1}
+  \caption{Kanal 3: Äquipotential- und Stromlinien}
+  \label{fig:channel3_1}
+\end{figure}
+\FloatBarrier
+Es folgen die gleichen Ergebnisse wie bei Kanal 1.
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel3_2}
+  \caption{Kanal 3: Geschwindigkeitsfeld}
+  \label{fig:channel3_2}
+\end{figure}
+
+\item
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel4_1}
+  \caption{Kanal 4: Äquipotential- und Stromlinien}
+  \label{fig:channel4_1}
+\end{figure}
+\FloatBarrier
+Es folgen die gleichen Ergebnisse wie bei Kanal 1.
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+  \caption{Kanal 4: Geschwindigkeitsfeld}
+  \label{fig:channel4_2}
+\end{figure}
+
+\end{enumerate}
+\FloatBarrier
+\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte für Kanal 2) könnten beispielsweise wie folgt aussehen (die Linien mit $\Phi=const$ bzw. $\Psi=const$ sind logarithmisch verteilt, wäre dies nicht der Fall, wären die erzeugten Gitterpunkte zum Rand des Kanals hin enger als in der Mitte):
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/kapitel1/channel2_3}
+  \caption{Kanal 2: erzeugtes/berechnetes Gitter}
+  \label{fig:channel2_grid}
+\end{figure}
+
+
+\section{Finite Volumen: verschiedene Anwendungsfälle}
+
+\subsection{Berechnung des Transports eines Skalars}
+\subsubsection{Flussströmung mit Ein- und Abflussrohr am Rand} \label{sec:fluss}
+Betrachtet wird ein Fluss bzw. ein Kanal, welcher stationär mit der selben Geschwindigkeit $u$ in $x$-Richtung fließt. Am Rand dieses Kanals befindet sich ein Einflussrohr, beispielsweise ein Abfluss einer Fabrik oder ein Zufluss eines anderen Kanals, welches einen Stoff gleicher Dichte $\rho$ in das strömende Fluid des Kanals gibt. Die Ausströmrichtung dieses Rohres steht senkrecht zur Kanalströmung. \\
+Im Folgenden werden zwei Fälle verglichen:
+\begin{itemize}
+\item \textbf{Links}: Es wird lediglich ein Stoff in die Kanalströmung eingeführt.
+\item \textbf{Rechts}: Kurz hinter dem Einfluss des neuen Stoffes wird das Fluid des Kanals abgesaugt, ebenfalls am unteren Rand.
+\end{itemize}
+Die zwei Strömungen werden an fünf diskreten Punkten visualisiert. Gerechnet wurde auf einem $100\times50$-Gitter.
+
+\begin{figure}[!htb]
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river1_0sek}
+\subcaption*{t=$0$ sek}
+\end{minipage}
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river3_0sek}
+\subcaption*{t=$0$ sek}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river1_4sek}
+\subcaption*{t=$4$ sek}
+\end{minipage}
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river3_4sek}
+\subcaption*{t=$4$ sek}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river1_20sek}
+\subcaption*{t=$20$ sek}
+\end{minipage}
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river3_20sek}
+\subcaption*{t=$20$ sek}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river1_40sek}
+\subcaption*{t=$40$ sek}
+\end{minipage}
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river3_40sek}
+\subcaption*{t=$40$ sek}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river1_100sek}
+\subcaption*{t=$100$ sek}
+\end{minipage}
+\begin{minipage}[t]{7.8cm}
+\includegraphics[width=7.7cm]{bilder/anwendungsfaelle/river3_100sek}
+\subcaption*{t=$100$ sek}
+\end{minipage}
+\captionof{figure}{Vergleich Flussströmungen: links mit Quelle, rechts mit Quelle und Senke}
+\end{figure}
+\FloatBarrier
+
+Man erkennt, dass nach $10$ Sekunden der eingeführte Stoff von der Kanalströmung noch nicht weit genug transportiert wurde, sodass die Zustände zu diesem Punkt rechts und links identisch sind. Erst ab circa $20$ Sekunden wird ein Unterschied deutlich. Trotz Quelle bleibt jedoch ein Teil des eingeführten Fluids im Kanal verbleiben, da das Einströmrohr diesen Stoff so weit in die Mitte des Kanals einströmt, dass es nicht komplett von der Senke bzw. dem Abflussrohr wieder abgesogen werden kann.
+
+\subsubsection{Flussströmung mit Ein- und Abflussrohr in der Mitte}
+Es wird ein ähnlicher Anwendungsfall wie in \ref{sec:fluss} diskutiert. Allerdings befindet sich das Ein- (Quelle) bzw. Abflussrohr (Senke) in der Mitte des Kanals bzw. des Flusses. Es werden drei Ergebnisse gegenübergestellt:
+\begin{itemize}
+\item \textbf{Links}:Die Quelle stromauf der Senke fügt $10\times$ soviel des neuen Fluids hinzu als die Senke absaugt.
+\item \textbf{Mitte}:Die Stärke bzw. der Betrag der Ergiebigkeit der Quelle und Senke sind gleich groß.
+\item \textbf{Rechts}:Die Senke stromab der Quelle saugt $10\times$ soviel des neuen Fluids ab als die Quelle hinzufügt.
+\end{itemize}
+Die Simulationseinstellungen bleiben ansonsten die gleichen wie in \ref{sec:fluss}.
+\begin{figure}[!htb]
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river2_0sek}
+\subcaption*{t=$0$ sek}
+\end{minipage}
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river21_0sek}
+\subcaption*{t=$0$ sek}
+\end{minipage} 
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river22_0sek}
+\subcaption*{t=$0$ sek}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river2_2halfsek}
+\subcaption*{t=$2.5$ sek}
+\end{minipage}
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river21_2halfsek}
+\subcaption*{t=$2.5$ sek}
+\end{minipage} 
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river22_2halfsek}
+\subcaption*{t=$2.5$ sek}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river2_5sek}
+\subcaption*{t=$5$ sek}
+\end{minipage}
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river21_5sek}
+\subcaption*{t=$5$ sek}
+\end{minipage} 
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river22_5sek}
+\subcaption*{t=$5$ sek}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river2_10sek}
+\subcaption*{t=$10$ sek}
+\end{minipage}
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river21_10sek}
+\subcaption*{t=$10$ sek}
+\end{minipage} 
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river22_10sek}
+\subcaption*{t=$10$ sek}
+\end{minipage} \\[0.3cm]
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river2_50sek}
+\subcaption*{t=$50$ sek}
+\end{minipage}
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river21_50sek}
+\subcaption*{t=$50$ sek}
+\end{minipage} 
+\begin{minipage}[t]{5.6cm}
+\includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river22_50sek}
+\subcaption*{t=$50$ sek}
+\end{minipage} \\[0.3cm]
+\captionof{figure}{Vergleich Flussströmungen: links mit Quelle, rechts mit Quelle und Senke}
+\end{figure}
+\FloatBarrier
+
+Links wird, aufgrund der stärkeren Quelle, das neue Fluid entlang des Kanals transportiert, da die Senke \texttt{zu schwach} ist, um es komplett wieder abzusaugen. Hingegen wird beim rechten Fall sogar fast alles aus der Quelle wieder abgesaugt. Hier wird allerdings auch viel Fluid des Flusses abgesaugt. Da die Skala nicht neu skaliert worden ist, wird das hier nicht komplett ersichtlich. Dies ist bewusst gemacht worden, da so zum Einen die drei Fälle besser verglichen werden können und zum Anderen das Reskalieren den Effekt nicht so deutlich erscheinen lässt. Gleiches gilt auch für die Grafiken aus \ref{sec:fluss}.
+
+\subsection{Berechnung des Geschwindigkeitsfeldes bei gegebenem Druck}
+\subsection{Couette-Strömung}
+
+\subsection{Poiseuille-Strömung}
+\subsection{Berechnung des Druck- und Geschwindigkeitsfeldes mit Hilfe vom \texttt{SIMPLE}-Algorithmus}

@@ -1,7 +1,7 @@
 \chapter{Berechnung des Geschwindigkeitsfeldes}
 
 \section{Aufgabenstellung}
-In der bisherigen Implementierung der Konvektion-Diffusion-Strömung ist das Geschwindigkeitsfeld als gegeben angenommen worden. Nun soll dieses Geschwindigkeitsfeld unter Vorgabe des Druckfeldes während der Berechnung berechnet werden. Im Folgenden wird auf die mathematische Herleitung der benötigten Formeln eingegangen und anschließend die Software mit einfachen Testfällen, wie beispielsweise die Couette-Strömung, getestet.
+In der bisherigen Implementierung der Konvektion-Diffusion-Strömung ist das Geschwindigkeitsfeld als gegeben angenommen worden. Nun soll dieses Geschwindigkeitsfeld unter Vorgabe des Druckfeldes während der Berechnung berechnet werden. Im Folgenden wird auf die mathematische Herleitung der benötigten Formeln eingegangen. Validiert wird die implementierte Software in Kapitel 6.
 
 \section{Mathematische Modellbildung}
 Für die Berechnung der beiden Geschwindigkeitskomponenten $u$ und $v$ wird eine weitere (vektorielle) Formel benötigt. Zunächst wird die Impulsgleichung in x-Richtung
@@ -36,8 +36,3 @@ bzw.
 & b+\dfrac{p_{i,j}-p_{i,j+1}}{x_{i+1}-x_{i}}\cdot\left(y_{j+1}-y_{j}\right)\Delta x_{i}.
 \end{align}
 In den Formeln wurden die Indizes jeweils auf das physikalische Gitter des Skalars $\Phi$ bezogen, da dies in der Software genau so umgesetzt worden ist. Die Formeln für die Koeffizienten entsprechen denen aus Kapitel 3\textcolor{red}{VERWEIS?! JA NEIN?!} auf dem oben definieirten versetztem Gitter.
-
-\section{Validierung}
-\subsection{Couette-Strömung}
-
-\subsection{Poiseuille-Strömung}
