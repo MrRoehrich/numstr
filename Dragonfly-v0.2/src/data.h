@@ -132,7 +132,9 @@ struct sCell {
         : id(-1)
         , bTypeScalar(0)
         , bTypeVelocity(0)
+        , bTypePressure(0)
         , s(0.)
+        , p(0.)
     {
     }
     int id;
@@ -147,11 +149,13 @@ struct sCell {
     // numeric quantities
     int bTypeScalar;      // boundary type for scalar
     int bTypeVelocity;    // boundary type for velocity
+    int bTypePressure;    // boundary type for pressure
     double bValueScalar;  // boundary value
     double bValueScalarX; // boundary value
     double bValueScalarY; // boundary value
     double bValueU;       // boundary value
     double bValueV;       // boundary value
+    double bValuePressure;  // boundary value
 
     // physical quantities
     double volume;      // cell volume

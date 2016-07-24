@@ -32,5 +32,6 @@ void setRiverFlowBoundariers1(sData* data);
 void setRiverFlowBoundariers2(sData* data);
 void setRiverFlowBoundariers3(sData* data);
 void setGartenschlauchBoundaries(sData* data);
+void setStolperdrahtBoundaries(sData* data);
 
 #endif

@@ -172,7 +172,8 @@ bool solvePe(sData* data)
    //setRiverFlowBoundariers1(data);
    //setRiverFlowBoundariers2(data);
    //setRiverFlowBoundariers3(data);
-   setCouetteBoundaries(data);
+   //setCouetteBoundaries(data);
+   setPoiseuilleBoundaries(data);
 
    // write initial conditions
    std::cout << "Output... " << curIter << "\n";
@@ -189,32 +190,6 @@ bool solvePe(sData* data)
 
       calcVelocityField(data, deltaT);
       //calcScalarField(data, deltaT);
-
-      /*for(int cId = 0; cId < data->nCells; cId++) {
-          curCell = &data->cells[cId];
-          if((cId + data->nCellsX) % data->nCellsX == 0) { // linker Rand
-              if(curCell->bTypeVelocity == 2) {
-                  curCell->faces[XM]->u = curCell->faces[XP]->u;
-                  curCell->faces[XM]->v = curCell->faces[XP]->v;
-              }
-          } else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
-              if(curCell->bTypeVelocity == 2) {
-                  curCell->faces[XP]->u = curCell->faces[XM]->u;
-                  curCell->faces[XP]->v = curCell->faces[XM]->v;
-              }
-          }
-          if(cId < data->nCellsX) { // unterer Rand
-              if(curCell->bTypeVelocity == 2) {
-                  curCell->faces[YM]->u = curCell->faces[YP]->u;
-                  curCell->faces[YM]->v = curCell->faces[YP]->v;
-              }
-          } else if(data->nCells - (cId + 1) < data->nCellsX) { // oberer Rand
-              if(curCell->bTypeVelocity == 2) {
-                  curCell->faces[YP]->u = curCell->faces[YM]->u;
-                  curCell->faces[YP]->v = curCell->faces[YM]->v;
-              }
-          }
-      }*/
 
       curTime += deltaT;
       // write output
@@ -251,7 +226,8 @@ bool solveSimple(sData* data)
    double deltaT = data->maxTime / data->maxIter;
 
    // setRigidBodyBoundaries(data);
-   setDrivenCavityBoundaries(data);
+   // setDrivenCavityBoundaries(data);
+   setGartenschlauchBoundaries(data);
 
    std::cout << "Output... " << 0 << "\n";
    if (!output(data, 0)) {
@@ -283,7 +259,31 @@ bool solveSimple(sData* data)
             curFace = &data->faces[fId];
             if (curFace->bTypeVelocity == DIRICHLET)
                continue;
-            // TODO: NEUMANN SPIEGELN AM STIZZZZZZEL
+            else if(curFace->bTypeVelocity == NEUMANN) { // mirroring velocities
+                      if (curFace->dy == 0) {
+                          if(curFace->neighCells[P]->neighCells[XP] != NULL) {
+                            faceE = curFace->neighCells[P]->neighCells[XP]->faces[YM];
+                            curFace->u = faceE->u;
+                            curFace->v = faceE->v;                            
+                          } else if(curFace->neighCells[P]->neighCells[XM] != NULL) {
+                            faceW = curFace->neighCells[P]->neighCells[XM]->faces[YM];
+                            curFace->u = faceW->u;
+                            curFace->v = faceW->v;                              
+                          }
+                      }
+                     else if (curFace->dx == 0) {
+                         if(curFace->neighCells[P] != NULL) {
+                             faceE = curFace->neighCells[P]->faces[XP];
+                             curFace->u = faceE->u;
+                             curFace->v = faceE->v;                            
+                         } else if(curFace->neighCells[M] != NULL) {
+                             faceW = curFace->neighCells[M]->faces[XM];
+                             curFace->u = faceW->u;
+                             curFace->v = faceW->v;                             
+                         }
+                     }
+                     continue;
+            }
             deltaPN = curFace->neighCells[M]->p - curFace->neighCells[P]->p;
 
             if (curFace->dy == 0) {
@@ -424,7 +424,7 @@ bool solveSimple(sData* data)
          // compute p'
          for (int cId = 0; cId < data->nCells; cId++) {
             sCell* curCell = &data->cells[cId];
-            if (curCell->bTypeScalar == DIRICHLET)
+            if (curCell->bTypePressure != INNERCELL)
                continue;
 
             rho = data->rho;
@@ -446,15 +446,31 @@ bool solveSimple(sData* data)
             maxRes = MAX(maxRes, ABS(b));
          }
 
-         // compute p=p*+p*
+         // compute p=p*+p'
          for (int cId = 0; cId < data->nCells; cId++) {
             curCell = &data->cells[cId];
-            if (curCell->bTypeScalar == DIRICHLET)
+            if (curCell->bTypePressure != INNERCELL)
                continue;
 
             double omega = 1.;                       // relaxation parameter
             curCell->p += omega * curCell->pCorrect; // now, p is the new estimate of the pressure field
          }
+
+        // pressure mirroring for driven cavity & Gartenschlauch -> NEUMANN
+        for(int cId = 0; cId < data->nCells; cId++) {
+            curCell = &data->cells[cId];
+
+            if((cId + data->nCellsX) % data->nCellsX == 0)  // linker Rand
+                curCell->p = curCell->neighCells[XP]->p;
+            /*else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) // rechter Rand
+                curCell->p = curCell->neighCells[XM]->p;*/
+            if(cId < data->nCellsX) // unterer Rand
+                curCell->p = curCell->neighCells[YP]->p;
+            if(cId >= data->nCells - data->nCellsX) // oberer Rand
+                curCell->p = curCell->neighCells[YM]->p;
+                
+        }
+                //std::cout << maxRes << std::endl;
 
          // compute u=u*+deltaP'*A/apTilde, v analogous
          // NOT NECESSARY, since transport of \Phi does not influence the velocity field
@@ -475,6 +491,13 @@ bool solveSimple(sData* data)
          *
                                                   curFace->dy / curFace->apTilde;
          }*/
+          /*sCell* curCell;
+          std::cout << "Pressure:" << std::endl;
+          for(int cId = 0; cId < data->nCells; ++cId) {
+              curCell = &data->cells[cId];
+              std::cout << cId << ": " << curCell->p << std::endl;
+          }
+          std::cout << std::endl;*/
       }
 
       for (int fId = 0; fId < data->nFaces; fId++) {
@@ -492,6 +515,19 @@ bool solveSimple(sData* data)
          curFace->u = curFace->uNext; /* +
               (curFace->neighCells[M]->pCorrect - curFace->neighCells[P]->pCorrect) * curFace->dy /
                   curFace->apTilde;*/
+      }
+      
+      sFace* curFace;
+      int nX = data->nCellsX;
+      int nY = data->nCellsY;
+      // Mirroring velocities Gartenschlauch
+      for(int fId = 0; fId < data->nFaces; ++fId) {
+          curFace = &data->faces[fId];
+          if((fId - (nX * (nY + 1))) % (nX + 1) == 0 && (fId - (nX * (nY + 1))) >= 0 && curIter % 10 == 0) { // L
+                curFace->u = curFace->neighCells[P]->faces[XP]->u;
+                curFace->neighCells[P]->faces[YM]->u  = curFace->neighCells[P]->neighCells[XP]->faces[YM]->u;
+                curFace->neighCells[P]->faces[YP]->u  = curFace->neighCells[P]->neighCells[XP]->faces[YP]->u;
+          }
       }
 
       // write output
@@ -635,8 +671,17 @@ void calcVelocityField(sData* data, double deltaT)
    for (int fId = 0; fId < data->nFaces; fId++) {
 
       curFace = &data->faces[fId];
-      if (curFace->bTypeVelocity != INNERCELL)
+      if (curFace->bTypeVelocity == DIRICHLET)
          continue;
+      if(curFace->bTypeVelocity == NEUMANN) { // mirroring at the right
+          if (curFace->dy == 0)
+            faceW = curFace->neighCells[P]->neighCells[XM]->faces[YM];
+          else if (curFace->dx == 0)
+            faceW = curFace->neighCells[M]->faces[XM];
+          curFace->u = faceW->u;
+          curFace->v = faceW->v;
+          continue;
+      }
       deltaPN = curFace->neighCells[M]->p - curFace->neighCells[P]->p;
 
       if (curFace->dy == 0) {
@@ -715,21 +760,6 @@ void calcVelocityField(sData* data, double deltaT)
              data, data->eta, deltaT, dx, dy, (vn + vp) / 2., ue, (vp + vs) / 2., uw, an, ae, as, aw, ap, apTilde);
 
          curFace->v = (an * vn + ae * ve + as * vs + aw * vw + ap * vp + deltaPT * dx) / apTilde;
-      }
-   }
-   
-   for (int fId=0; fId<data->nFaces; ++fId) {
-      curFace = &data->faces[fId];
-      if (curFace->bTypeVelocity != NEUMANN)
-         continue;
-         
-      if (fId%(data->nCellsX+1)==0) { // links
-         curFace->u = curFace->neighCells[P]->faces[XP]->u;
-         curFace->v = curFace->neighCells[P]->faces[XP]->v;
-      }
-      else if (fId%(data->nCellsX+1)==data->nCellsX) {
-         curFace->u = curFace->neighCells[M]->faces[XM]->u;
-         curFace->v = curFace->neighCells[M]->faces[XM]->v;         
       }
    }
 }
