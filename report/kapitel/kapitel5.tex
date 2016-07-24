@@ -274,7 +274,7 @@ Es wird eine Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich au
 \begin{align*}
 \left.
 \begin{array}{l l}
-& \eta\dfrac{\partial^{2}u}{\partial y^{2}}=\dfrac{\partial p}{\partial x} \\
+& \eta\dfrac{\partial^{2}u}{\partial y^{2}}=-\dfrac{\partial p}{\partial x} \\
 & p=const \Rightarrow \dfrac{\partial p}{\partial x}=0 \\
 & u\left(y=0\right)\stackrel{!}=0 \\
 & u\left(y=b\right)\stackrel{!}=u_{in}
@@ -286,7 +286,7 @@ Das heißt stationär stellt sich ein lineares Geschwindigkeitsprofil mit Steigung
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/couette}
   \caption{Couette-Strömung: stationärer Endzustand}
 \end{figure}
 \FloatBarrier
@@ -296,22 +296,38 @@ Analog zur Couette-Strömung in \ref{sec:couette} wird wieder die Strömung durch 
 \begin{align*}
 \left.
 \begin{array}{l l}
-& \eta\dfrac{\partial^{2}u}{\partial y^{2}}=\dfrac{\partial p}{\partial x} \\
+& \eta\dfrac{\partial^{2}u}{\partial y^{2}}=-\dfrac{\partial p}{\partial x} \\
 & \dfrac{\partial p}{\partial x}=const \\
 & u\left(y=0\right)\stackrel{!}=0 \\
 & u\left(y=b\right)\stackrel{!}=0
 \end{array}
 \right\}
-u\left(y\right)= \dfrac{1}{2\eta}\dfrac{\partial p}{\partial x}\left(y^{2}-yb\right).
+u\left(y\right)= -\dfrac{1}{2\eta}\dfrac{\partial p}{\partial x}\left(y^{2}-yb\right).
 \end{align*}
-Als Randbedingungen wird dieses Geschwindigkeitsprofil am Einström- und Auströmrand vorgegeben. Als stationärer Endzustand sollte sich dieses Profil über die komplette Länge $L$ eingestellt haben. Das numerische Ergebnis gibt dies korrekt wieder:
+Als Randbedingungen wird dieses Geschwindigkeitsprofil am Einström- und Auströmrand vorgegeben. Als stationärer Endzustand sollte sich dieses Profil über die komplette Länge $L$ eingestellt haben. Mit folgenden gegebenen Initialdaten
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/poiseuille_P}
+  \caption{Poiseuille-Strömung: gegebenes Druckfeld}
+\end{figure}
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/poiseuille_Initial}
+  \caption{Poiseuille-Strömung: gegebene Anfangswerte des Geschwindigkeitsfeldes} 
+  \label{pic:poiseuille_inital}
+\end{figure}
+\FloatBarrier
+ergibt sich folgendes Resultat:
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/poiseuille_Velocity}
   \caption{Poiseuille-Strömung: stationärer Endzustand}
 \end{figure}
 \FloatBarrier
+Man erkennt, dass sich das initiale Parabelprofil an den Rändern (siehe \ref{pic:poiseuille_inital}) im gesamten Kanal ausgebreitet hat. Dies entspricht auch der korrekten Lösung, die Software berechnet die gegebenen Strömungen also wahrscheinlich korrekt.
 
 \subsection{Berechnung des Druck- und Geschwindigkeitsfeldes mit Hilfe des \texttt{SIMPLE}-Algorithmus}
 \subsubsection{Festkörperrotation}
@@ -332,19 +348,23 @@ Im Folgenden werden das Druckfeld und das Geschwindigkeitsfeld dieses Problems d
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+     \includegraphics[width=10cm]{bilder/anwendungsfaelle/rigidBodyRotation_P}
   \caption{Festkörperrotation: Druckfeld}
 \end{figure}
 \FloatBarrier
+Dieses Druckfeld stimmt ebenfalls mit der analytischen Lösung überein. Die Konturen konstanten Druckes bilden konzentrische Kreise um den Ursprung $\left(0;0\right)$, da $p\sim r^{2}$.
+\FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+     \includegraphics[width=12cm]{bilder/anwendungsfaelle/rigidBodyRotation}
   \caption{Festkörperrotation: Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
+Diese Grafik visualisiert eine im mathematisch Sinn positive Drehbewegung, was wegen der Vorgaeb $\omega=5$ auch die exakte Lösung wiederspiegelt. Aufgrund der Beziehung $v_{\phi}\sim r$ werden die Tangentialgeschwindigkeiten Richtung Kurvenaußen proportional zum Radius größer, da $\omega=const$.
+
 
 \subsubsection{Driven Cavity}
-Es wird ein \texttt{Behälter} betrachtet, der unten , links und rechts undurchlässige Wände besitzt. Überhalb dieses \texttt{Behälters} fließt ein Fluid mit konstantem Druck und konstanter Geschwindigkeit in $x$-Richtung. Nun wird das Druck- und Geschwindigkeitsfeld simuliert, welches sich in dem \texttt{Behälter} einstellt. Als Randbedingungen gilt einerseits die Haftbedingung an den drei festen undruchlässigen Wänden ($u_{Wand}=v_{Wand}=0$), am oberen Rand gilt $u_{\text{Fluid,oben}}=u_{\text{äußere Strömung}}$. Gleiches gilt für den Druck: $p_{\text{Fluid,oben}}=p_{\text{äußere Strömung}}$. \\
+Es wird ein \texttt{Behälter} betrachtet, der unten, links und rechts undurchlässige Wände besitzt. Überhalb dieses \texttt{Behälters} fließt ein Fluid mit konstantem Druck und konstanter Geschwindigkeit in $x$-Richtung. Nun wird das Druck- und Geschwindigkeitsfeld simuliert, welches sich in dem \texttt{Behälter} einstellt. Als Randbedingungen gilt einerseits die Haftbedingung an den drei festen undruchlässigen Wänden ($u_{Wand}=v_{Wand}=0$), am oberen Rand gilt $u_{\text{Fluid,oben}}=u_{\text{äußere Strömung}}$. Gleiches gilt für den Druck: $p_{\text{Fluid,oben}}=p_{\text{äußere Strömung}}$. \\
 Der Behälter ist von den Dimensionen \textcolor{red}{3x3} groß und wird mit einem $50\times50$-Gitter diskretisiert. Folgendes Druck- und Geschwindigkeitsfeld stellen sich ein:
 \FloatBarrier
 \begin{figure}[!htb] 
