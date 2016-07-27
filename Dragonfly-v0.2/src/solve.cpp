@@ -226,9 +226,10 @@ bool solveSimple(sData* data)
    double deltaT = data->maxTime / data->maxIter;
 
     //setRigidBodyBoundaries(data);
-   // setDrivenCavityBoundaries(data);
+    setDrivenCavityBoundaries(data);
    //setGartenschlauchBoundaries(data);
-   setCouetteBoundaries(data);
+   //setCouetteBoundaries(data);
+   //setStolperdrahtBoundaries(data);
 
    std::cout << "Output... " << 0 << "\n";
    if (!output(data, 0)) {
@@ -505,9 +506,19 @@ bool solveSimple(sData* data)
                     curFace->v = faceW->v;                             
                 }
             }
-            //continue;
          }
       }
+      /*int nX = data->nCellsX;
+      int nY = data->nCellsY;
+      for (int fId=0; fId<data->nFaces; fId ++) {
+         curFace = &data->faces[fId];
+         if((fId - (nX * (nY + 1))) % (nX + 1) == 0 && (fId - (nX * (nY + 1)))>=0 ) { //L
+            curFace->u = curFace->neighCells[P]->faces[XP]->u;
+         }
+         else if((fId - (nX * (nY + 2))) % (nX + 1) == 0 && (fId - (nX * (nY + 2))) >= 0) { // R
+            curFace->u = curFace->neighCells[M]->faces[XM]->u;
+         }
+      }*/
 
       
       /*sFace* curFace;
