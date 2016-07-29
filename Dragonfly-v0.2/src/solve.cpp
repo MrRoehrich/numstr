@@ -172,8 +172,8 @@ bool solvePe(sData* data)
    //setRiverFlowBoundariers1(data);
    //setRiverFlowBoundariers2(data);
    //setRiverFlowBoundariers3(data);
-   //setCouetteBoundaries(data);
-   setPoiseuilleBoundaries(data);
+   setCouetteBoundaries(data);
+   //setPoiseuilleBoundaries(data);
 
    // write initial conditions
    std::cout << "Output... " << curIter << "\n";
@@ -284,7 +284,6 @@ bool solveSimple(sData* data)
                              curFace->v = faceW->v;                             
                          }
                      }
-                     //continue;
             }
             else if (curFace->bTypeVelocity == INNERCELL) {
                deltaPN = curFace->neighCells[M]->p - curFace->neighCells[P]->p;
@@ -365,7 +364,7 @@ bool solveSimple(sData* data)
                   deltaPT = (curFace->neighCells[P]->neighCells[YM]->p + curFace->neighCells[M]->neighCells[YM]->p -
                              curFace->neighCells[M]->neighCells[YP]->p - curFace->neighCells[P]->neighCells[YP]->p) /
                             4.;
-
+                  
                   // v
                   vp = curFace->v;
                   vn = faceN->v;
@@ -430,6 +429,16 @@ bool solveSimple(sData* data)
             sCell* curCell = &data->cells[cId];
             if (curCell->bTypePressure == DIRICHLET)
                continue;
+      // !!!! TEMP
+            /*else if (cId==170)
+               curCell->pCorrect = 0.;
+            else if (cId==219)
+               curCell->pCorrect = 0.;
+            else if (cId==221)
+               curCell->pCorrect = 0.;
+            else if (cId==270)
+               curCell->pCorrect = 0.;*/
+      // !!!! TEMP
             else if (curCell->bTypePressure == INNERCELL) {
                rho = data->rho;
                dx = curCell->faces[YP]->dx;
@@ -439,6 +448,7 @@ bool solveSimple(sData* data)
                ae = rho * dy * dy / curCell->faces[XP]->apTilde;
                as = rho * dx * dx / curCell->faces[YM]->apTilde;
                aw = rho * dy * dy / curCell->faces[XM]->apTilde;
+               
                b = rho * ((curCell->faces[XM]->uNext - curCell->faces[XP]->uNext) * dy +
                           (curCell->faces[YM]->vNext - curCell->faces[YP]->vNext) * dx);
                apTilde = ae + aw + an + as;
@@ -508,6 +518,7 @@ bool solveSimple(sData* data)
             }
          }
       }
+      
       /*int nX = data->nCellsX;
       int nY = data->nCellsY;
       for (int fId=0; fId<data->nFaces; fId ++) {

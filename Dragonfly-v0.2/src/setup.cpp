@@ -304,6 +304,28 @@ void setCouetteBoundaries(sData* data)
         if (curCell->bTypePressure == INNERCELL) {
            curCell->p = 1000.;
         }
+        /*if (cId==220){// && cId>100 && cId<400) {
+           curCell->bTypePressure = DIRICHLET;
+           curCell->p = 0.;
+           curCell->bTypeVelocity = DIRICHLET;
+           curCell->faces[XM]->u = 0.;
+           curCell->faces[XM]->v = 0.;
+           curCell->faces[XM]->bTypeVelocity = DIRICHLET;
+           curCell->faces[XP]->u = 0.;
+           curCell->faces[XP]->v = 0.;
+           curCell->faces[XP]->bTypeVelocity = DIRICHLET;
+           curCell->faces[YM]->u = 0.;
+           curCell->faces[YM]->v = 0.;
+           curCell->faces[YM]->bTypeVelocity = DIRICHLET;
+           curCell->faces[YP]->u = 0.;
+           curCell->faces[YP]->v = 0.;
+           curCell->faces[YP]->bTypeVelocity = DIRICHLET;
+           
+           curCell->neighCells[XM]->bTypePressure = NEUMANN;
+           curCell->neighCells[XP]->bTypePressure = NEUMANN;
+           curCell->neighCells[YM]->bTypePressure = NEUMANN;
+           curCell->neighCells[YP]->bTypePressure = NEUMANN;
+        }*/
     }
 
     int nX = data->nCellsX;
@@ -509,8 +531,8 @@ void setPoiseuilleBoundaries(sData* data)
 
 void setDrivenCavityBoundaries(sData* data)
 {
-    double U = 9./3.;
-    double pressure = 100.;
+    double U = 100.;
+    double pressure = 1000.;
     
     int nX = data->nCellsX;
     int nY = data->nCellsY;
@@ -530,7 +552,12 @@ void setDrivenCavityBoundaries(sData* data)
             curCell->p = pressure;
         }
         else if(cId < data->nCellsX) // unterer Rand
-            curCell->bTypePressure = NEUMANN;    
+            curCell->bTypePressure = NEUMANN;   
+
+        /*if (cId==1220)
+           curCell->p = 10000.;
+        if (cId==25)
+           curCell->p = 0.;*/
     }
 
     sFace* curFace;
@@ -565,6 +592,7 @@ void setDrivenCavityBoundaries(sData* data)
         } else if(fId == (2 * nX + 1) * nY - 1 + nX) { // RO
             curFace->bTypeVelocity = DIRICHLET;
             curFace->neighCells[M]->faces[YM]->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[YM]->u = U;
         } else if(fId <= nX - 1) { // U
             curFace->bTypeVelocity = DIRICHLET;
             curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
@@ -584,6 +612,7 @@ void setDrivenCavityBoundaries(sData* data)
             curFace->u = U;
             curFace->neighCells[M]->faces[XM]->u = U;
             curFace->neighCells[M]->faces[XP]->u = U;
+            curFace->neighCells[M]->faces[YM]->u = U;
         } else {
             curFace->u = 0.;
             curFace->v = 0.;
