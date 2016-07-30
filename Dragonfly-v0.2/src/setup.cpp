@@ -573,9 +573,11 @@ void setDrivenCavityBoundaries(sData* data)
             curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
         } else if(fId == nX * nY) { // OL
             curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
             curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
             curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
             curFace->u = U;
+            curFace->neighCells[M]->faces[XM]->u = U;
             curFace->neighCells[M]->faces[XP]->u = U;
             curFace->neighCells[M]->faces[XM]->u = U;
         } else if(fId == nX * (nY + 1) - 1) { // OR
@@ -597,7 +599,6 @@ void setDrivenCavityBoundaries(sData* data)
         } else if(fId == (2 * nX + 1) * nY - 1 + nX) { // RO
             curFace->bTypeVelocity = DIRICHLET;
             curFace->neighCells[M]->faces[YM]->bTypeVelocity = DIRICHLET;
-            curFace->neighCells[M]->faces[YM]->u = U;
         } else if(fId <= nX - 1) { // U
             curFace->bTypeVelocity = DIRICHLET;
             curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;

@@ -1,11 +1,12 @@
 # Numerical settings
-maxTime 	100.
-solverMethod 1
-solverType 1
-maxIter	100
+maxTime 	50.
+solverMethod 2
+solverType 4
+maxIter	2000
 residuum	1.0e-6
 
 # physical constants
-alpha		1.
+alpha		0.
 rho		1.
+eta     0.1
 velocity	0. 0.

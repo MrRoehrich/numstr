@@ -429,16 +429,6 @@ bool solveSimple(sData* data)
             sCell* curCell = &data->cells[cId];
             if (curCell->bTypePressure == DIRICHLET)
                continue;
-      // !!!! TEMP
-           /*else if (cId==170)
-               curCell->pCorrect = 0.;
-            else if (cId==219)
-               curCell->pCorrect = 0.;
-            else if (cId==221)
-               curCell->pCorrect = 0.;
-            else if (cId==270)
-               curCell->pCorrect = 0.;*/
-      // !!!! TEMP
             else if (curCell->bTypePressure == INNERCELL) {
                rho = data->rho;
                dx = curCell->faces[YP]->dx;
@@ -472,24 +462,6 @@ bool solveSimple(sData* data)
          for (int cId = 0; cId < data->nCells; cId++) {
             curCell = &data->cells[cId];
             if (curCell->bTypePressure == NEUMANN) {
-            // TEMP!
-               /*if (cId==19 || cId==69) {
-                  curCell->p = curCell->neighCells[XM]->p;
-                  curCell->pCorrect = curCell->neighCells[XM]->pCorrect;
-                  continue;
-               }
-               if (cId==22 || cId==72) {
-                  curCell->p = curCell->neighCells[XP]->p;
-                  curCell->pCorrect = curCell->neighCells[XP]->pCorrect;
-                  continue;                  
-               }
-               if (cId==120 || cId==121) {
-                  curCell->p = curCell->neighCells[YP]->p;
-                  curCell->pCorrect = curCell->neighCells[XP]->pCorrect;
-                  continue;
-               }*/
-            // TEMP!
-               
               if((cId + data->nCellsX) % data->nCellsX == 0) // linker Rand
                   curCell->p = curCell->neighCells[XP]->p;
               else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) // rechter Rand
