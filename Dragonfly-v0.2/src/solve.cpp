@@ -226,10 +226,10 @@ bool solveSimple(sData* data)
    double deltaT = data->maxTime / data->maxIter;
 
     //setRigidBodyBoundaries(data);
-    setDrivenCavityBoundaries(data);
+    //setDrivenCavityBoundaries(data);
    //setGartenschlauchBoundaries(data);
    //setCouetteBoundaries(data);
-   //setStolperdrahtBoundaries(data);
+    setStolperdrahtBoundaries(data);
 
    std::cout << "Output... " << 0 << "\n";
    if (!output(data, 0)) {
@@ -446,8 +446,10 @@ bool solveSimple(sData* data)
                curCell->pCorrect = (ae * curCell->neighCells[XP]->pCorrect + as * curCell->neighCells[YM]->pCorrect +
                                     aw * curCell->neighCells[XM]->pCorrect + an * curCell->neighCells[YP]->pCorrect + b) /
                                    apTilde;
-
+               if (ABS(ae)>1e4) 
+                  std::cout << " ";
                maxRes = MAX(maxRes, ABS(b));
+               //std::cout << maxRes << std::endl;
             }
          }
 
@@ -470,6 +472,15 @@ bool solveSimple(sData* data)
                   curCell->p = curCell->neighCells[YM]->p;
               else if(cId < data->nCellsX) // unterer Rand
                   curCell->p = curCell->neighCells[YP]->p; 
+                  
+              if (curCell->place == 1)
+                  curCell->p = curCell->neighCells[XM]->p; 
+              else if (curCell->place == 2)
+                  curCell->p = curCell->neighCells[YP]->p; 
+              else if (curCell->place == 3)
+                  curCell->p = curCell->neighCells[XP]->p;                 
+              else if (curCell->place == 4)
+                  curCell->p = curCell->neighCells[YM]->p;
             }
          }
 
