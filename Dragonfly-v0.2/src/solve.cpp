@@ -39,7 +39,7 @@ double A(double Pe, sData* data)
    else if (data->solverType == POWER)
       return MAX(0., powf(1. - ABS(Pe) / 10., 5.));
    else if (data->solverType == EXPONENTIAL) {
-      if (Pe == 0)
+      if (ABS(Pe) < 1e-10)
          return 1.;
       return ABS(Pe) / (exp(ABS(Pe)) - 1.);
    } else {
@@ -430,7 +430,7 @@ bool solveSimple(sData* data)
             if (curCell->bTypePressure == DIRICHLET)
                continue;
       // !!!! TEMP
-            /*else if (cId==170)
+           /*else if (cId==170)
                curCell->pCorrect = 0.;
             else if (cId==219)
                curCell->pCorrect = 0.;
@@ -472,6 +472,24 @@ bool solveSimple(sData* data)
          for (int cId = 0; cId < data->nCells; cId++) {
             curCell = &data->cells[cId];
             if (curCell->bTypePressure == NEUMANN) {
+            // TEMP!
+               /*if (cId==19 || cId==69) {
+                  curCell->p = curCell->neighCells[XM]->p;
+                  curCell->pCorrect = curCell->neighCells[XM]->pCorrect;
+                  continue;
+               }
+               if (cId==22 || cId==72) {
+                  curCell->p = curCell->neighCells[XP]->p;
+                  curCell->pCorrect = curCell->neighCells[XP]->pCorrect;
+                  continue;                  
+               }
+               if (cId==120 || cId==121) {
+                  curCell->p = curCell->neighCells[YP]->p;
+                  curCell->pCorrect = curCell->neighCells[XP]->pCorrect;
+                  continue;
+               }*/
+            // TEMP!
+               
               if((cId + data->nCellsX) % data->nCellsX == 0) // linker Rand
                   curCell->p = curCell->neighCells[XP]->p;
               else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) // rechter Rand
@@ -518,32 +536,6 @@ bool solveSimple(sData* data)
             }
          }
       }
-      
-      /*int nX = data->nCellsX;
-      int nY = data->nCellsY;
-      for (int fId=0; fId<data->nFaces; fId ++) {
-         curFace = &data->faces[fId];
-         if((fId - (nX * (nY + 1))) % (nX + 1) == 0 && (fId - (nX * (nY + 1)))>=0 ) { //L
-            curFace->u = curFace->neighCells[P]->faces[XP]->u;
-         }
-         else if((fId - (nX * (nY + 2))) % (nX + 1) == 0 && (fId - (nX * (nY + 2))) >= 0) { // R
-            curFace->u = curFace->neighCells[M]->faces[XM]->u;
-         }
-      }*/
-
-      
-      /*sFace* curFace;
-      int nX = data->nCellsX;
-      int nY = data->nCellsY;
-      // Mirroring velocities Gartenschlauch
-      for(int fId = 0; fId < data->nFaces; ++fId) {
-          curFace = &data->faces[fId];
-          if((fId - (nX * (nY + 1))) % (nX + 1) == 0 && (fId - (nX * (nY + 1))) >= 0 && curIter % 10 == 0) { // L
-                curFace->u = curFace->neighCells[P]->faces[XP]->u;
-                curFace->neighCells[P]->faces[YM]->u  = curFace->neighCells[P]->neighCells[XP]->faces[YM]->u;
-                curFace->neighCells[P]->faces[YP]->u  = curFace->neighCells[P]->neighCells[XP]->faces[YP]->u;
-          }
-      }*/
 
       // write output
       std::cout << "Output... " << curIter << "\n";
