@@ -52,6 +52,7 @@
 #define CALCFLUX 0
 #define PE 1
 #define SIMPLE 2
+#define SIMPLER 3
 
 // solver types
 #define CENTRAL 0
@@ -135,6 +136,7 @@ struct sCell {
         , bTypePressure(0)
         , s(0.)
         , p(0.)
+        , place(0)
     {
     }
     int id;
@@ -164,6 +166,7 @@ struct sCell {
     double s;           // source term
     double p;           // pressure
     double pCorrect;    // pressure corrector
+    int place;
 };
 
 //------------------------------------------------------

@@ -31,6 +31,7 @@ double calcPe(sData* data, double velocity, double length);
 void calcVelocityField(sData* data, double deltaT);
 void calcScalarField(sData* data, double deltaT);
 bool solveSimple(sData* data);
+bool solveSimpler(sData* data);
 void calcCoeff(sData* data,
     double diffCoef,
     double deltaT,
