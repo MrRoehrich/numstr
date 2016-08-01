@@ -583,7 +583,7 @@ void setPoiseuilleBoundaries(sData* data)
 
 void setDrivenCavityBoundaries(sData* data)
 {
-    double U = 10.;
+    double U = 1.;
     double pressure = 100.;
     
     int nX = data->nCellsX;

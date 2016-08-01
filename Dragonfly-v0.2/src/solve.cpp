@@ -228,8 +228,8 @@ bool solveSimple(sData* data)
     // setRigidBodyBoundaries(data);
     // setDrivenCavityBoundaries(data);
     // setGartenschlauchBoundaries(data);
-    // setCouetteBoundaries(data);
-    setStolperdrahtBoundaries(data);
+    setCouetteBoundaries(data);
+    // setStolperdrahtBoundaries(data);
 
     std::cout << "Output... " << 0 << "\n";
     if(!output(data, 0)) {
@@ -390,8 +390,8 @@ bool solveSimple(sData* data)
                     aw = rho * dy * dy / curCell->faces[XM]->apTilde;
 
                     // Einstroemrand
-                    //if(curCell->faces[XM]->bTypeVelocity == DIRICHLET)
-                    //    aw = 0;
+                    if(curCell->faces[XM]->bTypeVelocity == DIRICHLET)
+                        aw = 0;
 
                     b = rho * ((curCell->faces[XM]->uNext - curCell->faces[XP]->uNext) * dy +
                                   (curCell->faces[YM]->vNext - curCell->faces[YP]->vNext) * dx);
@@ -414,6 +414,7 @@ bool solveSimple(sData* data)
                     curCell->p += omega * curCell->pCorrect; // now, p is the new estimate of the pressure field
                 }
             }
+
             for(int cId = 0; cId < data->nCells; cId++) {
                 curCell = &data->cells[cId];
                 if(curCell->bTypePressure == NEUMANN) {
@@ -443,8 +444,17 @@ bool solveSimple(sData* data)
             if(curFace->bTypeVelocity == DIRICHLET)
                 continue;
             else if(curFace->bTypeVelocity == INNERCELL) {
-                curFace->v = curFace->vNext;
-                curFace->u = curFace->uNext;
+                if(curFace->dx == 0) {
+                    curFace->u = curFace->uNext +
+                        (curFace->neighCells[M]->pCorrect - curFace->neighCells[P]->pCorrect) * curFace->dy /
+                            curFace->apTilde;
+                    curFace->v = curFace->vNext;
+                } else if(curFace->dy == 0) {
+                    curFace->u = curFace->uNext;
+                    curFace->v = curFace->vNext +
+                        (curFace->neighCells[M]->pCorrect - curFace->neighCells[P]->pCorrect) * curFace->dx /
+                            curFace->apTilde;
+                }
             } else if(curFace->bTypeVelocity == NEUMANN) { // mirroring velocities
                 if(curFace->dy == 0) {
                     if(curFace->neighCells[P]->neighCells[XP] != NULL) {
@@ -469,6 +479,7 @@ bool solveSimple(sData* data)
                 }
             }
         }
+    //}
 
         // write output
         std::cout << "Output... " << curIter << "\n";
@@ -504,10 +515,11 @@ bool solveSimpler(sData* data)
     double deltaT = data->maxTime / data->maxIter;
 
     // setRigidBodyBoundaries(data);
-    // setDrivenCavityBoundaries(data);
+    setDrivenCavityBoundaries(data);
     // setGartenschlauchBoundaries(data);
-    setCouetteBoundaries(data);
+    // setCouetteBoundaries(data);
     // setStolperdrahtBoundaries(data);
+    // setKarmanBoundaries(data);
 
     std::cout << "Output... " << 0 << "\n";
     if(!output(data, 0)) {
@@ -561,9 +573,11 @@ bool solveSimpler(sData* data)
                         calcCoeff(data, data->eta, deltaT, dx, dy,
                             (vp + curFace->neighCells[P]->faces[XM]->v + vn + curFace->neighCells[P]->faces[XP]->v) /
                                 4.,
+                            //(vp + vn) / 2.,
                             ue,
                             (vp + curFace->neighCells[M]->faces[XP]->v + vs + curFace->neighCells[M]->faces[XM]->v) /
                                 4.,
+                            //(vp + vs) / 2.,
                             uw, an, ae, as, aw, ap, apTilde);
 
                         curFace->vNext = (an * vn + ae * ve + as * vs + aw * vw + ap * vp) / apTilde;
@@ -587,9 +601,11 @@ bool solveSimpler(sData* data)
                         calcCoeff(data, data->eta, deltaT, dx, dy, vn,
                             (up + curFace->neighCells[P]->faces[XP]->u + ue + curFace->neighCells[M]->faces[XP]->u) /
                                 4.,
+                            //(up + ue) / 2.,
                             vs,
                             (up + curFace->neighCells[M]->faces[XM]->u + uw + curFace->neighCells[P]->faces[XM]->u) /
                                 4.,
+                            //(up + uw) / 2.,
                             an, ae, as, aw, ap, apTilde);
 
                         curFace->uNext = (an * un + ae * ue + as * us + aw * uw + ap * up) / apTilde;
@@ -608,6 +624,8 @@ bool solveSimpler(sData* data)
                         ve = faceE->v;
                         vs = faceS->v;
                         vw = faceW->v;
+                        /*ue = (curFace->u + curFace->neighCells[P]->faces[XP]->u) / 2.;
+                        uw = (curFace->neighCells[M]->faces[XM]->u + curFace->u) / 2.;*/
                         ue = (curFace->u + curFace->neighCells[P]->faces[YP]->u + curFace->neighCells[P]->faces[XP]->u +
                                  curFace->neighCells[P]->faces[YM]->u) /
                             4.;
@@ -618,9 +636,11 @@ bool solveSimpler(sData* data)
                         calcCoeff(data, data->eta, deltaT, dx, dy,
                             (vp + curFace->neighCells[M]->faces[YP]->v + vn + curFace->neighCells[P]->faces[YP]->v) /
                                 4.,
+                            //(vp + vn) / 2.,
                             ue,
                             (vp + curFace->neighCells[P]->faces[YM]->v + vs + curFace->neighCells[M]->faces[YM]->v) /
                                 4.,
+                            //(vp + vs) / 2.,
                             uw, an, ae, as, aw, ap, apTilde);
 
                         curFace->vNext = (an * vn + ae * ve + as * vs + aw * vw + ap * vp) / apTilde;
@@ -631,6 +651,8 @@ bool solveSimpler(sData* data)
                         ue = faceE->u;
                         us = faceS->u;
                         uw = faceW->u;
+                        /*vn = (curFace->neighCells[M]->faces[YP]->v + curFace->neighCells[P]->faces[YP]->v) / 2.;
+                        vs = (curFace->neighCells[M]->faces[YM]->v + curFace->neighCells[P]->faces[YM]->v) / 2.;*/
                         vn = (curFace->v + curFace->neighCells[M]->faces[YP]->v +
                                  curFace->neighCells[M]->neighCells[YP]->faces[XP]->v +
                                  curFace->neighCells[P]->faces[YP]->v) /
@@ -643,9 +665,11 @@ bool solveSimpler(sData* data)
                         calcCoeff(data, data->eta, deltaT, dx, dy, vn,
                             (up + curFace->neighCells[P]->faces[YP]->u + ue + curFace->neighCells[P]->faces[YM]->u) /
                                 4.,
+                            //(up + ue) / 2.,
                             vs,
                             (up + curFace->neighCells[M]->faces[YM]->u + uw + curFace->neighCells[M]->faces[YP]->u) /
                                 4.,
+                            //(up + uw) / 2.,
                             an, ae, as, aw, ap, apTilde);
 
                         curFace->uNext = (an * un + ae * ue + as * us + aw * uw + ap * up) / apTilde;
@@ -659,7 +683,25 @@ bool solveSimpler(sData* data)
                 sCell* curCell = &data->cells[cId];
                 if(curCell->bTypePressure == DIRICHLET)
                     continue;
-                else if(curCell->bTypePressure == INNERCELL) {
+                else if(curCell->bTypePressure == NEUMANN) {
+                    if((cId + data->nCellsX) % data->nCellsX == 0) // linker Rand
+                        curCell->p = curCell->neighCells[XP]->p;
+                    else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) // rechter Rand
+                        curCell->p = curCell->neighCells[XM]->p;
+                    else if(data->nCells - (cId + 1) < data->nCellsX) // oberer Rand
+                        curCell->p = curCell->neighCells[YM]->p;
+                    else if(cId < data->nCellsX) // unterer Rand
+                        curCell->p = curCell->neighCells[YP]->p;
+
+                    if(curCell->place == 1)
+                        curCell->p = curCell->neighCells[XM]->p;
+                    else if(curCell->place == 2)
+                        curCell->p = curCell->neighCells[YP]->p;
+                    else if(curCell->place == 3)
+                        curCell->p = curCell->neighCells[XP]->p;
+                    else if(curCell->place == 4)
+                        curCell->p = curCell->neighCells[YM]->p;
+                } else if(curCell->bTypePressure == INNERCELL) {
                     rho = data->rho;
                     dx = curCell->faces[YP]->dx;
                     dy = curCell->faces[XP]->dy;
@@ -669,9 +711,6 @@ bool solveSimpler(sData* data)
                     as = rho * dx * dx / curCell->faces[YM]->apTilde;
                     aw = rho * dy * dy / curCell->faces[XM]->apTilde;
 
-                    if(curCell->faces[XM]->bTypeVelocity == DIRICHLET)
-                        aw = 0;
-
                     b = rho * ((curCell->faces[XM]->uNext - curCell->faces[XP]->uNext) * dy +
                                   (curCell->faces[YM]->vNext - curCell->faces[YP]->vNext) * dx);
                     apTilde = ae + aw + an + as;
@@ -679,10 +718,8 @@ bool solveSimpler(sData* data)
                     curCell->p = (ae * curCell->neighCells[XP]->p + as * curCell->neighCells[YM]->p +
                                      aw * curCell->neighCells[XM]->p + an * curCell->neighCells[YP]->p + b) /
                         apTilde;
-                    maxRes = MAX(maxRes, ABS(b));
                 }
             }
-            std::cout << maxRes << std::endl;
 
             // compute new velocties
             for(int fId = 0; fId < data->nFaces; fId++) {
@@ -713,6 +750,7 @@ bool solveSimpler(sData* data)
                         }
                     }
                 } else if(curFace->bTypeVelocity == INNERCELL) {
+                    deltaPN = curFace->neighCells[M]->p - curFace->neighCells[P]->p;
 
                     if(curFace->dy == 0) {
                         faceN = curFace->neighCells[P]->faces[YP];
@@ -732,6 +770,8 @@ bool solveSimpler(sData* data)
                         ve = faceE->v;
                         vs = faceS->v;
                         vw = faceW->v;
+                        /*ue = (curFace->neighCells[M]->faces[XP]->u + curFace->neighCells[P]->faces[XP]->u) / 2.;
+                        uw = (curFace->neighCells[M]->faces[XM]->u + curFace->neighCells[P]->faces[XM]->u) / 2.;*/
                         ue = (curFace->u + curFace->neighCells[P]->faces[XP]->u +
                                  curFace->neighCells[P]->neighCells[XP]->faces[YM]->u +
                                  curFace->neighCells[M]->faces[XP]->u) /
@@ -744,9 +784,11 @@ bool solveSimpler(sData* data)
                         calcCoeff(data, data->eta, deltaT, dx, dy,
                             (vp + curFace->neighCells[P]->faces[XM]->v + vn + curFace->neighCells[P]->faces[XP]->v) /
                                 4.,
+                            //(vp + vn) /2.,
                             ue,
                             (vp + curFace->neighCells[M]->faces[XP]->v + vs + curFace->neighCells[M]->faces[XM]->v) /
                                 4.,
+                            //(vp + vs) / 2.,
                             uw, an, ae, as, aw, ap, apTilde);
 
                         curFace->vNext =
@@ -754,6 +796,13 @@ bool solveSimpler(sData* data)
                         curFace->apTilde = apTilde;
 
                         //  u
+                        up = curFace->u;
+                        un = faceN->u;
+                        ue = faceE->u;
+                        us = faceS->u;
+                        uw = faceW->u;
+                        /*vn = (curFace->v + curFace->neighCells[P]->faces[YP]->v) / 2.;
+                        vs = (curFace->neighCells[M]->faces[YM]->v + curFace->v) / 2.;*/
                         vn = (curFace->v + curFace->neighCells[P]->faces[XM]->v + curFace->neighCells[P]->faces[YP]->v +
                                  curFace->neighCells[P]->faces[XP]->v) /
                             4.;
@@ -764,9 +813,11 @@ bool solveSimpler(sData* data)
                         calcCoeff(data, data->eta, deltaT, dx, dy, vn,
                             (up + curFace->neighCells[P]->faces[XP]->u + ue + curFace->neighCells[M]->faces[XP]->u) /
                                 4.,
+                            //(up + ue) / 2.,
                             vs,
                             (up + curFace->neighCells[M]->faces[XM]->u + uw + curFace->neighCells[P]->faces[XM]->u) /
                                 4.,
+                            //(up + uw) / 2.,
                             an, ae, as, aw, ap, apTilde);
 
                         curFace->uNext = (an * un + ae * ue + as * us + aw * uw + ap * up + deltaPT * dy) / apTilde;
@@ -789,6 +840,8 @@ bool solveSimpler(sData* data)
                         ve = faceE->v;
                         vs = faceS->v;
                         vw = faceW->v;
+                        /*ue = (curFace->u + curFace->neighCells[P]->faces[XP]->u) / 2.;
+                        uw = (curFace->neighCells[M]->faces[XM]->u + curFace->u) / 2.;*/
                         ue = (curFace->u + curFace->neighCells[P]->faces[YP]->u + curFace->neighCells[P]->faces[XP]->u +
                                  curFace->neighCells[P]->faces[YM]->u) /
                             4.;
@@ -799,9 +852,11 @@ bool solveSimpler(sData* data)
                         calcCoeff(data, data->eta, deltaT, dx, dy,
                             (vp + curFace->neighCells[M]->faces[YP]->v + vn + curFace->neighCells[P]->faces[YP]->v) /
                                 4.,
+                            //(vp + vn) / 2.,
                             ue,
                             (vp + curFace->neighCells[P]->faces[YM]->v + vs + curFace->neighCells[M]->faces[YM]->v) /
                                 4.,
+                            //(vp + vs) / 2.,
                             uw, an, ae, as, aw, ap, apTilde);
 
                         curFace->vNext = (an * vn + ae * ve + as * vs + aw * vw + ap * vp + deltaPT * dx) / apTilde;
@@ -812,6 +867,8 @@ bool solveSimpler(sData* data)
                         ue = faceE->u;
                         us = faceS->u;
                         uw = faceW->u;
+                        /*vn = (curFace->neighCells[M]->faces[YP]->v + curFace->neighCells[P]->faces[YP]->v) / 2.;
+                        vs = (curFace->neighCells[M]->faces[YM]->v + curFace->neighCells[P]->faces[YM]->v) / 2.;*/
                         vn = (curFace->v + curFace->neighCells[M]->faces[YP]->v +
                                  curFace->neighCells[M]->neighCells[YP]->faces[XP]->v +
                                  curFace->neighCells[P]->faces[YP]->v) /
@@ -824,9 +881,11 @@ bool solveSimpler(sData* data)
                         calcCoeff(data, data->eta, deltaT, dx, dy, vn,
                             (up + curFace->neighCells[P]->faces[YP]->u + ue + curFace->neighCells[P]->faces[YM]->u) /
                                 4.,
+                            //(up + ue) / 2.,
                             vs,
                             (up + curFace->neighCells[M]->faces[YM]->u + uw + curFace->neighCells[M]->faces[YP]->u) /
                                 4.,
+                            //(up + uw) / 2.,
                             an, ae, as, aw, ap, apTilde);
 
                         curFace->uNext =
@@ -834,6 +893,12 @@ bool solveSimpler(sData* data)
                         curFace->apTilde = apTilde;
                     }
                 }
+            }
+
+            // reset pressure correction to 0 for next time step
+            for(int cId = 0; cId < data->nCells; cId++) {
+                curCell = &data->cells[cId];
+                curCell->pCorrect = 0.;
             }
 
             // compute p'
@@ -850,6 +915,9 @@ bool solveSimpler(sData* data)
                     ae = rho * dy * dy / curCell->faces[XP]->apTilde;
                     as = rho * dx * dx / curCell->faces[YM]->apTilde;
                     aw = rho * dy * dy / curCell->faces[XM]->apTilde;
+
+                    if(curCell->faces[XM]->bTypeVelocity == DIRICHLET)
+                        aw = 0;
 
                     b = rho * ((curCell->faces[XM]->uNext - curCell->faces[XP]->uNext) * dy +
                                   (curCell->faces[YM]->vNext - curCell->faces[YP]->vNext) * dx);
