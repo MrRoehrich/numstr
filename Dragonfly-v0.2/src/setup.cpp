@@ -332,64 +332,10 @@ void setCouetteBoundaries(sData* data)
     int nX = data->nCellsX;
     int nY = data->nCellsY;
 
-      curCell->p = pressure;
-      if (curCell->bTypePressure == INNERCELL) {
-         curCell->p = 1000.;
-      }
-      /*if (cId==220){// && cId>100 && cId<400) {
-         curCell->bTypePressure = DIRICHLET;
-         curCell->p = 0.;
-         curCell->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-
-         curCell->neighCells[XM]->bTypePressure = NEUMANN;
-         curCell->neighCells[XP]->bTypePressure = NEUMANN;
-         curCell->neighCells[YM]->bTypePressure = NEUMANN;
-         curCell->neighCells[YP]->bTypePressure = NEUMANN;
-      }*/
-   }
-
-   int nX = data->nCellsX;
-   int nY = data->nCellsY;
-
-   double b = data->yMax - data->yMin;
-   sFace* curFace;
-   for (int fId = 0; fId < data->nFaces; fId++) {
-      curFace = &data->faces[fId];
-      /*curFace->u = U/b*curFace->y;
-      curFace->v = 0.;
-      continue;*/
-
-      if (fId == 0) { // UL
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX - 1) { // UR
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX * nY) { // OL
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
-         curFace->u = U;
-         curFace->neighCells[M]->faces[XP]->u = U;
-      } else if (fId == nX * (nY + 1) - 1) { // OR
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
-         curFace->u = U;
-         curFace->neighCells[M]->faces[XM]->u = U;
-      } else if (fId == nX * (nY + 1)) { // LU
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
+    double b = data->yMax-data->yMin;
+    sFace* curFace;
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
          /*curFace->u = U/b*curFace->y;
          curFace->v = 0.;
          continue;*/
@@ -583,7 +529,7 @@ void setPoiseuilleBoundaries(sData* data)
 
 void setDrivenCavityBoundaries(sData* data)
 {
-    double U = 1.;
+    double U = 10.;
     double pressure = 100.;
     
     int nX = data->nCellsX;
@@ -830,468 +776,312 @@ void setGartenschlauchBoundaries(sData * data)
 void setStolperdrahtBoundaries(sData* data) {
     int nX = data->nCellsX;
     int nY = data->nCellsY;
-    double pressure = 10.;
+    double pressure = 0.;
 
-   sCell* curCell;
-   sFace* curFace, *faceN, *faceS, *faceE, *faceW;
-   double up, un, ue, us, uw;
-   double vp, vn, ve, vs, vw;
-   double an, ae, aw, as, ap, apTilde;
-   double dx, dy;
-   double deltaT = data->maxTime / data->maxIter;
+    sCell* curCell;
+    sFace* curFace, *faceN, *faceS, *faceE, *faceW;
+    double up, un, ue, us, uw;
+    double vp, vn, ve, vs, vw;
+    double an, ae, aw, as, ap, apTilde;
+    double dx, dy;
+    double deltaT = data->maxTime / data->maxIter;
+        
+    double U = 50.;
+    double V = U;
+    double dpdx = 10.;
+    double b = data->yMax - data->yMin;
+    double y;
+    
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
 
-   double U = 5.;
-   double V = U;
-   double dpdx = 0.5;
-   double b = 2.0; // data->yMax - data->yMin;
-   double y;
-
-   for (int fId = 0; fId < data->nFaces; fId++) {
-      curFace = &data->faces[fId];
-
-      if (fId == 0) { // UL
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX - 1) { // UR
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX * nY) { // OL
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX * (nY + 1) - 1) { // OR
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX * (nY + 1)) { // LU
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
-         y = curFace->y - 2.0;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[P]->faces[YP]->y - 2.0;
-         curFace->neighCells[P]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if (fId == nX * (nY + 2)) { // RU
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[YP]->bTypeVelocity = DIRICHLET;
-         y = curFace->y - 2.0;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[M]->faces[YP]->y - 2.0;
-         curFace->neighCells[M]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if (fId == (2 * nX + 1) * nY - 1) { // LO
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YM]->bTypeVelocity = DIRICHLET;
-         y = curFace->y - 2.0;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[P]->faces[YM]->y - 2.0;
-         curFace->neighCells[P]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if (fId == (2 * nX + 1) * nY - 1 + nX) { // RO
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[YM]->bTypeVelocity = DIRICHLET;
-         y = curFace->y - 2.0;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[M]->faces[YM]->y - 2.0;
-         curFace->neighCells[M]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if (fId <= nX - 1) { // U
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
-      } else if ((fId - (nX * (nY + 1))) % (nX + 1) == 0 && (fId - (nX * (nY + 1))) >= 0) { // L
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YM]->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
-         y = curFace->y - 2.0;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[P]->faces[YM]->y - 2.0;
-         curFace->neighCells[P]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[P]->faces[YP]->y - 2.0;
-         curFace->neighCells[P]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if ((fId - (nX * (nY + 2))) % (nX + 1) == 0 && (fId - (nX * (nY + 2))) >= 0) { // R
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[YM]->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[YP]->bTypeVelocity = DIRICHLET;
-         y = curFace->y - 2.0;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[M]->faces[YM]->y - 2.0;
-         curFace->neighCells[M]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[M]->faces[YP]->y - 2.0;
-         curFace->neighCells[M]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if (fId >= nX * nY && fId <= nX * (nY + 1) - 1) { // O
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
-      }
-   }
-
+        if(fId == 0) { // UL
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
+        } else if(fId == nX - 1) { // UR
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
+        } else if(fId == nX * nY) { // OL
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
+        } else if(fId == nX * (nY + 1) - 1) { // OR
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
+        } else if(fId == nX * (nY + 1)) { // LU
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
+            y = curFace->y;
+            curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+            y = curFace->neighCells[P]->faces[YP]->y;
+            curFace->neighCells[P]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+        } else if(fId == nX * (nY + 2)) { // RU
+            curFace->bTypeVelocity = NEUMANN;
+            curFace->neighCells[M]->faces[YP]->bTypeVelocity = NEUMANN;
+        } else if(fId == (2 * nX + 1) * nY - 1) { // LO
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[YM]->bTypeVelocity = DIRICHLET;
+            y = curFace->y;
+            curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+            y = curFace->neighCells[P]->faces[YM]->y;
+            curFace->neighCells[P]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+        } else if(fId == (2 * nX + 1) * nY - 1 + nX) { // RO
+            curFace->bTypeVelocity = NEUMANN;
+            curFace->neighCells[M]->faces[YM]->bTypeVelocity = NEUMANN;
+        } else if(fId <= nX - 1) { // U
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
+        } else if((fId - (nX * (nY + 1))) % (nX + 1) == 0 && (fId - (nX * (nY + 1))) >= 0) { // L
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[YM]->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
+            y = curFace->y;
+            curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+            y = curFace->neighCells[P]->faces[YM]->y;
+            curFace->neighCells[P]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+            y = curFace->neighCells[P]->faces[YP]->y;
+            curFace->neighCells[P]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+        } else if((fId - (nX * (nY + 2))) % (nX + 1) == 0 && (fId - (nX * (nY + 2))) >= 0) { // R
+            curFace->bTypeVelocity = NEUMANN;
+            curFace->neighCells[M]->faces[YM]->bTypeVelocity = NEUMANN;
+            curFace->neighCells[M]->faces[YP]->bTypeVelocity = NEUMANN;
+        } else if(fId >= nX * nY && fId <= nX * (nY + 1) - 1) { // O
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
+        }
+    }
+    
    dx = data->faces[0].dx;
-   dy = data->faces[data->nFaces - 1].dy;
-   for (int cId = 0; cId < data->nCells; cId++) {
-      curCell = &data->cells[cId];
-
-      if ((cId + data->nCellsX) % data->nCellsX == 0) // linker Rand
-         curCell->bTypePressure = NEUMANN;
-      else if ((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
-         curCell->bTypePressure = DIRICHLET;
-         if (curCell->y >= 2.0)
+   dy = data->faces[data->nFaces-1].dy;
+   for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+         
+        if((cId + data->nCellsX) % data->nCellsX == 0) // linker Rand
+            curCell->bTypePressure = NEUMANN;
+        else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
+            curCell->bTypePressure = DIRICHLET;
             curCell->p = pressure;
-      } else if (data->nCells - (cId + 1) < data->nCellsX) // oberer Rand
-         curCell->bTypePressure = NEUMANN;
-      else if (cId < data->nCellsX) // unterer Rand
-         curCell->bTypePressure = NEUMANN;
+        }
+        else if(data->nCells - (cId + 1) < data->nCellsX)  // oberer Rand
+            curCell->bTypePressure = NEUMANN;
+        else if(cId < data->nCellsX) // unterer Rand
+            curCell->bTypePressure = NEUMANN;   
 
-      // if (curCell->x > 1.0 && curCell->x < 1.5 && (curCell->y < 1.5 || curCell->y > 3.5) ) {
-      // if (curCell->x < 1.0 && curCell->y < 2.0) {
-      // if (curCell->x > 1.0 && curCell->x < 1.5 && curCell->y < 1.5 ) {
-      if ((curCell->x < 2.0 || curCell->x > 4.0) && curCell->y < 2.0) {
-         curCell->bTypePressure = DIRICHLET;
-         curCell->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-      }
-      // if(curCell->x<=1.0 && curCell->x>0.99-dx && (curCell->y < 1.5 || curCell->y > 3.5)) {
-      // if(curCell->x<=1.0 && curCell->x>0.99-dx && curCell->y < 1.5) {
-      if (curCell->x <= 4.0 && curCell->x > 3.99 - dx && curCell->y < 2.0) {
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 1;
-         if (curCell->neighCells[YP] != NULL) {
-            curCell->neighCells[YP]->bTypePressure = NEUMANN;
-            curCell->neighCells[YP]->place = 1;
+         if (curCell->x > 1.0 && curCell->x < 1.5 && (curCell->y < 1.5 || curCell->y > 3.5) ) {
+            curCell->bTypePressure = DIRICHLET;
+            curCell->bTypeVelocity = DIRICHLET;
+            curCell->faces[XM]->bTypeVelocity = DIRICHLET;
+            curCell->faces[XP]->bTypeVelocity = DIRICHLET;
+            curCell->faces[YM]->bTypeVelocity = DIRICHLET;
+            curCell->faces[YP]->bTypeVelocity = DIRICHLET;
+            curCell->faces[XM]->u = 0.;
+            curCell->faces[XM]->v = 0.;
+            curCell->faces[YM]->u = 0.;
+            curCell->faces[YM]->v = 0.;
+            curCell->faces[YP]->u = 0.;
+            curCell->faces[YP]->v = 0.;
+            curCell->faces[XP]->u = 0.;
+            curCell->faces[XP]->v = 0.;
          }
-         if (curCell->neighCells[YM] != NULL) {
-            curCell->neighCells[YM]->bTypePressure = NEUMANN;
-            curCell->neighCells[YM]->place = 1;
+         if(curCell->x<=1.0 && curCell->x>0.99-dx && (curCell->y < 1.5 || curCell->y > 3.5)) {
+            curCell->faces[YP]->bTypeVelocity = DIRICHLET;
+            curCell->faces[YM]->bTypeVelocity = DIRICHLET;
+            curCell->faces[YP]->u = 0.;
+            curCell->faces[YP]->v = 0.;
+            curCell->faces[YM]->u = 0.;
+            curCell->faces[YM]->v = 0.;           
+            curCell->bTypePressure = NEUMANN;
+            curCell->place = 1;
+            if (curCell->neighCells[YP]!=NULL) {
+               curCell->neighCells[YP]->bTypePressure = NEUMANN;
+               curCell->neighCells[YP]->place = 1;            
+            }
+            if (curCell->neighCells[YM]!=NULL) {
+               curCell->neighCells[YM]->bTypePressure = NEUMANN;
+               curCell->neighCells[YM]->place = 1;            
+            }
          }
-      }
-      // if(curCell->x>=1.5 && curCell->x<1.51+dx && (curCell->y < 1.5 || curCell->y > 3.5)) {
-      // if (curCell->x >= 1.0 && curCell->x < 1.0+dx && curCell->y < 2.0) {
-      // if(curCell->x>=1.5 && curCell->x<1.51+dx && curCell->y < 1.5) {
-      if (curCell->x >= 2.0 && curCell->x < 2.01 + dx && curCell->y < 2.0) {
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 3;
-         if (curCell->neighCells[YP] != NULL) {
-            curCell->neighCells[YP]->bTypePressure = NEUMANN;
-            curCell->neighCells[YP]->place = 3;
+         if(curCell->x>=1.5 && curCell->x<1.51+dx && (curCell->y < 1.5 || curCell->y > 3.5)) {
+            curCell->faces[YP]->bTypeVelocity = DIRICHLET;
+            curCell->faces[YM]->bTypeVelocity = DIRICHLET;
+            curCell->faces[YP]->u = 0.;
+            curCell->faces[YP]->v = 0.;
+            curCell->faces[YM]->u = 0.;
+            curCell->faces[YM]->v = 0.;         
+            curCell->bTypePressure = NEUMANN;
+            curCell->place = 3;
+            if (curCell->neighCells[YP]!=NULL) {
+               curCell->neighCells[YP]->bTypePressure = NEUMANN;
+               curCell->neighCells[YP]->place = 3;            
+            }
+            if (curCell->neighCells[YM]!=NULL) {
+               curCell->neighCells[YM]->bTypePressure = NEUMANN;
+               curCell->neighCells[YM]->place = 3;            
+            }
          }
-         if (curCell->neighCells[YM] != NULL) {
-            curCell->neighCells[YM]->bTypePressure = NEUMANN;
-            curCell->neighCells[YM]->place = 3;
+         if (curCell->x>=1.0 && curCell->x<=1.5 && ((curCell->y >=1.5 && curCell->y<1.51+dy))) {
+            curCell->bTypePressure = NEUMANN;
+            curCell->place = 2;
+            curCell->faces[XM]->bTypeVelocity = DIRICHLET;
+            curCell->faces[XP]->bTypeVelocity = DIRICHLET;
+            curCell->faces[XM]->u = 0.;
+            curCell->faces[XM]->v = 0.;
+            curCell->faces[XP]->u = 0.;
+            curCell->faces[XP]->v = 0.;
          }
-      }
-      // if (curCell->x>=1.0 && curCell->x<=1.5 && ((curCell->y >=1.5 && curCell->y<1.51+dy))) {
-      // if (curCell->x < 1.0 && curCell->y >= 2.0 && curCell->y < 2.0+dy) {
-      if ((curCell->x <= 2.0 || curCell->x >= 4.0) && ((curCell->y >= 2.0 && curCell->y < 2.01 + dy))) {
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 2;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-      }
-      /*if (curCell->x>=1.0 && curCell->x<=1.5 && ((curCell->y <=3.5 && curCell->y>3.49-dy))) {
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 4;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-      }*/
-   }
+         if (curCell->x>=1.0 && curCell->x<=1.5 && ((curCell->y <=3.5 && curCell->y>3.49-dy))) {
+            curCell->bTypePressure = NEUMANN;
+            curCell->place = 4;
+            curCell->faces[XM]->bTypeVelocity = DIRICHLET;
+            curCell->faces[XP]->bTypeVelocity = DIRICHLET;
+            curCell->faces[XM]->u = 0.;
+            curCell->faces[XM]->v = 0.;
+            curCell->faces[XP]->u = 0.;
+            curCell->faces[XP]->v = 0.;
+         }
+    }
 }
 
-void setKarmanBoundaries(sData* data)
-{
-   int nX = data->nCellsX;
-   int nY = data->nCellsY;
-   double pressure = 10.;
+void setKarmanBoundaries(sData* data) {
+    int nX = data->nCellsX;
+    int nY = data->nCellsY;
+    double pressure = 0.;
 
-   sCell* curCell;
-   sFace* curFace, *faceN, *faceS, *faceE, *faceW;
-   double up, un, ue, us, uw;
-   double vp, vn, ve, vs, vw;
-   double an, ae, aw, as, ap, apTilde;
-   double dx, dy;
-   double deltaT = data->maxTime / data->maxIter;
+    sCell* curCell;
+    sFace* curFace, *faceN, *faceS, *faceE, *faceW;
+    double up, un, ue, us, uw;
+    double vp, vn, ve, vs, vw;
+    double an, ae, aw, as, ap, apTilde;
+    double dx, dy;
+    double deltaT = data->maxTime / data->maxIter;
+        
+    double U = 5.;
+    double V = U;
+    double dpdx = 100.;
+    double b = data->yMax - data->yMin;
+    double y;
+    
+    for(int fId = 0; fId < data->nFaces; fId++) {
+        curFace = &data->faces[fId];
 
-   double U = 5.;
-   double V = U;
-   double dpdx = 0.005;
-   double b = data->yMax - data->yMin;
-   double y;
-
-   for (int fId = 0; fId < data->nFaces; fId++) {
-      curFace = &data->faces[fId];
-
-      if (fId == 0) { // UL
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX - 1) { // UR
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX * nY) { // OL
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX * (nY + 1) - 1) { // OR
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
-      } else if (fId == nX * (nY + 1)) { // LU
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
-         y = curFace->y;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[P]->faces[YP]->y;
-         curFace->neighCells[P]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if (fId == nX * (nY + 2)) { // RU
-         curFace->bTypeVelocity = NEUMANN;
-         curFace->neighCells[M]->faces[YP]->bTypeVelocity = NEUMANN;
-      } else if (fId == (2 * nX + 1) * nY - 1) { // LO
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YM]->bTypeVelocity = DIRICHLET;
-         y = curFace->y;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[P]->faces[YM]->y;
-         curFace->neighCells[P]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if (fId == (2 * nX + 1) * nY - 1 + nX) { // RO
-         curFace->bTypeVelocity = NEUMANN;
-         curFace->neighCells[M]->faces[YM]->bTypeVelocity = NEUMANN;
-      } else if (fId <= nX - 1) { // U
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
-      } else if ((fId - (nX * (nY + 1))) % (nX + 1) == 0 && (fId - (nX * (nY + 1))) >= 0) { // L
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YM]->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
-         y = curFace->y;
-         curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[P]->faces[YM]->y;
-         curFace->neighCells[P]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-         y = curFace->neighCells[P]->faces[YP]->y;
-         curFace->neighCells[P]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
-      } else if ((fId - (nX * (nY + 2))) % (nX + 1) == 0 && (fId - (nX * (nY + 2))) >= 0) { // R
-         curFace->bTypeVelocity = NEUMANN;
-         curFace->neighCells[M]->faces[YM]->bTypeVelocity = NEUMANN;
-         curFace->neighCells[M]->faces[YP]->bTypeVelocity = NEUMANN;
-      } else if (fId >= nX * nY && fId <= nX * (nY + 1) - 1) { // O
-         curFace->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
-         curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
-      }
-   }
-
+        if(fId == 0) { // UL
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
+        } else if(fId == nX - 1) { // UR
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
+        } else if(fId == nX * nY) { // OL
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
+        } else if(fId == nX * (nY + 1) - 1) { // OR
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
+        } else if(fId == nX * (nY + 1)) { // LU
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
+            y = curFace->y;
+            curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+            y = curFace->neighCells[P]->faces[YP]->y;
+            curFace->neighCells[P]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+        } else if(fId == nX * (nY + 2)) { // RU
+            curFace->bTypeVelocity = NEUMANN;
+            curFace->neighCells[M]->faces[YP]->bTypeVelocity = NEUMANN;
+        } else if(fId == (2 * nX + 1) * nY - 1) { // LO
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[YM]->bTypeVelocity = DIRICHLET;
+            y = curFace->y;
+            curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+            y = curFace->neighCells[P]->faces[YM]->y;
+            curFace->neighCells[P]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+        } else if(fId == (2 * nX + 1) * nY - 1 + nX) { // RO
+            curFace->bTypeVelocity = NEUMANN;
+            curFace->neighCells[M]->faces[YM]->bTypeVelocity = NEUMANN;
+        } else if(fId <= nX - 1) { // U
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[XM]->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[XP]->bTypeVelocity = DIRICHLET;
+        } else if((fId - (nX * (nY + 1))) % (nX + 1) == 0 && (fId - (nX * (nY + 1))) >= 0) { // L
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[YM]->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[P]->faces[YP]->bTypeVelocity = DIRICHLET;
+            y = curFace->y;
+            curFace->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+            y = curFace->neighCells[P]->faces[YM]->y;
+            curFace->neighCells[P]->faces[YM]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+            y = curFace->neighCells[P]->faces[YP]->y;
+            curFace->neighCells[P]->faces[YP]->u = -1. / (2. * data->eta) * dpdx * (y * y - y * b);
+        } else if((fId - (nX * (nY + 2))) % (nX + 1) == 0 && (fId - (nX * (nY + 2))) >= 0) { // R
+            curFace->bTypeVelocity = NEUMANN;
+            curFace->neighCells[M]->faces[YM]->bTypeVelocity = NEUMANN;
+            curFace->neighCells[M]->faces[YP]->bTypeVelocity = NEUMANN;
+        } else if(fId >= nX * nY && fId <= nX * (nY + 1) - 1) { // O
+            curFace->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XM]->bTypeVelocity = DIRICHLET;
+            curFace->neighCells[M]->faces[XP]->bTypeVelocity = DIRICHLET;
+        }
+    }
+    
    dx = data->faces[0].dx;
-   dy = data->faces[data->nFaces - 1].dy;
+   dy = data->faces[data->nFaces-1].dy;
    double xZyl = 2.5;
    double yZyl = 5.;
    double r;
-   double tmp = dx * dx + dy * dy;
+   
+   for(int cId = 0; cId < data->nCells; cId++) {
+        curCell = &data->cells[cId];
+         
+        if((cId + data->nCellsX) % data->nCellsX == 0) // linker Rand
+            curCell->bTypePressure = NEUMANN;
+        else if((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
+            curCell->bTypePressure = DIRICHLET;
+            curCell->p = pressure;
+        }
+        else if(data->nCells - (cId + 1) < data->nCellsX)  // oberer Rand
+            curCell->bTypePressure = NEUMANN;
+        else if(cId < data->nCellsX) // unterer Rand
+            curCell->bTypePressure = NEUMANN;   
 
-   for (int cId = 0; cId < data->nCells; cId++) {
-      curCell = &data->cells[cId];
-
-      if ((cId + data->nCellsX) % data->nCellsX == 0) // linker Rand
-         curCell->bTypePressure = NEUMANN;
-      else if ((cId - (data->nCellsX - 1)) % (data->nCellsX) == 0) { // rechter Rand
-         curCell->bTypePressure = DIRICHLET;
-         curCell->p = pressure;
-      } else if (data->nCells - (cId + 1) < data->nCellsX) // oberer Rand
-         curCell->bTypePressure = NEUMANN;
-      else if (cId < data->nCellsX) // unterer Rand
-         curCell->bTypePressure = NEUMANN;
-
-      r = (curCell->x - xZyl) * (curCell->x - xZyl) + (curCell->y - yZyl) * (curCell->y - yZyl);
-      if (r < 1.) {
-         curCell->bTypePressure = DIRICHLET;
-         curCell->bTypeVelocity = DIRICHLET;
-         // curCell->p = 10.;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-      }
-      if (cId == 455 || cId == 456 || cId == 457) { // 50x25 grid
-         // curCell->p = 100.;
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 4;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-      }
-      if (cId == 504 || cId == 704) {
-         // curCell->p = 100.;
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 1;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-      }
-      if (cId == 508 || cId == 708) {
-         // curCell->p = 100.;
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 3;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-      }
-      if (cId == 553 || cId == 603 || cId == 653) {
-         // curCell->p = 100.;
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 1;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-      }
-      if (cId == 559 || cId == 609 || cId == 659) {
-         // curCell->p = 100.;
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 3;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->faces[YP]->u = 0.;
-         curCell->faces[YP]->v = 0.;
-      }
-      if (cId == 755 || cId == 756 || cId == 757) {
-         // curCell->p = 100.;
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 2;
-         curCell->faces[XP]->bTypeVelocity = DIRICHLET;
-         curCell->faces[YM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XM]->bTypeVelocity = DIRICHLET;
-         curCell->faces[XP]->u = 0.;
-         curCell->faces[XP]->v = 0.;
-         curCell->faces[YM]->u = 0.;
-         curCell->faces[YM]->v = 0.;
-         curCell->faces[XM]->u = 0.;
-         curCell->faces[XM]->v = 0.;
-      }
-      if (cId == 454 || cId == 458 || cId == 503 || cId == 509) {
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 4;
-      }
-      if (cId == 703 || cId == 709 || cId == 754 || cId == 758) {
-         curCell->bTypePressure = NEUMANN;
-         curCell->place = 2;
-      }
-      /*if(curCell->x < xZyl && curCell->y > yZyl) {
-            curCell->neighCells[YP]->bTypePressure = NEUMANN;
-            curCell->neighCells[XM]->bTypePressure = NEUMANN;
-            curCell->neighCells[YP]->place = 1;
-            curCell->neighCells[XM]->place = 1;
-            curCell->neighCells[YP]->faces[XP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YP]->faces[XM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YP]->faces[YP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YP]->faces[YM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XM]->faces[XP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XM]->faces[XM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XM]->faces[YP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XM]->faces[YM]->bTypeVelocity = DIRICHLET;
-      }
-      if(curCell->x < xZyl && curCell->y <= yZyl) {
-            curCell->neighCells[YM]->bTypePressure = NEUMANN;
-            curCell->neighCells[XM]->bTypePressure = NEUMANN;
-            curCell->neighCells[YM]->place = 1;
-            curCell->neighCells[XM]->place = 1;
-            curCell->neighCells[YM]->faces[XP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YM]->faces[XM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YM]->faces[YP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YM]->faces[YM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XM]->faces[XP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XM]->faces[XM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XM]->faces[YP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XM]->faces[YM]->bTypeVelocity = DIRICHLET;
-      }
-      if(curCell->x >= xZyl && curCell->y > yZyl) {
-            curCell->neighCells[YP]->bTypePressure = NEUMANN;
-            curCell->neighCells[XP]->bTypePressure = NEUMANN;
-            curCell->neighCells[YP]->place = 3;
-            curCell->neighCells[XP]->place = 3;
-            curCell->neighCells[YP]->faces[XP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YP]->faces[XM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YP]->faces[YP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YP]->faces[YM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XP]->faces[XP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XP]->faces[XM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XP]->faces[YP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XP]->faces[YM]->bTypeVelocity = DIRICHLET;
-      }
-      if(curCell->x >= xZyl && curCell->y <= yZyl) {
-            curCell->neighCells[YM]->bTypePressure = NEUMANN;
-            curCell->neighCells[XP]->bTypePressure = NEUMANN;
-            curCell->neighCells[YM]->place = 3;
-            curCell->neighCells[XP]->place = 3;
-            curCell->neighCells[XP]->faces[XP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XP]->faces[XM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XP]->faces[YP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[XP]->faces[YM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YM]->faces[XP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YM]->faces[XM]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YM]->faces[YP]->bTypeVelocity = DIRICHLET;
-            curCell->neighCells[YM]->faces[YM]->bTypeVelocity = DIRICHLET;
-      }*/
-   }
+         r = (curCell->x-xZyl)*(curCell->x-xZyl)+(curCell->y-yZyl)*(curCell->y-yZyl);
+         if (r<=1.) {
+            curCell->bTypePressure = DIRICHLET;
+            curCell->bTypeVelocity = DIRICHLET;
+            curCell->faces[XM]->bTypeVelocity = DIRICHLET;
+            curCell->faces[XP]->bTypeVelocity = DIRICHLET;
+            curCell->faces[YM]->bTypeVelocity = DIRICHLET;
+            curCell->faces[YP]->bTypeVelocity = DIRICHLET;
+            curCell->faces[XM]->u = 0.;
+            curCell->faces[XM]->v = 0.;
+            curCell->faces[YM]->u = 0.;
+            curCell->faces[YM]->v = 0.;
+            curCell->faces[YP]->u = 0.;
+            curCell->faces[YP]->v = 0.;
+            curCell->faces[XP]->u = 0.;
+            curCell->faces[XP]->v = 0.;
+         if(curCell->x < xZyl && curCell->y > yZyl) {
+               curCell->neighCells[YP]->bTypePressure = NEUMANN;
+               curCell->neighCells[XM]->bTypePressure = NEUMANN;
+               curCell->neighCells[YP]->place = 1;
+               curCell->neighCells[XM]->place = 1;
+         }
+         if(curCell->x < xZyl && curCell->y <= yZyl) {
+               curCell->neighCells[YM]->bTypePressure = NEUMANN;
+               curCell->neighCells[XM]->bTypePressure = NEUMANN;
+               curCell->neighCells[YM]->place = 1;
+               curCell->neighCells[XM]->place = 1;
+         }
+         if(curCell->x >= xZyl && curCell->y > yZyl) {
+               curCell->neighCells[YP]->bTypePressure = NEUMANN;
+               curCell->neighCells[XP]->bTypePressure = NEUMANN;
+               curCell->neighCells[YP]->place = 3;
+               curCell->neighCells[XP]->place = 3;
+         }
+         if(curCell->x >= xZyl && curCell->y <= yZyl) {
+               curCell->neighCells[YM]->bTypePressure = NEUMANN;
+               curCell->neighCells[XP]->bTypePressure = NEUMANN;
+               curCell->neighCells[YM]->place = 3;
+               curCell->neighCells[XP]->place = 3;
+         }
+         }
+    }    
 }
