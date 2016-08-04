@@ -29,20 +29,20 @@ h_{o}(x) &= \arctan(x)+2, \\
 x&\in[-5,5].
 \end{align*}
 \end{enumerate}
-Die Ergebnisse sehen wie folgt aus: \textcolor{red}{BLOCKSATZ IN AUFZÄHLUNG!!!}
+Die Ergebnisse sehen wie folgt aus:
 \begin{enumerate}
 \item
 Zunächst werden die Ableitungen, die beispielsweise in \eqref{eq:fd_laplace_phi_krummlinig} benötigt werden, überprüft. Die analytischen Lösungen sehen für das genannte Problem wie folgt aus (vgl. \eqref{trafo_xi_eta}):
 \begin{align*}
-& \xi\left(x,y\right)=10x+50, & \eta\left(x,y\right)=\dfrac{50y}{arctan(x)+2} \\
-& \dfrac{\partial\xi}{\partial x}=10, & \dfrac{\partial\eta}{\partial x}=\dfrac{-50y}{\left(1+x^{2}\right)\left(arctan(x)+2\right)^{2}}, \\
-& \dfrac{\partial^{2}\xi}{\partial x^{2}}=0, & \dfrac{\partial^{2}\eta}{\partial x^{2}}=\dfrac{100\left(x\cdot arctan(x)+1+2x\right)}{\left(1+x^{2}\right)^{2}\left(arctan(x)+2\right)^{3}}, \\
-& \dfrac{\partial\xi}{\partial y}=0, & \dfrac{\partial\eta}{\partial y}=\dfrac{50}{arctan(x)+2}, \\
-& \dfrac{\partial^{2}\xi}{\partial y^{2}}=0, & \dfrac{\partial^{2}\eta}{\partial y^{2}}=0.
+\xi\left(x,y\right)&=10x+50, && \eta\left(x,y\right)=\dfrac{50y}{arctan(x)+2} \\
+\dfrac{\partial\xi}{\partial x}&=10, && \dfrac{\partial\eta}{\partial x}=\dfrac{-50y}{\left(1+x^{2}\right)\left(arctan(x)+2\right)^{2}}, \\
+\dfrac{\partial^{2}\xi}{\partial x^{2}}&=0, &&\dfrac{\partial^{2}\eta}{\partial x^{2}}=\dfrac{100\left(x\cdot arctan(x)+1+2x\right)}{\left(1+x^{2}\right)^{2}\left(arctan(x)+2\right)^{3}}, \\
+\dfrac{\partial\xi}{\partial y}&=0, &&\dfrac{\partial\eta}{\partial y}=\dfrac{50}{arctan(x)+2}, \\
+\dfrac{\partial^{2}\xi}{\partial y^{2}}&=0, && \dfrac{\partial^{2}\eta}{\partial y^{2}}=0.
 \end{align*}
-Diese Ableitungen wurden an mehreren Knotenpunkten analytisch berechnet und mit den, vom Programm berechneten, Werten verglichen. \textcolor{red}{RESULTATE!!} \\ 
+Diese Ableitungen wurden an mehreren Knotenpunkten analytisch berechnet und mit den, vom Programm berechneten, Werten verglichen. Bis auf Maschinengenauigkeit stimmen alle Werte überein. \\ 
 \FloatBarrier
-\begin{figure}[!htb] 
+\begin{figure}[!h] 
   \centering
      \includegraphics[width=15cm]{bilder/kapitel1/channel1_1}
   \caption{Kanal 1: Äquipotential- und Stromlinien}
@@ -50,32 +50,32 @@ Diese Ableitungen wurden an mehreren Knotenpunkten analytisch berechnet und mit 
 \end{figure}
 \FloatBarrier
 Es ist ersichtlich, dass sich alle Äquipotential- und Stromlinien senkrecht schneiden, so wie es auch aus der Theorie vorgeschrieben wird. Desweiteren stehen die Äquipotentiallinien senkrecht auf der Kontur.
-\begin{figure}[!htb] 
+\begin{figure}[!h] 
   \centering
      \includegraphics[width=15cm]{bilder/kapitel1/channel1_2}
   \caption{Kanal 1: Geschwindigkeitsfeld}
   \label{fig:channel1_2}
 \end{figure}
-\begin{figure}[!htb] 
+\begin{figure}[!h] 
   \centering
      \includegraphics[width=15cm]{bilder/kapitel1/channel1_3}
   \caption{Kanal 1: Druckfeld}
   \label{fig:channel1_3}
 \end{figure}
 \FloatBarrier
-Am Auslauf des Kanals ist der Druckbeiwert bei circa Eins, da $u_{lokal}>u_{\infty}$. Am Einlauf gilt hingegen $u_{lokal}\approx u_{\infty}$, so dass der Druckbeiwert dort ungefährt gleich Null ist.
+Am Auslauf des Kanals ist der Druckbeiwert bei circa Eins, da $u_{lokal}>u_{\infty}$. Am Einlauf gilt hingegen $u_{lokal}\approx u_{\infty}$, so dass der Druckbeiwert dort ungefährt gleich Null ist. Dass die Werte nur ungefähr angenommen werden zeigt, dass die Methode noch nicht bis zum Ende konvergiert ist.
 \FloatBarrier
 
 \item
+Es folgen die gleichen Ergebnisse wie bei Kanal 1.
 \FloatBarrier
-\begin{figure}[!htb] 
+\begin{figure}[!h] 
   \centering
      \includegraphics[width=15cm]{bilder/kapitel1/channel2_1}
   \caption{Kanal 2: Äquipotential- und Stromlinien}
   \label{fig:channel2_1}
 \end{figure}
-\FloatBarrier
-Es folgen die gleichen Ergebnisse wie bei Kanal 1.
+\FloatBarrier.
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -86,6 +86,7 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
 \FloatBarrier
 
 \item
+Es folgen die gleichen Ergebnisse wie bei Kanal 1.
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -94,7 +95,6 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
   \label{fig:channel3_1}
 \end{figure}
 \FloatBarrier
-Es folgen die gleichen Ergebnisse wie bei Kanal 1.
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -105,6 +105,7 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
 \FloatBarrier
 
 \item
+Es folgen die gleichen Ergebnisse wie bei Kanal 1
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -112,8 +113,7 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
   \caption{Kanal 4: Äquipotential- und Stromlinien}
   \label{fig:channel4_1}
 \end{figure}
-\FloatBarrier
-Es folgen die gleichen Ergebnisse wie bei Kanal 1.
+\FloatBarrier.
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -124,7 +124,7 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1.
 \FloatBarrier
 \end{enumerate}
 \FloatBarrier
-\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte für Kanal 2) könnten beispielsweise wie folgt aussehen (die Linien mit $\Phi=const$ bzw. $\Psi=const$ sind logarithmisch verteilt, wäre dies nicht der Fall, wären die erzeugten Gitterpunkte zum Rand des Kanals hin enger als in der Mitte):
+\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte für Kanal 2 könnten beispielsweise wie folgt aussehen (die Linien mit $\Phi=const$ bzw. $\Psi=const$ sind logarithmisch verteilt, wäre dies nicht der Fall, wären die erzeugten Gitterpunkte zum Rand des Kanals hin enger als in der Mitte):
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -144,7 +144,7 @@ Im Folgenden werden zwei Fälle verglichen:
 \item \textbf{Links}: Es wird lediglich ein Stoff in die Kanalströmung eingeführt.
 \item \textbf{Rechts}: Kurz hinter dem Einfluss des neuen Stoffes wird das Fluid des Kanals abgesaugt, ebenfalls am unteren Rand.
 \end{itemize}
-Die zwei Strömungen werden an fünf diskreten Punkten visualisiert. Gerechnet wurde auf einem $100\times50$-Gitter.
+Die zwei Strömungen werden an fünf diskreten Zeitpunkten visualisiert. Gerechnet ist auf einem $100\times50$-Gitter worden.
 
 \begin{figure}[!htb]
 \begin{minipage}[t]{7.8cm}
@@ -270,7 +270,7 @@ Links wird, aufgrund der stärkeren Quelle, das neue Fluid entlang des Kanals tra
 
 \subsection{Berechnung des Geschwindigkeitsfeldes bei gegebenem Druck}
 \subsubsection{Couette-Strömung} \label{sec:couette}
-Es wird eine Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (Ausdehnung in $x$-Richtung) betrachtet, die mit Abstand $b$ (in $y$-Richtung) zueinander stehen. Die untere Platte ist starr und bewegt sich nicht, die obere hingegen bewegt sich in $x$-Richtung mit Geschwindigkeit $u_{Wand}$. Links strömt ein Fluid mit der Geschwindigkeit $u_{\infty}$ über die komplette Breite in den Zwischenraum der beiden ebenen Platten ein. Dargestellt wird der stationäre Endzustand der Lösung. Die analytische Lösung sieht mit Hilfe der Haftbedingung $u_{Fluid}|_{Wand}\stackrel{!}=u_{Wand}$ und konstantem Druckfeld wie folgt aus:
+Es wird eine Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (Ausdehnung in $x$-Richtung) betrachtet, die im Abstand $b$ (in $y$-Richtung) zueinander stehen. Die untere Platte ist starr und bewegt sich nicht, die obere hingegen bewegt sich in $x$-Richtung mit Geschwindigkeit $u_{Wand}$. Links strömt ein Fluid mit der Geschwindigkeit $u_{\infty}$ über die komplette Breite in den Zwischenraum der beiden ebenen Platten ein. Dargestellt wird der stationäre Endzustand der Lösung. Die analytische Lösung sieht mit Hilfe der Haftbedingung $u_{Fluid}|_{Wand}\stackrel{!}=u_{Wand}$ und konstantem Druckfeld wie folgt aus:
 \begin{align*}
 \left.
 \begin{array}{l l}
@@ -292,7 +292,7 @@ Das heißt stationär stellt sich ein lineares Geschwindigkeitsprofil mit Steigung
 \FloatBarrier
 
 \subsubsection{Poiseuille-Strömung} \label{sec:poiseuille}
-Analog zur Couette-Strömung in \ref{sec:couette} wird wieder die Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (Ausdehnung in $x$-Richtung) betrachtet, die mit Abstand $b$ (in $y$-Richtung) zueinander stehen untersucht. Im Gegensatz zu \ref{sec:couette} bewegt sich jetzt allerdings keine der beiden Platten, allerdings herrscht ein linearer Druckgradient $\dfrac{\partial p}{\partial x}=const$ Somit stellt sich ein Geschwindigkeitsprofil folgender Form ein:
+Analog zur Couette-Strömung in \ref{sec:couette} wird wieder die Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (Ausdehnung in $x$-Richtung) betrachtet, die im Abstand $b$ (in $y$-Richtung) zueinander stehen untersucht. Im Gegensatz zu \ref{sec:couette} bewegt sich jetzt allerdings keine der beiden Platten, allerdings herrscht ein linearer Druckgradient $\dfrac{\partial p}{\partial x}=const$. Somit stellt sich ein Geschwindigkeitsprofil folgender Form ein:
 \begin{align*}
 \left.
 \begin{array}{l l}
@@ -327,23 +327,38 @@ ergibt sich folgendes Resultat:
   \caption{Poiseuille-Strömung: stationärer Endzustand}
 \end{figure}
 \FloatBarrier
-Man erkennt, dass sich das initiale Parabelprofil an den Rändern (siehe \ref{pic:poiseuille_inital}) im gesamten Kanal ausgebreitet hat. Dies entspricht auch der korrekten Lösung, die Software berechnet die gegebenen Strömungen also wahrscheinlich korrekt.
+Man erkennt, dass sich das initiale Parabelprofil an den Rändern (siehe \ref{pic:poiseuille_inital}) im gesamten Kanal ausgebreitet hat. Dies entspricht auch der korrekten Lösung, die Software berechnet die gegebenen Strömungen also anscheinend korrekt.
 
-\subsection{Berechnung des Druck- und Geschwindigkeitsfeldes mit Hilfe des \texttt{SIMPLE}-Algorithmus}
+\subsection{Berechnung des Druck- und Geschwindigkeitsfeldes mit Hilfe des \texttt{SIMPLER}-Algorithmus}
+
+\subsection{Couette-Strömung}
+Analog zu \ref{sec:couette} wird eine Couette-Strömung berechnet, nun wird allerdings nur am rechten Rand ein Druckwert vorgegeben. Es sollte sich das gleiche stationäre Geschwindigkeitsprofil einstellen, sowie ein konstantes Druckfeld. Beides ist auch mit dem Algorithmus berechnet worden. Da die Bilder identisch aussehen, sind diese hier nicht noch einmal aufgeführt.
+
+\subsubsection{Gartenschlauch}
+Wie in einem \textit{Gartenschlauch} wird eine Art Kanal betrachtet, welcher oben und unten undruchlässige Wände besitzt (wie im Querschnitt eines \textit{Gartenschlauches}). Am Einströmrand wird eine Geschwindigkeit $u$ vorgegeben, die von der Ventilstellung der Wasserzuleitung abhängt. Am Ausströmrand wird ein Druck vorgegeben, in diesem Fall der Umgebungsdruck $p_{a}$. Folgendes Druck- und Geschwindigkeitsfeld stellen sich ein:
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/gartenschlauch_cool}
+  \caption{Gartenschlauch: Geschwindigkeits- und Druckfeld}
+\end{figure}
+\FloatBarrier
+Es bildet sich ein laminares Profil aus, sowie ein linearer Druckgradient. Dies entspricht der gleichen Überlegung wie in \ref{sec:poiseuille}.
+
 \subsubsection{Festkörperrotation}
-Es wird das Druck- und Geschwindigkeitsfeld eines rotierenden Fluides betrachet. Folgende Formeln sind hierfür relevant um das kartesische Koordinatensystem in ein \texttt{tangential-radial}-Koordinatensystem zu transformieren bzw. umgekehrt:
+Es wird das Druck- und Geschwindigkeitsfeld eines rotierenden Fluides betrachet. Folgende Formeln sind hierfür relevant um das kartesische Koordinatensystem in ein \textit{tangential-radial}-Koordinatensystem zu transformieren bzw. umgekehrt:
 \begin{align}
-& r=\sqrt{x^{2}+y^{2}}, \\ 
-& x = r\cdot\cos\left(\phi\right), \\
-& y = r\cdot\sin\left(\phi\right), \\
-& u = -\sin\left(\phi\right)\cdot v_{\phi}, \\
-& v = +\cos\left(\phi\right)\cdot v_{\phi}, \\ 
-& v_{\phi} = \omega\cdot r, \\
-& \dfrac{\partial p}{\partial r}=\rho r\omega^{2} \Rightarrow p\left(r\right) = \dfrac{1}{2}\rho r^{2}\omega^{2}+p_{0}.
+r &=\sqrt{x^{2}+y^{2}}, \\ 
+x &= r\cdot\cos\left(\phi\right), \\
+y &= r\cdot\sin\left(\phi\right), \\
+u &= -\sin\left(\phi\right)\cdot v_{\phi}, \\
+v &= +\cos\left(\phi\right)\cdot v_{\phi}, \\ 
+v_{\phi} &= \omega\cdot r, \\
+\dfrac{\partial p}{\partial r}&= \rho r\omega^{2} \Rightarrow p\left(r\right) = \dfrac{1}{2}\rho r^{2}\omega^{2}+p_{0}.
 \end{align}
 Zunächst wird ein $3\times3$-Gitter untersucht. Die Randbedingungen an den äußeren Zellen sind durch die oben genannten Formeln gegeben, die Werte der mittleren Zelle werden ausgerechnet. Es sei $p_{0}=100$, $x_{0}=0, y_{0}=0$, $\omega=5$, $\eta=2$, $\rho=2.5$ und das Integrationsgebiet sei $\left[2;5\right]\times\left[2;5\right]$. \\
 Es müssen sich folgende Werte für die mittlere Zelle einstellen: 
-\begin{center}$p=865.625$,\\ $u_{unten}=-15,\quad v_{unten}=17.5$,\\$u_{oben}=-20,\quad v_{oben}=17.5$,\\$u_{links}=-17.5,\quad v_{links}=15$,\\$u_{rechts}=-17.5,\quad v_{rechts}=20$.\end{center} Das numerische Resultat dieses Testfalles ergibt genau diese Werte, d.h. der Algorithmus scheint zu funktionieren. \\
+\begin{center}$p=865.625$,\\ $u_{unten}=-15,\quad v_{unten}=17.5$,\\$u_{oben}=-20,\quad v_{oben}=17.5$,\\$u_{links}=-17.5,\quad v_{links}=15$,\\$u_{rechts}=-17.5,\quad v_{rechts}=20$.\end{center} Das numerische Resultat dieses Testfalles ergibt bis auf Maschinengenauigkeit genau diese Werte, d.h. der Algorithmus scheint zu funktionieren. \\
 Im Folgenden werden das Druckfeld und das Geschwindigkeitsfeld dieses Problems dargestellt, allerdings wird das Integrationsgebiet auf $\left[-5;5\right]\times\left[-5;5\right]$ erweitert und dieses wird mit einem $50\times50$-Gitter diskretisiert:
 \FloatBarrier
 \begin{figure}[!htb] 
@@ -364,67 +379,121 @@ Diese Grafik visualisiert eine im mathematisch Sinn positive Drehbewegung, was w
 
 
 \subsubsection{Driven Cavity}
-Es wird ein \texttt{Behälter} betrachtet, der unten, links und rechts undurchlässige Wände besitzt. Überhalb dieses \texttt{Behälters} fließt ein Fluid mit konstantem Druck und konstanter Geschwindigkeit in $x$-Richtung. Nun wird das Druck- und Geschwindigkeitsfeld simuliert, welches sich in dem \texttt{Behälter} einstellt. Als Randbedingungen gilt einerseits die Haftbedingung an den drei festen undruchlässigen Wänden ($u_{Wand}=v_{Wand}=0$), am oberen Rand gilt $u_{\text{Fluid,oben}}=u_{\text{äußere Strömung}}$. Gleiches gilt für den Druck: $p_{\text{Fluid,oben}}=p_{\text{äußere Strömung}}$. \\
-Der Behälter ist von den Dimensionen \textcolor{red}{3x3} groß und wird mit einem $50\times50$-Gitter diskretisiert. Folgendes Druck- und Geschwindigkeitsfeld stellen sich ein:
+Es wird ein \textit{Behälter} betrachtet, der unten, links und rechts undurchlässige Wände besitzt. Überhalb dieses \textit{Behälters} fließt ein Fluid mit konstantem Druck und konstanter Geschwindigkeit in $x$-Richtung. Nun wird das Druck- und Geschwindigkeitsfeld simuliert, welches sich in dem \textit{Behälter} einstellt. Als Randbedingungen gilt einerseits die Haftbedingung an den drei festen undruchlässigen Wänden ($u_{Wand}=v_{Wand}=0$), am oberen Rand gilt $u_{\text{Fluid,oben}}=u_{\text{äußere Strömung}}$. Gleiches gilt für den Druck: $p_{\text{Fluid,oben}}=p_{\text{äußere Strömung}}$.
+Der Behälter ist wird mit einem $50\times50$-Gitter diskretisiert. \\
+Für kleine Reynoldszahlen ($Re\leq400$) ergibt sich folgendes Ergebnis:
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
-  \caption{Driven Cavity: Druckfeld}
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/drivenCavity_Re100_2d}
+  \caption{Driven Cavity: Re=100, Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
-  \caption{Driven Cavity: Geschwindigkeitsfeld}
+     \includegraphics[width=12cm]{bilder/anwendungsfaelle/drivenCavity_Re100_p}
+  \caption{Driven Cavity: Re=100, Druckfeld}
 \end{figure}
 \FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/drivenCavity_Re400_2d}
+  \caption{Driven Cavity: Re=400, Geschwindigkeitsfeld}
+\end{figure}
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=12cm]{bilder/anwendungsfaelle/drivenCavity_Re400_p}
+  \caption{Driven Cavity: Re=400, Druckfeld}
+\end{figure}
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/drivenCavityChannel}
+  \caption{Driven Cavity: Re=400, mit Kanalströmung}
+\end{figure}
+\FloatBarrier
+Man erkennt einen einzigen Wirbel, was auch vergleichbaren Resulaten (s. Internet) entspricht. Nun werden die Strömungen für höhere Reynolds-Zahlen analysiert. Es werden jeweils die Stromlinien visualisiert, das Druckfeld wird im Hintergrund dargestellt:
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/drivenCavity_Re1600}
+  \caption{Driven Cavity: Re=1600, Druck- und Geschwindigkeitsfeld}
+\end{figure}
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/drivenCavity_Re3200_Streamlines}
+  \caption{Driven Cavity: Re=3200, Druck- und Geschwindigkeitsfeld}
+\end{figure}
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/drivenCavity_Re3200_Streamlines_2}
+  \caption{Driven Cavity: Re=3200, Druck- und Geschwindigkeitsfeld}
+\end{figure}
+\FloatBarrier
+Man erkennt, dass sich in den Ecken kleinere Wirbel ausbilden. Die letzten beiden Bilder zeigen die Strömung für $Re=3200$. Das zweite Bild ist zu einem späteren Iterationszeitpunkt aufgenommen worden, entspricht aber nicht einer konvergenten Lösung. Der zentrale, mathematisch negativ gerichtete, Wirbel hat die Tendenz in die Mitte der Nische (\texttt{cavity}) zu \texttt{gehen}. Es ist außerdem erkennbar, wie sich die kleinen, im mathematisch positiven Sinn drehenden, Wirbel ausbilden. Das Druckfeld zeigt im Bereiche der Wirbel ein Minimum auf. All diese Ergebnisse spiegeln die erwarteten Ergebnisse wieder.
 
-\subsubsection{Gartenschlauch}
-Wie in einem \texttt{Gartenschlauch} wird eine Art Kanal betrachtet, welcher oben und unten undruchlässige Wände besitzt (wie im Querschnitt eines \texttt{Gartenschlauches}). Am Einströmrand wird eine Geschwindigkeit $u$ vorgegeben, die von der Ventilstellung der Wasserzuleitung abhängt. Am Ausströmrand wird ein Druck vorgegeben, in diesem Fall der Umgebungsdruck $p_{a}$. Folgendes Druck- und Geschwindigkeitsfeld stellen sich ein:
-\FloatBarrier
-\begin{figure}[!htb] 
-  \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
-  \caption{Gartenschlauch: Druckfeld}
-\end{figure}
-\FloatBarrier
-\begin{figure}[!htb] 
-  \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
-  \caption{Gartenschlauch: Geschwindigkeitsfeld}
-\end{figure}
-\FloatBarrier
 
 \subsubsection{Kanalvergrößerung}
 Zunächst wird eine laminare, ausgebildete Strömung betrachtet mit einem Geschwindigkeitsfeld wie bereits in \ref{sec:poiseuille} beschrieben. Der Kanal wird nun schlagartig vergrößert, wodurch sich direkt hinter dem Übergang Wirbel einstellen. Nach einer kritischen Länge haben diese allerdings keinen signifikanten Einfluss mehr auf die Strömung, sodass sich wieder das Parabelprofil wie in \ref{sec:poiseuille} einstellt. Folgendes Druck- und Geschwindigkeitsfeld stellen sich ein:
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
-  \caption{Kanalvergrößerung: Druckfeld}
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/channelWidening_3}
+  \caption{Kanalvergrößerung: Druck- und Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/channelWidening_4png}
   \caption{Kanalvergrößerung: Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
+Die Überlegungen des sich einstellenden Wirbels haben sich bestätigt. Auch hier liegt im Wirbel ein Druckminimum vor.
 
-\subsubsection{Stolperdraht}
-Es wird wieder eine ausgebildete, laminare Strömung wie in \ref{sec:poiseuille} betrachtet. Am unteren Rand befindet sich nun allerdings ein kleiner \texttt{Stolperdraht}, sodass ein laminar-turbulenter Umschlag erreicht wird und sich Wirbel in der Strömung ausbilden:
-Folgendes Druck- und Geschwindigkeitsfeld stellen sich ein:
+\subsubsection{Kanalwand} \label{sec:kanalwand}
+Es wird wieder eine ausgebildete, laminare Strömung wie in \ref{sec:poiseuille} betrachtet. Es befindet sich nun allerdings eine Wand am unteren Rand des Kanals, beispielsweise Schmutz um den das Fluid herum fließen muss. 
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
-  \caption{Stolperdraht: Druckfeld}
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/stolperdraht_p}
+  \caption{Kanalwand: Druckfeld}
 \end{figure}
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
-     \includegraphics[width=15cm]{bilder/kapitel1/channel4_2}
-  \caption{Stolperdraht: Geschwindigkeitsfeld}
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/stolperdraht_3}
+  \caption{Kanalwand: Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
+Man erkennt einen sich einstellenden Wirbel hinter der Wand. Des Weiteren steigt der Druck vor der Wand deutlich an. Beides entspricht der physikalischen Überlegung.
+
+\subsubsection{Messblende}
+Zur Durchflussmessung wird beispielsweise die Strömung durch eine Messblende betrachtet, und mit Hilfe des Differenzdruckes vor und nach der Blende der Durchfluss bestimmt. Die Strömung durch solch eine Blende wird im Folgenden durch Stromlinien dargestellt, das Druckfeld wird im Hintergrund visualisiert:
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=15cm]{bilder/anwendungsfaelle/lochblende_streamtraces}
+  \caption{Messblende: Druck- und Geschwindigkeitsfeld}
+\end{figure}
+\FloatBarrier
+Analog zu \ref{sec:kanalwand} ist ein starker Druckanstieg vor der Blende erkennbar, sowie zwei Wirbel hinter der Blende. Wie erwartet, ist das Druck- und Geschwindigkeitsfeld symmetrisch um die Mitte des Kanals/Rohres.
+
+\subsubsection{Umströmter Zylinder}
+Abschließend wird ein umströmter Zylinder betrachtet. In einem Kanal befindet sich ein Zylinder, stromauf dieses Zylinders herrscht eine laminare Strömung. Aufgrund dieses \textit{Hindernisses} bilden sich Wirbel und die laminare Strömung wird zu einer turbulenten. Die Strömungsfelder sehen wie folgt aus:
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=17cm]{bilder/anwendungsfaelle/karman_Re1000_2}
+  \caption{Umströmter Zylinder: $Re\approx 1000$, Geschwindigkeitsfeld}
+\end{figure}
+\FloatBarrier
+\begin{figure}[!htb] 
+  \centering
+     \includegraphics[width=17cm]{bilder/anwendungsfaelle/karman_Re18400_2}
+  \caption{Umströmter Zylinder:Geschwindigkeitsfeld}
+\end{figure}
+\FloatBarrier
+Die Ergebnisse sehen qualitativ richtig aus. Es ist zu beachten, dass aufgrund des kartesischen Gitters der Zylinder nur durch eine Art Stufenprofil approximiert worden ist. Um trotzdem eine gut erkennbare Kreisform zu erhalten, wurde das $20\times10$ große Integrationsgebiet mit einem $200\times100$-Gitter diskretisiert.
