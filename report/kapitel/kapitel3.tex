@@ -1,20 +1,20 @@
 \chapter{Berechnung des Geschwindigkeitsfeldes} \label{chap4}
 
 \section{Aufgabenstellung}
-In der bisherigen Implementierung der Konvektion-Diffusion-Strömung ist das Geschwindigkeitsfeld als gegeben angenommen worden. Nun soll dieses Geschwindigkeitsfeld unter Vorgabe des Druckfeldes während der Berechnung berechnet werden. Im Folgenden wird auf die mathematische Herleitung der benötigten Formeln eingegangen. Validiert wird die implementierte Software in Kapitel 6.
+In der bisherigen Implementierung der Konvektion-Diffusion-Gleichung ist das Geschwindigkeitsfeld als gegeben angenommen worden. Nun soll dieses unter Vorgabe des Druckfeldes während der Berechnung bestimmt werden. Im Folgenden wird auf die mathematische Herleitung der benötigten Formeln eingegangen. Validiert wird die implementierte Software in Kapitel 6.
 
 \section{Mathematische Modellbildung}
-Für die Berechnung der beiden Geschwindigkeitskomponenten $u$ und $v$ wird eine weitere (vektorielle) Formel benötigt. Zunächst wird die Impulsgleichung in x-Richtung
+Für die Berechnung der beiden Geschwindigkeitskomponenten $u$ und $v$ wird eine weitere (vektorielle) Gleichung benötigt. Zunächst wird die Impulsgleichung in x-Richtung
 \begin{equation} \label{eq:impulsglg_2D}
-\dfrac{\partial\left(\rho u\right)}{\partial t}+\dfrac{\partial\left(\rho u\cdot u\right)}{\partial x}+\dfrac{\partial\left(\rho v\cdot u\right)}{\partial y}=-\dfrac{\partial p}{\partial x}+\eta\dfrac{\partial^{2}u}{\partial x^{2}}+\eta\dfrac{\partial^{2}u}{\partial y^{2}}
+\dfrac{\partial\left(\rho u\right)}{\partial t}+\dfrac{\partial\left(\rho u u\right)}{\partial x}+\dfrac{\partial\left(\rho v u\right)}{\partial y}=-\dfrac{\partial p}{\partial x}+\eta\dfrac{\partial^{2}u}{\partial x^{2}}+\eta\dfrac{\partial^{2}u}{\partial y^{2}}
 \end{equation}
 betrachtet, bzw. im eindimensionalen Fall
 \begin{equation} \label{eq:impulsglg_1D}
-\dfrac{\partial\left(\rho u\right)}{\partial t}+\dfrac{\partial\left(\rho u\cdot u\right)}{\partial x}=-\dfrac{\partial p}{\partial x}+\eta\dfrac{\partial^{2}u}{\partial x^{2}}.
+\dfrac{\partial\left(\rho u\right)}{\partial t}+\dfrac{\partial\left(\rho u u\right)}{\partial x}=-\dfrac{\partial p}{\partial x}+\eta\dfrac{\partial^{2}u}{\partial x^{2}}.
 \end{equation}
 
 \section{Diskretisierung}
-Für die Diskretisierung wird ein versetzes Gitter verwendet. Da bei der Diskretisierung auf dem Gitter für den Skalar $\Phi$ die Druckwerte benachbarter Gitterzellen entkoppelt werden würden, würde beispielsweise ein oszillierender Druck (Zick-Zack-Verteilung), welcher von einer zur anderen Zelle jeweils von Wert 1 auf Wert 2 oder umgekehrt springt, entkoppelt werden. Dass heißt das bei der Betrachtung von Zelle $i$ nur die Druckwerte in den Zellen $i-1$ und $i+1$ von Relevanz wären, nicht aber der Druck in Zelle $i$ selbst (analog für die y-Richtung und die $y$-Richtung). Die Verwendung eines versetzten Gitters bringt eine Abhilfe für dieses Problem. Es gibt nun 2 weitere Gitter für beide Geschwindigkeitskomponenten. Für $u$ wird das kartesische Gitter für $\Phi$  um eine halbe Zellbreite in horizontaler Richtung verschoben, d.h. die neuen horizontalen Kanten für das Gitter liegen auf den alten Kanten, die vertikalen Kanten gehen nun aber durch die Zellmittelpunkte der physikalischen Zellen für $\Phi$. Analoges gilt für das Gitter für $v$. Dort laufen nun die horizontalen Kanten durch die Zellmittelpunkte der physikalischen Zellen für $\Phi$. Diese Betrachtungsweise ist ebenfalls sinnvoll, da die Geschwindigkeitskomponenten für die Berechnung der Flüsse über die Zellkanten gerade auf diesen definiert sind, und nicht in den Zellmittelpunkte der physikalischen Zellen für $\Phi$. \\
+Für die Diskretisierung wird ein versetztes Gitter verwendet. Da bei der Diskretisierung auf dem Gitter für den Skalar $\Phi$ die Druckwerte benachbarter Gitterzellen entkoppelt werden würden, würde beispielsweise ein oszillierender Druck (Zick-Zack-Verteilung), welcher von einer zur anderen Zelle jeweils von Wert 1 auf Wert 2 oder umgekehrt springt, nicht zu einer Geschwindigkeit führen. Das heißt, dass bei der Betrachtung von Zelle $i$ nur die Druckwerte in den Zellen $i-1$ und $i+1$ von Relevanz wären, nicht aber der Druck in Zelle $i$ selbst (analog für die y-Richtung und die $y$-Richtung). Das selbe Problem tritt bei der diskreten Variante der Kontinuitätsgleichung auf, hier entkoppeln benachbarte Geschwindigkeiten. Die Verwendung eines versetzten Gitters bringt eine Abhilfe für dieses Problem. Es gibt nun 2 weitere Gitter für beide Geschwindigkeitskomponenten. Für $u$ wird das kartesische Gitter des Skalars $\Phi$  in horizontaler Richtung verschoben, d.h. die neuen horizontalen Kanten für das Gitter liegen auf den bisherigen, die vertikalen Kanten gehen nun aber durch die Zellmittelpunkte der physikalischen Zellen für $\Phi$. Analoges gilt für das Gitter für $v$. Dort laufen nun die horizontalen Kanten durch die Zellmittelpunkte der physikalischen Zellen für $\Phi$. Diese Betrachtungsweise ist zusätzlich nützlich, da die Geschwindigkeitskomponenten für die Berechnung der Flüsse über die Zellkanten gerade auf diesen definiert sind, und nicht an den Zellmittelpunkten der physikalischen Zellen für $\Phi$. \\
 Es wird die Zellkante an der Stelle $i+\frac{1}{2},j$ betrachtet. Unter Verwendung zentraler Differenz zur Approximation des Druckgradienten in \eqref{eq:impulsglg_2D} bzw. \eqref{eq:impulsglg_1D}, sprich
 \begin{equation} \label{eq:druck_approx_x}
 \dfrac{\partial p}{\partial x}\approx \dfrac{p_{i+1,j}-p_{i,j}}{x_{i+1}-x_{i}}
@@ -25,14 +25,14 @@ für das $u$-Gitter und
 \end{equation}
 für das $v$-Gitter, gelangt man (analog zu Formeln in Kapitel \ref{chap3}) zu folgender Diskreitisierung:
 \begin{align} \label{eq:diskretisierung_u}
-\tilde{a}_{i+\frac{1}{2},j}\cdot u_{i+\frac{1}{2},j}^{k}= \notag \\
-& a_{i+\frac{3}{2},j}\cdot u_{i+\frac{3}{2},j}^{k}+a_{i-\frac{1}{2},j}\cdot u_{i-\frac{1}{2},j}^{k}+a_{i+\frac{1}{2},j+1}\cdot u_{i+\frac{1}{2},j+1}^{k}+a_{i+\frac{1}{2},j-1}\cdot u_{i+\frac{1}{2},j-1}^{k}+ \notag \\
-& b+ \dfrac{p_{i,j}-p_{i+1,j}}{x_{i+1}-x_{i}}\cdot\left(x_{i+1}-x_{i}\right)\Delta y_{j},
+\tilde{a}_{i+\frac{1}{2},j} u_{i+\frac{1}{2},j}^{n}= \notag \\
+& a_{i+\frac{3}{2},j} u_{i+\frac{3}{2},j}^{n}+a_{i-\frac{1}{2},j} u_{i-\frac{1}{2},j}^{n}+a_{i+\frac{1}{2},j+1} u_{i+\frac{1}{2},j+1}^{n}+a_{i+\frac{1}{2},j-1} u_{i+\frac{1}{2},j-1}^{kn}+ \notag \\
+& b+ \dfrac{p_{i,j}-p_{i+1,j}}{x_{i+1}-x_{i}}\left(x_{i+1}-x_{i}\right)\Delta y_{j},
 \end{align}
 bzw.
 \begin{align} \label{eq:diskretisierung_v}
-\tilde{a}_{i,j+\frac{1}{2}}\cdot v_{i,j+\frac{1}{2}}^{k}= \notag \\
-& a_{i+1,j+\frac{1}{2}}\cdot v_{i+1,j+\frac{1}{2}}^{k}+a_{i-1,j+\frac{1}{2}}\cdot v_{i-1,j+\frac{1}{2}}^{k}+a_{i,j+\frac{3}{2}}\cdot v_{i,j+\frac{3}{2}}^{k}+a_{i,j-\frac{1}{2}}\cdot v_{i,j-\frac{1}{2}1}^{k}+ \notag \\
-& b+\dfrac{p_{i,j}-p_{i,j+1}}{x_{i+1}-x_{i}}\cdot\left(y_{j+1}-y_{j}\right)\Delta x_{i}.
+\tilde{a}_{i,j+\frac{1}{2}} v_{i,j+\frac{1}{2}}^{n}= \notag \\
+& a_{i+1,j+\frac{1}{2}} v_{i+1,j+\frac{1}{2}}^{n}+a_{i-1,j+\frac{1}{2}} v_{i-1,j+\frac{1}{2}}^{n}+a_{i,j+\frac{3}{2}} v_{i,j+\frac{3}{2}}^{n}+a_{i,j-\frac{1}{2}} v_{i,j-\frac{1}{2}1}^{n}+ \notag \\
+& b+\dfrac{p_{i,j}-p_{i,j+1}}{x_{i+1}-x_{i}}\left(y_{j+1}-y_{j}\right)\Delta x_{i}.
 \end{align}
 In den Formeln wurden die Indizes jeweils auf das physikalische Gitter des Skalars $\Phi$ bezogen, da dies in der Software genau so umgesetzt worden ist. Die Formeln für die Koeffizienten entsprechen denen aus Kapitel \ref{chap3} auf dem oben definierten versetztem Gitter.

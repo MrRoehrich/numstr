@@ -1,14 +1,14 @@
 \chapter{Berechnung des Druck- und Geschwindigkeitsfeldes}
 
 \section{Aufgabenstellung}
-Im vorherigen Kapitel ist das Geschwindigkeitsfeld mit Hilfe eines gegebenen Druckfeldes bestimmt worden. Zuletzt wird nun ebenfalls das Druckfeld berechnet und nicht vorgegeben. Der Aufbau dieses Kapitels befasst sich zun\"achst mit der Herleitung des \texttt{SIMPLER}-Algorithmus. Die Validierung ist ausf\"uhrlich in Kapitel \ref{chap:6} zu sehen.
+Im vorherigen Kapitel ist das Geschwindigkeitsfeld mit Hilfe eines gegebenen Druckfeldes bestimmt worden. Zuletzt wird nun ebenfalls das Druckfeld berechnet und nicht vorgegeben. Der Aufbau dieses Kapitels befasst sich zun\"achst mit der Herleitung des \texttt{SIMPLE}-Algorithmus. Anschlie\ss{}end wird eine verbesserte Variante, n\"amlich \texttt{SIMPLER} vorgestellt. Die Validierung ist ausf\"uhrlich in Kapitel \ref{chap:6} zu sehen.
 
 
 \section{Mathematische Modellbildung und Diskretisierung}
-Zur Bestimmung des Druckfeldes kann die Kontinuit\"atsgleichung benutzt werden, da dies die einzig bisher nicht verwendete Gleichung ist. Aus dem vorherigen Kapitel folgen folgende vorl\"aufige Gleichungen f\"ur die Geschwindigkeitskomponenten $u$ und $v$:
+Zur Bestimmung des Druckfeldes muss die Kontinuit\"atsgleichung benutzt werden, da dies die einzig bisher nicht verwendete Gleichung ist. Aus dem vorherigen Kapitel folgen folgende vorl\"aufige Gleichungen f\"ur die Geschwindigkeitskomponenten $u$ und $v$:
 \begin{align}
-\tilde{a}_{i+\frac{1}{2},j}\cdot u_{i+\frac{1}{2},j}^{*}&=\sum\limits_{n}a_{n}\cdot u_{n}^{*} + b + \left(p_{i,j}^{*}-p_{i+1,j}^{*}\right)\cdot A_{i+\frac{1}{2},j}, \\
-\tilde{a}_{i,j+\frac{1}{2}}\cdot v_{i,j+\frac{1}{2}}^{*}&=\sum\limits_{n}a_{n}\cdot v_{n}^{*} + b + \left(p_{i,j}^{*}-p_{i,j+1}^{*}\right)\cdot A_{i,j+\frac{1}{2}}.
+\tilde{a}_{i+\frac{1}{2},j} u_{i+\frac{1}{2},j}^{*}&=\sum\limits_{n}a_{n} u_{n}^{*} + b + \left(p_{i,j}^{*}-p_{i+1,j}^{*}\right) A_{i+\frac{1}{2},j}, \\
+\tilde{a}_{i,j+\frac{1}{2}} v_{i,j+\frac{1}{2}}^{*}&=\sum\limits_{n}a_{n} v_{n}^{*} + b + \left(p_{i,j}^{*}-p_{i,j+1}^{*}\right) A_{i,j+\frac{1}{2}}.
 \end{align}
 Der Index * bezeichnet die zun\"achst gesch\"atzten Gr\"o\ss{}en f\"ur Geschwindigkeit und Druck, d.h. diese Gr\"o\ss{}e sind noch nicht korrekt. F\"ur die korrekten Werte ist noch ein Korrekturterm (Index ') hinzuzuf\"ugen:
 \begin{align}
@@ -16,18 +16,18 @@ p&=p^{*}+p', \\
 u&=u^{*}+u', \\
 v&=v^{*}+v'.
 \end{align}
-Die Summe \"uber alle $u$ bzw. $v$ koppeln s\"amtliche Geschwindigkeiten miteinander, sodass das L\"osen f\"ur die Korrekturterme zu einem impliziten Gleichungssystem f\"uhrt, welches rechenintensiv gel\"ost werden m\"usste. Aus diesem Grund werden diese Summenterme einfach fallen gelassen, was nicht die Genauigkeit der konvergenten L\"osung verschlechtert:
+Die Summe \"uber alle $u$ bzw. $v$ koppeln s\"amtliche Geschwindigkeiten miteinander, sodass das L\"osen f\"ur die Korrekturterme zu einem impliziten Gleichungssystem f\"uhrt, welches direkt gel\"ost werden m\"usste. Aus diesem Grund werden diese Summenterme vernachl\"assigt, was die Genauigkeit der konvergierten L\"osung jedoch nicht verschlechtert:
 \begin{align}
-u_{i+\frac{1}{2},j}'&= \left(p_{i,j}'-p_{i+1,j}'\right)\cdot \dfrac{A_{i+\frac{1}{2},j}}{\tilde{a}_{i+\frac{1}{2},j}}, \label{eq:u'}\\
-v_{i,j+\frac{1}{2}}'&= \left(p_{i,j}'-p_{i,j+1}'\right)\cdot \dfrac{A_{i,j+\frac{1}{2}}}{\tilde{a}_{i,j+\frac{1}{2}}}.\label{eq:v'}
+u_{i+\frac{1}{2},j}'&= \left(p_{i,j}'-p_{i+1,j}'\right) \dfrac{A_{i+\frac{1}{2},j}}{\tilde{a}_{i+\frac{1}{2},j}}, \label{eq:u'}\\
+v_{i,j+\frac{1}{2}}'&= \left(p_{i,j}'-p_{i,j+1}'\right) \dfrac{A_{i,j+\frac{1}{2}}}{\tilde{a}_{i,j+\frac{1}{2}}}.\label{eq:v'}
 \end{align}
 Es fehlt nun lediglich der Druckkorrekturterm $p'$. In die diskretisierte Kontinuit\"atsgleichung 
 \begin{equation} \label{eq:diskr_Konti}
-\left(\rho_{i,j}^{k+1}-\rho_{i,j}^{k}\right)\dfrac{\Delta x\Delta y\Delta z}{\Delta t} + \left(\left(\rho u A\right)_{i+\frac{1}{2},j}-\left(\rho u A\right)_{i-\frac{1}{2},j}\right) + \left(\left(\rho v A\right)_{i,j+\frac{1}{2}}-\left(\rho v A\right)_{i,j-\frac{1}{2}}\right)=0
+\left(\rho_{i,j}^{n+1}-\rho_{i,j}^{n}\right)\dfrac{\Delta x\Delta y\Delta z}{\Delta t} + \left(\left(\rho u A\right)_{i+\frac{1}{2},j}-\left(\rho u A\right)_{i-\frac{1}{2},j}\right) + \left(\left(\rho v A\right)_{i,j+\frac{1}{2}}-\left(\rho v A\right)_{i,j-\frac{1}{2}}\right)=0
 \end{equation}
 werden die Formeln \eqref{eq:u'} und \eqref{eq:v'} eingesetzt, woraus die Druck-Korrekturgleichung folgt:
 \begin{equation} \label{eq:druckkorrekturglg}
-\tilde{a}_{i,j}\cdot p_{i,j}' = a_{i+1,j}\cdot p_{i+1,j}'+a_{i-1,j}\cdot p_{i-1,j}'+a_{i,j+1}\cdot p_{i,j+1}'+a_{i,j-1}\cdot p_{i,j-1}'+b,
+\tilde{a}_{i,j} p_{i,j}' = a_{i+1,j} p_{i+1,j}'+a_{i-1,j} p_{i-1,j}'+a_{i,j+1} p_{i,j+1}'+a_{i,j-1} p_{i,j-1}'+b,
 \end{equation}
 mit den Koeffizienten:
 \begin{align}
@@ -35,26 +35,27 @@ a_{i+1,j}&=\left(\dfrac{\rho A}{\tilde{a}}\right)_{i+\frac{1}{2},j}\Delta y\Delt
 a_{i-1,j}&=\left(\dfrac{\rho A}{\tilde{a}}\right)_{i-\frac{1}{2},j}\Delta y\Delta z, \\
 a_{i,j+1}&=\left(\dfrac{\rho A}{\tilde{a}}\right)_{i,j+\frac{1}{2}}\Delta x\Delta z, \\
 a_{i,j-1}&=\left(\dfrac{\rho A}{\tilde{a}}\right)_{i,j-\frac{1}{2}}\Delta x\Delta z, \\
-b &= \left(\rho_{i,j}^{k+1}-\rho_{i,j}^{k}\right)\dfrac{\Delta x\Delta y\Delta z}{\Delta t} + \left(\left(\rho u^{*} A\right)_{i+\frac{1}{2},j}-\left(\rho u^{*} A\right)_{i-\frac{1}{2},j}\right) + \left(\left(\rho v^{*} A\right)_{i,j+\frac{1}{2}}-\left(\rho v^{*} A\right)_{i,j-\frac{1}{2}}\right). \label{eq:b}
+b &= \left(\rho_{i,j}^{n+1}-\rho_{i,j}^{n}\right)\dfrac{\Delta x\Delta y\Delta z}{\Delta t} \notag \\
+& \quad +  \left(\left(\rho u^{*} A\right)_{i+\frac{1}{2},j}-\left(\rho u^{*} A\right)_{i-\frac{1}{2},j}\right) + \left(\left(\rho v^{*} A\right)_{i,j+\frac{1}{2}}-\left(\rho v^{*} A\right)_{i,j-\frac{1}{2}}\right). \label{eq:b}
 \end{align}
-Der Term f\"ur $b$ entspricht der diskretisierten Kontinuit\"atsgleichung (siehe \eqref{eq:diskr_Konti}) mit den gesch\"atzten Geschwindigkeiten. Folglich signalisiert die Bedingung $b\approx0$, dass die Kontinuit\"atsgleichung erf\"ullt ist durch die gesch\"atzten Geschwindigkeiten. Somit stellt $b\approx0$ ein vern\"unftiges Abbruchkriterium f\"ur die Iteration dar, d.h. Ziel ist es durch Druck- und Geschwindigkeitsiteration diesen Term iterativ gegen Null laufen zu lassen. Au\ss{}erdem wird eine Unterrelaxation des Druckes mit $p=p^{*}+\omega\cdot p'$ mit $\omega\in[0,1]$ verwendet. \\
-Das bisher beschriebene Verfahren ist der \texttt{SIMPLE}-Algorithmus. Dieser ist bereits \"uberarbeitet worden zu dem \texttt{SIMPLER}-Algorithmus. Da das Ergebnis des ersten Algorithmus eine schlechte Druckkorrektur liefert, wird das bisher beschriebene Verfahren nur zur Geschwindigkeitskorrektur verwendet, zur Druckkorrektur wird anders, wie im Folgenden erl\"autert, vorgegangen. \\
-Sei $\hat{u}$ bzw. $\hat{v}$ eine Pseudo-Geschwindigkeit, f\"ur welche gilt:
+Der Term f\"ur $b$ entspricht der diskretisierten Kontinuit\"atsgleichung (siehe \eqref{eq:diskr_Konti}) mit den gesch\"atzten Geschwindigkeiten. Folglich signalisiert die Bedingung $b\approx0$, dass die Kontinuit\"atsgleichung mit den aktuell gesch\"atzten Geschwindigkeiten erf\"ullt ist. Somit stellt $b\approx0$ ein vern\"unftiges Abbruchkriterium f\"ur die Iteration dar, d.h. Ziel ist es durch Druck- und Geschwindigkeitsiteration diesen Term gegen Null laufen zu lassen. Au\ss{}erdem wird eine Unterrelaxation des Druckes mit $p=p^{*}+\omega\cdot p'$ mit $\omega\in[0,1]$ verwendet. \\
+Das bisher beschriebene Verfahren ist der \texttt{SIMPLE}-Algorithmus. Dieser ist bereits \"uberarbeitet worden zu dem \texttt{SIMPLER}-Algorithmus. Da das Ergebnis der ersten Variante eine schlechte Druckkorrektur liefert, wird das bisher beschriebene Verfahren nur zur Geschwindigkeitskorrektur verwendet. Das Druckfeld wird anders, wie im Folgenden erl\"autert, berechnet. \\
+Sei $\hat{u}$ bzw. $\hat{v}$ eine Pseudo-Geschwindigkeit, f\"ur die gilt:
 \begin{equation} \label{eq:pseudo_geschw}
-\hat{u}_{i+\frac{1}{2},j}=\dfrac{1}{\tilde{a}_{i+\frac{1}{2},j}}\cdot\left[\sum\limits_{n}a_{n}u_{n}+b\right].
+\hat{u}_{i+\frac{1}{2},j}=\dfrac{1}{\tilde{a}_{i+\frac{1}{2},j}}\left[\sum\limits_{n}a_{n}u_{n}+b\right].
 \end{equation}
-Dies entspricht der Geschwindigkeit, welche aus der Impulsgleichung hervor ging (vergleiche Kapitel \ref{chap4}), jedoch ist der Term $\dfrac{1}{\tilde{a}_{i+\frac{1}{2},j}}\cdot\left[\left(p_{i,j}-p_{i+1,j}\right)A_{i+\frac{1}{2},j}\right]$ hier nicht betrachtet worden. Analoges gilt f\"ur die Pseudo-Geschwindigkeiten in den anderen Richtungen. Diese neuen Pseudo-Geschwindigkeiten sind demnach unabh\"angig vom Druckfeld. Analog zu vorher, werden diese Geschwindigkeiten in die diskretisierte Kontinuit\"atsgleichung \eqref{eq:diskr_Konti} eingesetzt und man gelangt zu folgender Formel:
+Dies entspricht der Geschwindigkeit, welche aus der Impulsgleichung hervor ging (vergleiche Kapitel \ref{chap4}), jedoch ist der Term $\dfrac{1}{\tilde{a}_{i+\frac{1}{2},j}}\left[\left(p_{i,j}-p_{i+1,j}\right)A_{i+\frac{1}{2},j}\right]$ hier nicht betrachtet worden. Analoges gilt f\"ur die Pseudo-Geschwindigkeiten in den anderen Richtungen. Diese neuen Pseudo-Geschwindigkeiten sind demnach unabh\"angig vom Druckfeld. Analog zu vorher, werden diese Geschwindigkeiten in die diskretisierte Kontinuit\"atsgleichung \eqref{eq:diskr_Konti} eingesetzt und man gelangt zu folgender Formel:
 \begin{equation} \label{eq:druckkorrekturglg_simpler}
-\tilde{a}_{i,j}\cdot p_{i,j} = a_{i+1,j}\cdot p_{i+1,j}+a_{i-1,j}\cdot p_{i-1,j}+a_{i,j+1}\cdot p_{i,j+1}+a_{i,j-1}\cdot p_{i,j-1}+b,
+\tilde{a}_{i,j} p_{i,j} = a_{i+1,j} p_{i+1,j}+a_{i-1,j} p_{i-1,j}+a_{i,j+1} p_{i,j+1}+a_{i,j-1} p_{i,j-1}+b,
 \end{equation}
-welche Formel \eqref{eq:druckkorrekturglg} entspricht, es wurden lediglich die Druckkorrekturterme an den jeweiligen Stellen durch den tats\"achlichen Druck ersetzt. Der Term $b$ wird demenstprechend ebenfalls mit den neuen Pseudo-Geschwindigkeiten gebildet, ist sonst allerdings analog zu \eqref{eq:b}. F\"ur den nun erhaltenen \texttt{SIMPLER}-Algorithmus gilt, dass nicht wie vorher gro\ss{}e Druckkorrekturterme auftreten und somit weniger Iterationen bis zur Konvergenz ben\"otigt werden. Der implementierte Algorithmus sieht dann wie folgt aus:
+was \eqref{eq:druckkorrekturglg} entspricht. Es wurden lediglich die Druckkorrekturterme an den jeweiligen Stellen durch den tats\"achlichen Druck ersetzt. Der Term $b$ wird demenstprechend ebenfalls mit den neuen Pseudo-Geschwindigkeiten gebildet, ist sonst allerdings analog zu \eqref{eq:b}. F\"ur den nun erhaltenen \texttt{SIMPLER}-Algorithmus gilt, dass nicht wie vorher gro\ss{}e Druckkorrekturterme auftreten und somit ein Stabilit\"atsgewinn erreicht wurde. Der implementierte Algorithmus lautet dann wie folgt:
 \begin{enumerate}
 \item Sch\"atze die Geschwindigkeiten $u^{*}$ und $v^{*}$,
 \item Bestimme die Pseudo-Geschwindikeiten.
 \item Bestimme das Druckfeld gem\"a\ss{} Formel \eqref{eq:druckkorrekturglg_simpler}.
-\item Verwende diese Gleichung als Sch\"atzung $p^{*}$. Berechne daraus die neuen Geschwindigkeiten $u$ und $v$.
+\item Verwende dieses als Sch\"atzung $p^{*}$. Berechne daraus die neuen Geschwindigkeiten $u^{*}$ und $v^{*}$.
 \item Berechne $b$ und dadurch die Druckkorrektur $p'$.
-\item Korrigiere s\"amtliche Geschwindigkeitskomponenten, analog zu Kapitel 4. \footnote{Das Druckfeld wird nicht korrigiert, diese ist bereits im vorherigen Schritt korrigirert worden.}
-\item Transportiere den Skalar $\Phi$ mit dem neuen Geschwindigkeitsfeld. \footnote{Dies ist nur innerhalb der Iteration zu tun, falls der Transport einen Einfluss auf das Geschwindigkeitsfeld hat. Ansonsten kann dies, um Rechenzeit zu sparen, auch nach der Iteration geschehen.}
-\item Gehe zur\"uck zu Schritt 2 und wiederhole so lange, bis der Term $b$ klein genug ist, d.h. bis Konvergenz vorliegt.
+\item Korrigiere s\"amtliche Geschwindigkeitskomponenten, analog zu Kapitel 4.\footnote{Das Druckfeld wird nicht ver\"andert, dieses ist bereits im vorherigen Schritt korrigiert worden.}
+\item Transportiere den Skalar $\Phi$ mit dem neuen Geschwindigkeitsfeld.\footnote{Dieser Schritt ist nur innerhalb der Iteration notwendig, falls der Transport einen Einfluss auf das Geschwindigkeitsfeld hat. Ansonsten kann dies, um Rechenzeit zu sparen, auch nach Abschluss der Iteration geschehen.}
+\item Gehe zur\"uck zu Schritt 2 und iteriere so lange, bis der Term $b$ verschwindet.
 \end{enumerate}

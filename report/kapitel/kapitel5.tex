@@ -49,7 +49,7 @@ Diese Ableitungen wurden an mehreren Knotenpunkten analytisch berechnet und mit 
   \label{fig:channel1_1}
 \end{figure}
 \FloatBarrier
-Es ist ersichtlich, dass sich alle Äquipotential- und Stromlinien senkrecht schneiden, so wie es auch aus der Theorie vorgeschrieben wird. Desweiteren stehen die Äquipotentiallinien senkrecht auf der Kontur.
+Es ist ersichtlich, dass sich alle Äquipotential- und Stromlinien senkrecht schneiden, so wie es auch aus der Theorie vorgeschrieben wird. Insbesondere stehen die Äquipotentiallinien senkrecht auf der Konturstromlinie.
 \begin{figure}[!h] 
   \centering
      \includegraphics[width=15cm]{bilder/kapitel1/channel1_2}
@@ -63,7 +63,7 @@ Es ist ersichtlich, dass sich alle Äquipotential- und Stromlinien senkrecht schn
   \label{fig:channel1_3}
 \end{figure}
 \FloatBarrier
-Am Auslauf des Kanals ist der Druckbeiwert bei circa Eins, da $u_{lokal}>u_{\infty}$. Am Einlauf gilt hingegen $u_{lokal}\approx u_{\infty}$, so dass der Druckbeiwert dort ungefährt gleich Null ist. Dass die Werte nur ungefähr angenommen werden zeigt, dass die Methode noch nicht bis zum Ende konvergiert ist.
+Am Auslauf des Kanals ist der Druckbeiwert ungefähr Eins, da $u_{lokal} \ll u_{\infty}$. Am Einlauf gilt hingegen $u_{lokal}\approx u_{\infty}$, so dass der Druckbeiwert dort ungefährt gleich Null ist. Das der Wert nur ungefähr 0 ist, ist durch die einseitige Approximation der Geschwindigkeiten durch diskretisierte Ortsableitungen der Potentialfunktion zu erklären.
 \FloatBarrier
 
 \item
@@ -124,7 +124,7 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1
 \FloatBarrier
 \end{enumerate}
 \FloatBarrier
-\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für weitere Diskretisierungen erstellen. Die Knotenpunkte für Kanal 2 könnten beispielsweise wie folgt aussehen (die Linien mit $\Phi=const$ bzw. $\Psi=const$ sind logarithmisch verteilt, wäre dies nicht der Fall, wären die erzeugten Gitterpunkte zum Rand des Kanals hin enger als in der Mitte):
+\underline{\textbf{Bemerkung:}} Die Schnittpunkte aus Äquipotentiallinien und Stromlinien bilden ein Gitter auf dem Integrationsgebiet. Somit kann man sich durch Berechnung und Abspeichern dieser Schnittpunkte ein Gitter für zum Beispiel eine reibungsbehaftete Strömungssimulation mittels der Finite-Volumen-Methode generieren. Die Knotenpunkte für Kanal 2 könnten beispielsweise wie folgt aussehen (die Berechnung der Gitterpunkte könnte noch hinsichtlich spezifischer Optimalitätskriterien abgeändert werden):
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -144,7 +144,7 @@ Im Folgenden werden zwei Fälle verglichen:
 \item \textbf{Links}: Es wird lediglich ein Stoff in die Kanalströmung eingeführt.
 \item \textbf{Rechts}: Kurz hinter dem Einfluss des neuen Stoffes wird das Fluid des Kanals abgesaugt, ebenfalls am unteren Rand.
 \end{itemize}
-Die zwei Strömungen werden an fünf diskreten Zeitpunkten visualisiert. Gerechnet ist auf einem $100\times50$-Gitter worden.
+Die zwei Strömungen werden an fünf diskreten Zeitpunkten visualisiert. Die Berechnungen wurden auf einem $100\times50$-Gitter durchgeführt.
 
 \begin{figure}[!htb]
 \begin{minipage}[t]{7.8cm}
@@ -191,16 +191,16 @@ Die zwei Strömungen werden an fünf diskreten Zeitpunkten visualisiert. Gerechnet
 \end{figure}
 \FloatBarrier
 
-Man erkennt, dass nach $10$ Sekunden der eingeführte Stoff von der Kanalströmung noch nicht weit genug transportiert wurde, sodass die Zustände zu diesem Punkt rechts und links identisch sind. Erst ab circa $20$ Sekunden wird ein Unterschied deutlich. Trotz Quelle bleibt jedoch ein Teil des eingeführten Fluids im Kanal verbleiben, da das Einströmrohr diesen Stoff so weit in die Mitte des Kanals einströmt, dass es nicht komplett von der Senke bzw. dem Abflussrohr wieder abgesogen werden kann.
+Man erkennt, dass nach $10$ Sekunden der eingeführte Stoff von der Kanalströmung noch nicht weit genug transportiert wurde, sodass die Zustände zu diesem Punkt rechts und links identisch sind. Erst ab circa $20$ Sekunden wird ein Unterschied deutlich, der Einfluss der Senke ist deutlich zu erkennen.
 
 \subsubsection{Flussströmung mit Ein- und Abflussrohr in der Mitte}
 Es wird ein ähnlicher Anwendungsfall wie in \ref{sec:fluss} diskutiert. Allerdings befindet sich das Ein- (Quelle) bzw. Abflussrohr (Senke) in der Mitte des Kanals bzw. des Flusses. Es werden drei Ergebnisse gegenübergestellt:
 \begin{itemize}
-\item \textbf{Links}:Die Quelle stromauf der Senke fügt $10\times$ soviel des neuen Fluids hinzu als die Senke absaugt.
-\item \textbf{Mitte}:Die Stärke bzw. der Betrag der Ergiebigkeit der Quelle und Senke sind gleich groß.
-\item \textbf{Rechts}:Die Senke stromab der Quelle saugt $10\times$ soviel des neuen Fluids ab als die Quelle hinzufügt.
+\item \textbf{Links}: Die Quelle stromauf der Senke fügt $10\times$ mehr des neuen Fluids hinzu, als die Senke absaugt.
+\item \textbf{Mitte}: Ergiebigkeit der Quelle und Schluckvermögen der Senke sind gleich groß.
+\item \textbf{Rechts}: Die Senke stromab der Quelle saugt $10\times$ mehr des neuen Fluids ab, als die Quelle hinzufügt.
 \end{itemize}
-Die Simulationseinstellungen bleiben ansonsten die gleichen wie in \ref{sec:fluss}.
+Die Simulationseinstellungen bleiben ansonsten dieselben wie in \ref{sec:fluss}.
 \begin{figure}[!htb]
 \begin{minipage}[t]{5.6cm}
 \includegraphics[width=5.5cm]{bilder/anwendungsfaelle/river2_0sek}
@@ -266,11 +266,11 @@ Die Simulationseinstellungen bleiben ansonsten die gleichen wie in \ref{sec:flus
 \end{figure}
 \FloatBarrier
 
-Links wird, aufgrund der stärkeren Quelle, das neue Fluid entlang des Kanals transportiert, da die Senke \texttt{zu schwach} ist, um es komplett wieder abzusaugen. Hingegen wird beim rechten Fall sogar fast alles aus der Quelle wieder abgesaugt. Hier wird allerdings auch viel Fluid des Flusses abgesaugt. Da die Skala nicht neu skaliert worden ist, wird das hier nicht komplett ersichtlich. Dies ist bewusst gemacht worden, da so zum Einen die drei Fälle besser verglichen werden können und zum Anderen das Reskalieren den Effekt nicht so deutlich erscheinen lässt. Gleiches gilt auch für die Grafiken aus \ref{sec:fluss}.
+Links wird, aufgrund der stärkeren Quelle, das neue Fluid entlang des Kanals transportiert, da die Senke zu schwach ist, um es komplett wieder abzusaugen. Hingegen wird beim rechten Fall sogar mehr abgesaugt, als durch die Quelle eingebracht wird. Da die Skala nicht neu skaliert worden ist, wird das hier nicht komplett ersichtlich. Dies ist bewusst gemacht worden, da so zum Einen die drei Fälle besser verglichen werden können.. Gleiches gilt auch für die Grafiken aus \ref{sec:fluss}.
 
 \subsection{Berechnung des Geschwindigkeitsfeldes bei gegebenem Druck}
 \subsubsection{Couette-Strömung} \label{sec:couette}
-Es wird eine Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (Ausdehnung in $x$-Richtung) betrachtet, die im Abstand $b$ (in $y$-Richtung) zueinander stehen. Die untere Platte ist starr und bewegt sich nicht, die obere hingegen bewegt sich in $x$-Richtung mit Geschwindigkeit $u_{Wand}$. Links strömt ein Fluid mit der Geschwindigkeit $u_{\infty}$ über die komplette Breite in den Zwischenraum der beiden ebenen Platten ein. Dargestellt wird der stationäre Endzustand der Lösung. Die analytische Lösung sieht mit Hilfe der Haftbedingung $u_{Fluid}|_{Wand}\stackrel{!}=u_{Wand}$ und konstantem Druckfeld wie folgt aus:
+Es wird eine Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (in $x$-Richtung) betrachtet, die im Abstand $b$ (in $y$-Richtung) zueinander stehen. Die untere Platte bewegt sich nicht, die obere bewegt sich hingegen in $x$-Richtung mit der Geschwindigkeit $u_{Wand}$. Links strömt ein Fluid als Blockprofil mit der Geschwindigkeit $u_{\infty}$ in den Zwischenraum der beiden ebenen Platten ein. Dargestellt wird der stationäre Endzustand der Lösung. Die analytische Lösung sieht mit Hilfe der Haftbedingung $u_{Fluid}|_{Wand}\stackrel{!}=u_{Wand}$ und konstantem Druckfeld wie folgt aus:
 \begin{align*}
 \left.
 \begin{array}{l l}
@@ -280,7 +280,7 @@ Es wird eine Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich au
 & u\left(y=b\right)\stackrel{!}=u_{in}
 \end{array}
 \right\}
-u\left(y\right)=\dfrac{u_{in}}{b}\cdot y.
+u\left(y\right)=\dfrac{u_{in}}{b} y.
 \end{align*}
 Das heißt stationär stellt sich ein lineares Geschwindigkeitsprofil mit Steigung $\dfrac{u_{in}}{b}$ in $y$-Richtung ein. Das numerische Ergebnis stellt auch genau dies dar:
 \FloatBarrier
@@ -292,7 +292,7 @@ Das heißt stationär stellt sich ein lineares Geschwindigkeitsprofil mit Steigung
 \FloatBarrier
 
 \subsubsection{Poiseuille-Strömung} \label{sec:poiseuille}
-Analog zur Couette-Strömung in \ref{sec:couette} wird wieder die Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (Ausdehnung in $x$-Richtung) betrachtet, die im Abstand $b$ (in $y$-Richtung) zueinander stehen untersucht. Im Gegensatz zu \ref{sec:couette} bewegt sich jetzt allerdings keine der beiden Platten, allerdings herrscht ein linearer Druckgradient $\dfrac{\partial p}{\partial x}=const$. Somit stellt sich ein Geschwindigkeitsprofil folgender Form ein:
+Analog zur Couette-Strömung in \ref{sec:couette} wird wieder die Strömung durch zwei ebene, in $z$-Richtung theoretisch unendlich ausgedehnte, Platten der Länge $L$ (in $x$-Richtung) betrachtet, die im Abstand $b$ (in $y$-Richtung) zueinander stehen untersucht. Im Gegensatz zu \ref{sec:couette} sind jetzt allerdings beide Platten in Ruhe. Es besteht jedoch ein linearer Druckgradient $\dfrac{\partial p}{\partial x}=const$. Somit stellt sich ein Geschwindigkeitsprofil folgender Form ein:
 \begin{align*}
 \left.
 \begin{array}{l l}
@@ -327,7 +327,7 @@ ergibt sich folgendes Resultat:
   \caption{Poiseuille-Strömung: stationärer Endzustand}
 \end{figure}
 \FloatBarrier
-Man erkennt, dass sich das initiale Parabelprofil an den Rändern (siehe \ref{pic:poiseuille_inital}) im gesamten Kanal ausgebreitet hat. Dies entspricht auch der korrekten Lösung, die Software berechnet die gegebenen Strömungen also anscheinend korrekt.
+Man erkennt, dass sich das initiale Parabelprofil an den Rändern (siehe \ref{pic:poiseuille_inital}) im gesamten Kanal ausgebreitet hat. Dies entspricht auch der korrekten Lösung, die Software berechnet die gegebenen Strömungen also korrekt.
 
 \subsection{Berechnung des Druck- und Geschwindigkeitsfeldes mit Hilfe des \texttt{SIMPLER}-Algorithmus}
 
@@ -335,7 +335,7 @@ Man erkennt, dass sich das initiale Parabelprofil an den Rändern (siehe \ref{pic
 Analog zu \ref{sec:couette} wird eine Couette-Strömung berechnet, nun wird allerdings nur am rechten Rand ein Druckwert vorgegeben. Es sollte sich das gleiche stationäre Geschwindigkeitsprofil einstellen, sowie ein konstantes Druckfeld. Beides ist auch mit dem Algorithmus berechnet worden. Da die Bilder identisch aussehen, sind diese hier nicht noch einmal aufgeführt.
 
 \subsubsection{Gartenschlauch}
-Wie in einem \textit{Gartenschlauch} wird eine Art Kanal betrachtet, welcher oben und unten undruchlässige Wände besitzt (wie im Querschnitt eines \textit{Gartenschlauches}). Am Einströmrand wird eine Geschwindigkeit $u$ vorgegeben, die von der Ventilstellung der Wasserzuleitung abhängt. Am Ausströmrand wird ein Druck vorgegeben, in diesem Fall der Umgebungsdruck $p_{a}$. Folgendes Druck- und Geschwindigkeitsfeld stellen sich ein:
+Wie in einem Gartenschlauch wird eine Art Kanal betrachtet, welcher oben und unten undruchlässige Wände besitzt (wie im Querschnitt eines Gartenschlauches). Am Einströmrand wird eine Geschwindigkeit $u$ vorgegeben, die von der Leistung der Wasserpumpe abhängt. Am Ausströmrand wird ein Druck vorgegeben, in diesem Fall der Umgebungsdruck $p_{a}$. Folgendes Druck- und Geschwindigkeitsfeld stellen sich ein:
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -346,19 +346,19 @@ Wie in einem \textit{Gartenschlauch} wird eine Art Kanal betrachtet, welcher obe
 Es bildet sich ein laminares Profil aus, sowie ein linearer Druckgradient. Dies entspricht der gleichen Überlegung wie in \ref{sec:poiseuille}.
 
 \subsubsection{Festkörperrotation}
-Es wird das Druck- und Geschwindigkeitsfeld eines rotierenden Fluides betrachet. Folgende Formeln sind hierfür relevant um das kartesische Koordinatensystem in ein \textit{tangential-radial}-Koordinatensystem zu transformieren bzw. umgekehrt:
+Es wird das Druck- und Geschwindigkeitsfeld eines rotierenden Fluides betrachet. Folgende Formeln sind hierfür relevant um das kartesische Koordinatensystem in ein tangential-radial-Koordinatensystem zu transformieren bzw. umgekehrt:
 \begin{align}
 r &=\sqrt{x^{2}+y^{2}}, \\ 
-x &= r\cdot\cos\left(\phi\right), \\
-y &= r\cdot\sin\left(\phi\right), \\
-u &= -\sin\left(\phi\right)\cdot v_{\phi}, \\
-v &= +\cos\left(\phi\right)\cdot v_{\phi}, \\ 
-v_{\phi} &= \omega\cdot r, \\
+x &= r\cos\left(\phi\right), \\
+y &= r\sin\left(\phi\right), \\
+u &= -\sin\left(\phi\right) v_{\phi}, \\
+v &= +\cos\left(\phi\right) v_{\phi}, \\ 
+v_{\phi} &= \omega r, \\
 \dfrac{\partial p}{\partial r}&= \rho r\omega^{2} \Rightarrow p\left(r\right) = \dfrac{1}{2}\rho r^{2}\omega^{2}+p_{0}.
 \end{align}
-Zunächst wird ein $3\times3$-Gitter untersucht. Die Randbedingungen an den äußeren Zellen sind durch die oben genannten Formeln gegeben, die Werte der mittleren Zelle werden ausgerechnet. Es sei $p_{0}=100$, $x_{0}=0, y_{0}=0$, $\omega=5$, $\eta=2$, $\rho=2.5$ und das Integrationsgebiet sei $\left[2;5\right]\times\left[2;5\right]$. \\
+Zunächst wird ein $3\times3$-Gitter untersucht. Die Randbedingungen an den äußeren Zellen sind durch die oben genannten Formeln gegeben, die Werte der inneren Zelle werden ausgerechnet. Es sei $p_{0}=100$, $x_{0}=0, y_{0}=0$, $\omega=5$, $\eta=2$, $\rho=2.5$ und das Integrationsgebiet sei $\left[2;5\right]\times\left[2;5\right]$. \\
 Es müssen sich folgende Werte für die mittlere Zelle einstellen: 
-\begin{center}$p=865.625$,\\ $u_{unten}=-15,\quad v_{unten}=17.5$,\\$u_{oben}=-20,\quad v_{oben}=17.5$,\\$u_{links}=-17.5,\quad v_{links}=15$,\\$u_{rechts}=-17.5,\quad v_{rechts}=20$.\end{center} Das numerische Resultat dieses Testfalles ergibt bis auf Maschinengenauigkeit genau diese Werte, d.h. der Algorithmus scheint zu funktionieren. \\
+\begin{center}$p=865.625$,\\ $u_{unten}=-15,\quad v_{unten}=17.5$,\\$u_{oben}=-20,\quad v_{oben}=17.5$,\\$u_{links}=-17.5,\quad v_{links}=15$,\\$u_{rechts}=-17.5,\quad v_{rechts}=20$.\end{center} Das numerische Resultat dieses Testfalles ergibt bis auf Maschinengenauigkeit genau diese Werte, d.h. der Algorithmus funktioniert. \\
 Im Folgenden werden das Druckfeld und das Geschwindigkeitsfeld dieses Problems dargestellt, allerdings wird das Integrationsgebiet auf $\left[-5;5\right]\times\left[-5;5\right]$ erweitert und dieses wird mit einem $50\times50$-Gitter diskretisiert:
 \FloatBarrier
 \begin{figure}[!htb] 
@@ -375,11 +375,11 @@ Dieses Druckfeld stimmt ebenfalls mit der analytischen Lösung überein. Die Kontu
   \caption{Festkörperrotation: Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
-Diese Grafik visualisiert eine im mathematisch Sinn positive Drehbewegung, was wegen der Vorgaeb $\omega=5$ auch die exakte Lösung wiederspiegelt. Aufgrund der Beziehung $v_{\phi}\sim r$ werden die Tangentialgeschwindigkeiten Richtung Kurvenaußen proportional zum Radius größer, da $\omega=const$.
+Diese Grafik visualisiert eine im mathematisch Sinn positive Drehbewegung, was wegen der VorgabeW $\omega=5$ auch die exakte Lösung wiederspiegelt. Aufgrund der Beziehung $v_{\phi}\sim r$ werden die Tangentialgeschwindigkeiten Richtung Kurvenaußen proportional zum Radius größer, da $\omega=const$.
 
 
 \subsubsection{Driven Cavity}
-Es wird ein \textit{Behälter} betrachtet, der unten, links und rechts undurchlässige Wände besitzt. Überhalb dieses \textit{Behälters} fließt ein Fluid mit konstantem Druck und konstanter Geschwindigkeit in $x$-Richtung. Nun wird das Druck- und Geschwindigkeitsfeld simuliert, welches sich in dem \textit{Behälter} einstellt. Als Randbedingungen gilt einerseits die Haftbedingung an den drei festen undruchlässigen Wänden ($u_{Wand}=v_{Wand}=0$), am oberen Rand gilt $u_{\text{Fluid,oben}}=u_{\text{äußere Strömung}}$. Gleiches gilt für den Druck: $p_{\text{Fluid,oben}}=p_{\text{äußere Strömung}}$.
+Es wird ein Behälter betrachtet, der unten, links und rechts undurchlässige Wände besitzt. Überhalb dieses Behälters fließt ein Fluid mit konstantem Druck und konstanter Geschwindigkeit in $x$-Richtung. Nun wird das Druck- und Geschwindigkeitsfeld simuliert, welches sich in dem Behälter einstellt. Als Randbedingungen gilt einerseits die Haftbedingung an den drei festen undruchlässigen Wänden ($u_{Wand}=v_{Wand}=0$), am oberen Rand gilt $u_{\text{Fluid,oben}}=u_{\infty}$. Gleiches gilt für den Druck: $p_{\text{Fluid,oben}}=p_{\infty}$.
 Der Behälter ist wird mit einem $50\times50$-Gitter diskretisiert. \\
 Für kleine Reynoldszahlen ($Re\leq400$) ergibt sich folgendes Ergebnis:
 \FloatBarrier
@@ -427,13 +427,7 @@ Man erkennt einen einzigen Wirbel, was auch vergleichbaren Resulaten (s. Interne
   \caption{Driven Cavity: Re=3200, Druck- und Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
-\begin{figure}[!htb] 
-  \centering
-     \includegraphics[width=15cm]{bilder/anwendungsfaelle/drivenCavity_Re3200_Streamlines_2}
-  \caption{Driven Cavity: Re=3200, Druck- und Geschwindigkeitsfeld}
-\end{figure}
-\FloatBarrier
-Man erkennt, dass sich in den Ecken kleinere Wirbel ausbilden. Die letzten beiden Bilder zeigen die Strömung für $Re=3200$. Das zweite Bild ist zu einem späteren Iterationszeitpunkt aufgenommen worden, entspricht aber nicht einer konvergenten Lösung. Der zentrale, mathematisch negativ gerichtete, Wirbel hat die Tendenz in die Mitte der Nische (\texttt{cavity}) zu \texttt{gehen}. Es ist außerdem erkennbar, wie sich die kleinen, im mathematisch positiven Sinn drehenden, Wirbel ausbilden. Das Druckfeld zeigt im Bereiche der Wirbel ein Minimum auf. All diese Ergebnisse spiegeln die erwarteten Ergebnisse wieder.
+Man erkennt, dass sich in den Ecken kleinere, entgegengerichtete Wirbel ausbilden. Die letzten beiden Bilder zeigen die Strömung für $Re=3200$. Der zentrale, mathematisch negativ gerichtete, Wirbel hat die Tendenz in die Mitte der Nische (cavity) zu wandern. Es ist außerdem erkennbar, wie sich die kleinen, im mathematisch positiven Sinn drehenden, Wirbel ausbilden. Das Druckfeld zeigt im Bereiche der Wirbel ein Minimum auf. All diese Ergebnisse spiegeln die erwarteten Ergebnisse wieder.
 
 
 \subsubsection{Kanalvergrößerung}
@@ -482,7 +476,7 @@ Zur Durchflussmessung wird beispielsweise die Strömung durch eine Messblende bet
 Analog zu \ref{sec:kanalwand} ist ein starker Druckanstieg vor der Blende erkennbar, sowie zwei Wirbel hinter der Blende. Wie erwartet, ist das Druck- und Geschwindigkeitsfeld symmetrisch um die Mitte des Kanals/Rohres.
 
 \subsubsection{Umströmter Zylinder}
-Abschließend wird ein umströmter Zylinder betrachtet. In einem Kanal befindet sich ein Zylinder, stromauf dieses Zylinders herrscht eine laminare Strömung. Aufgrund dieses \textit{Hindernisses} bilden sich Wirbel und die laminare Strömung wird zu einer turbulenten. Die Strömungsfelder sehen wie folgt aus:
+Abschließend wird ein umströmter Zylinder betrachtet. In einem Kanal befindet sich ein Zylinder, stromauf dieses Zylinders herrscht eine laminare Strömung. Aufgrund dieses Hindernisses bildet sich eine Kármán'sche Wirbelstraße.
 \FloatBarrier
 \begin{figure}[!htb] 
   \centering
@@ -496,4 +490,4 @@ Abschließend wird ein umströmter Zylinder betrachtet. In einem Kanal befindet si
   \caption{Umströmter Zylinder:Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
-Die Ergebnisse sehen qualitativ richtig aus. Es ist zu beachten, dass aufgrund des kartesischen Gitters der Zylinder nur durch eine Art Stufenprofil approximiert worden ist. Um trotzdem eine gut erkennbare Kreisform zu erhalten, wurde das $20\times10$ große Integrationsgebiet mit einem $200\times100$-Gitter diskretisiert.
+Die Ergebnisse sehen qualitativ richtig aus. Es ist zu beachten, dass aufgrund des kartesischen Gitters der Zylinder nur durch eine Art Stufenprofil approximiert worden ist. Um trotzdem eine gut erkennbare Kreisform zu erhalten, wurde das $20\times10$ große Integrationsgebiet mit einem $200\times100$-Gitter diskretisiert. Zur abschließenden Validierung der Implementierung müssten jedoch weitere Testfälle, insbesondere solche, für die experimentelle Daten zur Verfügung stehen, gerechnet werden.
