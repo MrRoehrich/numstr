@@ -1,7 +1,7 @@
 \chapter{Potentialströmung} \label{chap:1}
 
 \section{Aufgabenstellung}
-Ziel ist es, die Potential- und Stromfunktionsgleichung numerisch auf einem krummlinigen Integrationsgebiet mithilfe eines iterativen Gleichungslösers zu lösen. Das zugrundeliegende ingenieurtechnische Problem ist eine "Potentialströmung", d.h. eine stationäre, zweidimensionale, wirbel- und reibungsfreie Strömung, in einem Kanal mit veränderlichem Querschnitt. Aufgrund der erwähnten Vereinfachungen, ist dieses hier behandelte Problem rein akademischer Natur und bildet die Realität nicht hinreichend exakt ab. \\
+Ziel ist es, die Potential- und Stromfunktionsgleichung numerisch auf einem krummlinigen Integrationsgebiet mithilfe eines iterativen Gleichungslösers zu lösen. Das zugrundeliegende ingenieurtechnische Problem ist eine "Potentialströmung", d.h. eine \textbf{stationäre, zweidimensionale, wirbel- und reibungsfreie Strömung}, in einem Kanal veränderlichen Querschnittes. \\
 Im Folgenden wird dargestellt, wie dieses Problem mathematisch modelliert, anschließend diskretisiert und schließlich numerisch gelöst worden ist. Danach werdend die numerischen Verfahren und die Resultate diskutiert bzw. validiert.
 
 \section{Mathematische Modellbildung}
@@ -9,7 +9,7 @@ Das strömende Fluid wird als Kontinuum angenommen, dass heißt das Grenzwerte wie
 \begin{equation}
 \lim\limits_{\Delta V \rightarrow 0}{\dfrac{\Delta \Phi}{\Delta V}},
 \end{equation}
-wobei $\Phi$ ein passiver Skalar und $\Delta V$ ein Volumen darstellen, angenommen werden. Ein Beispiel hierfür ist die Dichte $\rho$:
+wobei $\Phi$ einen passiven Skalar und $\Delta V$ ein Volumen darstellen, angenommen werden. Ein Beispiel hierfür ist die Dichte $\rho$:
 \begin{equation}
 \rho = \lim\limits_{\Delta V \rightarrow 0}{\dfrac{\Delta m}{\Delta V}},
 \end{equation}
@@ -25,18 +25,18 @@ Die linke Seite dieser Gleichung spiegelt die substantielle Beschleunigung, welc
 \end{equation}
 wobei folgende Identitäten benutzt worden sind:
 \begin{align}
-\left(\vec{v}\circ\nabla\right)\vec{v}=\nabla \dfrac{\vec{v}^{2}}{2}-\vec{v}\times rot\left(\vec{v}\right), \\
-\vec{g}=-\nabla U, \\
-rot\left(\nabla\bullet\right)=\vec{0}, \\
-\omega:= rot\left(\vec{v}\right),
+\left(\vec{v}\circ\nabla\right)\vec{v}&=\nabla \dfrac{\vec{v}^{2}}{2}-\vec{v}\times rot\left(\vec{v}\right), \\
+\vec{g}&=-\nabla U, \\
+rot\left(\nabla\bullet\right)&=\vec{0}, \\
+\omega&:= rot\left(\vec{v}\right),
 \end{align}
 mit Potential U. \\
 Für die zu simulierenden Potentialströmungen gilt:
 \begin{align} 
-\vec{v} := \nabla \Phi,\label{eq:Phi} \\
-\vec{v} := rot\left(\Psi\right),\label{eq:Psi}
+\vec{v} &:= \nabla \Phi,\label{eq:Phi} \\
+\vec{v} &:= rot\left(\Psi\right),\label{eq:Psi}
 \end{align}
-mit Potentialfunktion $\Phi$ udn Stromfunktion $\Psi$. Es werden nun Bestimmungsgleichungen für diese beiden neuen Grösen benötigt. \\
+mit Potentialfunktion $\Phi$ und Stromfunktion $\Psi$. Es werden nun Bestimmungsgleichungen für diese beiden neuen Größen benötigt. \\
 Man sieht, dass für den stationären und inkompressiblen Fall $\Phi$  \eqref{eq:wirbeltransportgleichung} erfüllt, da $rot\left(\vec{v}\right)=rot\left(\nabla \Phi\right)=\vec{0}$. Die Potentialfunktion erfüllt also automatisch die Drehungsfreiheit. Die Bestimmungsgleichung ergibt sich demnach aus der Kontinuitätsgleichung für ein inkompressibles Fluid ($\rho=const$):
 \begin{equation} \label{eq:konti_incompressibel}
 div\left(\vec{v}\right) = 0.
@@ -46,10 +46,6 @@ Dies führt zu der Bestimmungsgleichung
 div\left(\nabla \Phi \right) = \mathrm{\Delta}\Phi=0.
 \end{equation}
 Für die Stromfunktion $\Psi$ ist es genau der andere Fall. $\Psi$ erfüllt wegen $div\left(rot\left(\Psi\right)\right)=0$ bereits \eqref{eq:konti_incompressibel}, somit folgt die Bestimmungslgleichung hier aus der Rotationsfreiheit der Strömung:
-\begin{equation}
-\mathrm{\Delta}\Psi=\vec{0},
-\end{equation} 
-bzw. aufgrund einer zweidimensionalen Strömung in der die z-Komponente aus der Zeichenebene heraus zeigt
 \begin{equation} \label{eq:laplace_stromfkt}
 \mathrm{\Delta}\Psi=0.
 \end{equation}
@@ -57,8 +53,8 @@ bzw. aufgrund einer zweidimensionalen Strömung in der die z-Komponente aus der Z
 \subsection{Berechnung des Geschwindigkeitfeldes}
 Aus den Definitionen \eqref{eq:Phi} und \eqref{eq:Psi} folgt direkt die Formel zur Berechnung des Geschwindigkeitfeldes innerhalb des zweidimensionalen Integrationsgebietes:
 \begin{align}
-u=\dfrac{\partial \Phi}{\partial x} = \dfrac{\partial \Psi}{\partial y}, \label{eq:u_geschw}\\
-v=\dfrac{\partial \Phi}{\partial y} = -\dfrac{\partial \Psi}{\partial x},\label{eq:v_geschw}
+u&=\dfrac{\partial \Phi}{\partial x} = \dfrac{\partial \Psi}{\partial y},& \label{eq:u_geschw}\\
+v&=\dfrac{\partial \Phi}{\partial y} = -\dfrac{\partial \Psi}{\partial x},&\label{eq:v_geschw}
 \end{align}
 wobei $u$ die Geschwindigkeitskomponente in x-Richtung, und $v$ die Geschwindigkeitskomponente in y-Richtung darstellt.
 
@@ -73,20 +69,20 @@ so folgt, da keine freien Oberflächen in dem Problem auftreten, dass sich das Sc
 \end{equation}
 Für den Druckbeiwert, mit welchem das Druckfeld charakterisiert bzw. beschrieben wird, folgt daraus:
 \begin{equation}
-c_{p}=\dfrac{\Delta p}{\frac{\rho}{2}\cdot \vec{v}_{ref}^{2}} = \dfrac{p-p_{ref}}{\frac{\rho}{2}\cdot v_{ref}^{2}}=1-\dfrac{v^{2}}{v_{ref}^{2}}.
+c_{p}=\dfrac{\Delta p}{\frac{\rho}{2}\cdot |\vec{v}_{ref}|^{2}} = \dfrac{p-p_{ref}}{\frac{\rho}{2}\cdot |\vec{v}_{ref}|^{2}}=1-\dfrac{|\vec{v}|^{2}}{|\vec{v}_{ref}|^{2}}.
 \end{equation}
-Als Referenzgeschwindigkeit $v_{ref}$ kann beispielsweise die Einströmgeschwindigkeit $u_{\infty}$ des Fluid in den Kanal verwendet werden.
+Als Referenzgeschwindigkeit in $x$-Richtung kann beispielsweise die Einströmgeschwindigkeit $u_{\infty}$ des Fluid in den Kanal verwendet werden.
 
 \subsection{Randbedingungen}
 Die hier relevanten Randbedingungen sind 
 \begin{itemize}
 \item Ein- bzw. Ausströmränder
-\item Undurchlässige Wänder.
+\item Undurchlässige Wände.
 \end{itemize}
 Für den ersten Fall gibt man an den jeweiligen Rändern die Geschwindigkeit vor. Aus \eqref{eq:u_geschw} und \eqref{eq:v_geschw} folgt direkt, dass
 \begin{align}
-u_{Rand} = \left(\dfrac{\partial \Phi}{\partial x}\right)_{Rand}, \label{eq:u_geschw_rand} \\
-v_{Rand} = \left(\dfrac{\partial \Phi}{\partial y}\right)_{Rand}. \label{eq:v_geschw_rand}
+u_{Rand} &= \left(\dfrac{\partial \Phi}{\partial x}\right)_{Rand}, \label{eq:u_geschw_rand} \\
+v_{Rand} &= \left(\dfrac{\partial \Phi}{\partial y}\right)_{Rand}. \label{eq:v_geschw_rand}
 \end{align}
 Für den Fall undurchlässiger Wände, wie bei der Kanalströmung, werden andere Randbedingungen benötigt. In der Potentialtheorie werden Konturen mithilfe von Stromlinien dargestellt. Aus der Definition der Stromlinien folgt für eine Wand, die mit der Funktion $h(x)$ beschrieben wird und mit Hilfe von \eqref{eq:u_geschw} und \eqref{eq:v_geschw}, dass
 \begin{equation} \label{eq:rb_kontur}
@@ -99,23 +95,23 @@ Es wird zunächst ein rechteckiges, zweidimensionales Integrationsgebiet, der Dim
 \Delta x = \dfrac{1}{I-1},\quad \Delta y = \dfrac{1}{J-1}.
 \end{equation}
 In dem im Folgenden hergeleiteten Algorithmus, wird an jedem inneren Gitterpunkt ein Wert für die Potential- und Stromfunktion berechnet. \\
-Die für dieses Problem verwendete Diskretisierung geschieht mittels \textbf{Finiten Differenzen}. 
+Die für dieses Problem verwendete Diskretisierung geschieht mittels \textbf{Finiter Differenzen}. 
 Für die ersten und zweiten Ableitungen von $\Phi=\Phi(x,y)$ werden bei äquidistanten Gittern folgende Differenzenausdrücke verwendet, welche beide zweiter Ordnung sind (s. Taylorentwicklung):
 \begin{align}
-\dfrac{\partial \Phi}{\partial x}\approx \dfrac{\Phi_{i+1,j}-\Phi_{i-1,j}}{2\cdot\Delta x},\label{fd_äquidistant_1} \\
-\dfrac{\partial^{2} \Phi}{\partial x^{2}}\approx \dfrac{\Phi_{i+1,j}-2\cdot\Phi_{i,j}+\Phi_{i-1,j}}{\Delta x^{2}},\label{fd_äquidistant_2}
+\dfrac{\partial \Phi}{\partial x}&\approx \dfrac{\Phi_{i+1,j}-\Phi_{i-1,j}}{2\cdot\Delta x},\label{fd_äquidistant_1} \\
+\dfrac{\partial^{2} \Phi}{\partial x^{2}}&\approx \dfrac{\Phi_{i+1,j}-2\cdot\Phi_{i,j}+\Phi_{i-1,j}}{\Delta x^{2}},\label{fd_äquidistant_2}
 \end{align}
 analog für die y-Ableitung und die Ableitungen der Stromfunktion. \\
 Setzt man diese Approximationen nun in die zwei Gleichungen \eqref{eq:laplace_potentialfkt} und \eqref{eq:laplace_stromfkt} ein, so folgen die Diskretisierungen der Potential- und Stromfunktionsgleichungen:
 \begin{align}
-0\stackrel{!}{=}\mathrm{\Delta}\Phi=\dfrac{\partial^{2} \Phi}{\partial x^{2}}+\dfrac{\partial^{2} \Phi}{\partial y^{2}}\approx\dfrac{\Phi_{i+1,j}-2\cdot\Phi_{i,j}+\Phi_{i-1,j}}{\Delta x^{2}}+\dfrac{\Phi_{i,j+1}-2\cdot\Phi_{i,j}+\Phi_{i,j-1}}{\Delta y^{2}}, \label{eq:fd_laplace_phi} \\
-0\stackrel{!}{=}\mathrm{\Delta}\Psi=\dfrac{\partial^{2} \Psi}{\partial x^{2}}+\dfrac{\partial^{2} \Psi}{\partial y^{2}}\approx\dfrac{\Psi_{i+1,j}-2\cdot\Psi_{i,j}+\Psi_{i-1,j}}{\Delta x^{2}}+\dfrac{\Psi_{i,j+1}-2\cdot\Psi_{i,j}+\Psi_{i,j-1}}{\Delta y^{2}}, \label{eq:fd_laplace_psi}
+0&\stackrel{!}{=}\mathrm{\Delta}\Phi=\dfrac{\partial^{2} \Phi}{\partial x^{2}}+\dfrac{\partial^{2} \Phi}{\partial y^{2}}\approx\dfrac{\Phi_{i+1,j}-2\cdot\Phi_{i,j}+\Phi_{i-1,j}}{\Delta x^{2}}+\dfrac{\Phi_{i,j+1}-2\cdot\Phi_{i,j}+\Phi_{i,j-1}}{\Delta y^{2}}, \label{eq:fd_laplace_phi} \\
+0&\stackrel{!}{=}\mathrm{\Delta}\Psi=\dfrac{\partial^{2} \Psi}{\partial x^{2}}+\dfrac{\partial^{2} \Psi}{\partial y^{2}}\approx\dfrac{\Psi_{i+1,j}-2\cdot\Psi_{i,j}+\Psi_{i-1,j}}{\Delta x^{2}}+\dfrac{\Psi_{i,j+1}-2\cdot\Psi_{i,j}+\Psi_{i,j-1}}{\Delta y^{2}}, \label{eq:fd_laplace_psi}
 \end{align}
 für alle $i,j$. Dies stellt ein algebraisches Gleichungssystem dar, welches iterativ gelöst werden kann (vgl. Kapitel \ref{sec:lgs_lösen}). \\
 Nun wird ein krummliniges Integrationsgebiet betrachtet, wie es zum Beispiel bei Kanälen vorkommt. Anstatt die Differenzenausdrücke entsprechend abzuändern, wird die physkalische $x$-$y$-Ebene in den Rechenraum $\xi$-$\eta$ transformiert. Die transfomierte Ebene ist hierbei wieder rechteckig und äquidistant unterteilt. Als Vereinfachungen werden die daraus resultierenden Gitterzellengrößen $\Delta\xi$ und $\Delta\eta$ auf $1$ gesetzt, so dass man bei den Differenzenausdrücken keine rechenintensive Division durch diese Zellengrößen in Kauf nehmen muss. Für die Transformation werden folgende Funktionen bzw. Umkehrfunktionen verwendet:
 \begin{align}
-\xi\left(x,y\right)=\left(I-1\right)\cdot\dfrac{x-x_{min}}{x_{max}-x_{min}}, \quad \eta\left(x,y\right)=\left(J-1\right)\cdot\dfrac{y-h_{u}(x)}{h_{o}(x)-h_{u}(x)}, \label{trafo_xi_eta} \\
-x\left(\xi,\eta\right)=x_{min}+\dfrac{x_{max}-x_{min}}{I-1}\cdot\xi,\quad y\left(\xi,\eta\right)=h_{u}(x)+\dfrac{h_{o}(x)-h_{u}(x)}{J-1}\cdot\eta,\label{trafo_x_y}
+\xi\left(x,y\right)&=\left(I-1\right)\cdot\dfrac{x-x_{min}}{x_{max}-x_{min}}, &&\eta\left(x,y\right)=\left(J-1\right)\cdot\dfrac{y-h_{u}(x)}{h_{o}(x)-h_{u}(x)}, \label{trafo_xi_eta} \\
+x\left(\xi,\eta\right)&=x_{min}+\dfrac{x_{max}-x_{min}}{I-1}\cdot\xi, &&y\left(\xi,\eta\right)=h_{u}(x)+\dfrac{h_{o}(x)-h_{u}(x)}{J-1}\cdot\eta,\label{trafo_x_y}
 \end{align}
 wobei $h_{u}(x)$ die untere und $h_{o}(x)$ die obere Kontur des Kanals beschreibt. Als Ein- und Ausströmränder werden immer im $x$-$y$-Koordinatensystem vertikale Ränder verwendet. \\
 Aufgrund der Transformation ändern sich nun auch die Differenzenaudrücke aus \eqref{fd_äquidistant_1} und \eqref{fd_äquidistant_2}. Mit Hilfe der Kettenregel folgt beispielsweise für die erste Ableitung:
@@ -128,30 +124,30 @@ Setzt man dies für die zweiten Ableitungen in beide Richtungen fort, so ergibt s
 \end{equation}
 mit den Koeffizienten
 \begin{align}
-\alpha_{1}=\left(\dfrac{\partial\xi}{\partial x}\right)^{2}+\left(\dfrac{\partial\xi}{\partial y}\right)^{2}, \\
-\alpha_{2}=\left(\dfrac{\partial\eta}{\partial x}\right)^{2}+\left(\dfrac{\partial\eta}{\partial y}\right)^{2}, \\
-\alpha_{3}=2\cdot\left[\dfrac{\partial\xi}{\partial x}\dfrac{\partial\eta}{\partial x}+\dfrac{\partial\xi}{\partial y}\dfrac{\partial\eta}{\partial y}\right], \\
-\alpha_{4}=\dfrac{\partial^{2}\xi}{\partial x^{2}}+\dfrac{\partial^{2}\xi}{\partial y^{2}}, \\
-\alpha_{4}=\dfrac{\partial^{2}\eta}{\partial x^{2}}+\dfrac{\partial^{2}\eta}{\partial y^{2}}, \\
-\alpha_{6}=0.
+\alpha_{1}&=\left(\dfrac{\partial\xi}{\partial x}\right)^{2}+\left(\dfrac{\partial\xi}{\partial y}\right)^{2}, \\
+\alpha_{2}&=\left(\dfrac{\partial\eta}{\partial x}\right)^{2}+\left(\dfrac{\partial\eta}{\partial y}\right)^{2}, \\
+\alpha_{3}&=2\cdot\left[\dfrac{\partial\xi}{\partial x}\dfrac{\partial\eta}{\partial x}+\dfrac{\partial\xi}{\partial y}\dfrac{\partial\eta}{\partial y}\right], \\
+\alpha_{4}&=\dfrac{\partial^{2}\xi}{\partial x^{2}}+\dfrac{\partial^{2}\xi}{\partial y^{2}}, \\
+\alpha_{5}&=\dfrac{\partial^{2}\eta}{\partial x^{2}}+\dfrac{\partial^{2}\eta}{\partial y^{2}}, \\
+\alpha_{6}&=0.
 \end{align}
 Für die Randbedingungen an der oberen und unteren Kontur (siehe \eqref{eq:rb_kontur}) ist in $\eta$-Richtung die Bildung zentaler Differenzen nicht möglich, da nur Werte in einer Richtung bekannt sind und die Werte in der anderen Richtung außerhalb des Integrationsgebietes liegen. Für den Fall werden die einseitgen Differenzenausdrücke verwendet: 
 \begin{equation}\label{eq:fd_einseitig}
 \left(\dfrac{\partial\Phi}{\partial\eta}\right)_{i,j}\approx\dfrac{-\Phi_{i,j+2}+4\cdot\Phi_{i,j+1}-3\cdot\Phi_{i,j}}{2\cdot\Delta\eta},
 \end{equation}
 wobei $\Delta\eta=1$ gesetzt worden ist (s.o.). Dieser Differenzenquotient ist ebenfalls zweiter Ordnung (s. Taylorentwicklung), so dass die Ordnung der Diskretisierung erhalten bleibt. Analog ergeben sich die Differenzenausdrücke an der oberen Kontur. \\
-Für die Randbedingungen oben und unten im transformierten Raum ergibt sich mit (vgl. \eqref{eq:rb_kontur})
+Für die Randbedingungen oben und unten im transformierten Raum ergibt sich mit \eqref{eq:rb_kontur} folgender Ausdruck:
 \begin{equation}
 \dfrac{\mathrm{d}h}{\mathrm{d}x}=\dfrac{v}{u}=\dfrac{\frac{\partial\Phi}{\partial\xi}\frac{\partial\xi}{\partial y}+\frac{\partial\Phi}{\partial\eta}\frac{\partial\eta}{\partial y}}{\frac{\partial\Phi}{\partial\xi}\frac{\partial\xi}{\partial x}+\frac{\partial\Phi}{\partial\eta}\frac{\partial\eta}{\partial x}}.
 \end{equation}
-Setzt man nun \eqref{eq:fd_einseitig} bzw. \eqref{fd_äquidistant_1},\eqref{fd_äquidistant_2} ein und formt nach $\Phi_{i,j}$ um, so ergibt sich folgende Diskretisierung der Randbedingung an der unteren Kontur:
+Setzt man nun \eqref{eq:fd_einseitig} bzw. \eqref{fd_äquidistant_1},\eqref{fd_äquidistant_2} hier ein und formt nach $\Phi_{i,j}$ um, so ergibt sich folgende Diskretisierung der Randbedingung an der unteren Kontur:
 \begin{equation}\label{eq:rb_kontur_krummlinig}
 \Phi_{i,j}=\dfrac{\frac{\mathrm{d}h}{\mathrm{d}x}\left[\left(\Phi_{i+1,j}-\Phi_{i-1,j}\right)\frac{\partial\xi}{\partial x}+\left(-\Phi_{i,j+2}+4\Phi_{i,j+1}\right)\frac{\partial\eta}{\partial x}\right]-\left(\Phi_{i+1,j}-\Phi_{i-1,j}\right)\frac{\partial\xi}{\partial y}-\left(-\Phi_{i,j+2}+4\Phi_{i,j+1}\right)\frac{\partial\eta}{\partial y}}{3\frac{\partial\eta}{\partial y}\frac{\mathrm{d}h}{\mathrm{d}x}-3\frac{\partial\eta}{\partial y}}
 \end{equation}
 analog für die obere Kontur.
 
 \section{Lösen des Gleichungssystems} \label{sec:lgs_lösen}
-In Kapitel \ref{seq:diskretisierung} ist dargelegt worden, wie das dem Problem passende Gleichungssystem aufgestellt wird. Nun werden kurz drei Strategien aufgezeigt, wie man dieses LGS\footnote{LGS: Lineares Gleichungssystem} lösen kann).E s werden ausschließlich iterative Löser verwendet. \\
+In Kapitel \ref{seq:diskretisierung} ist dargelegt worden, wie das zu dem Problem passende Gleichungssystem aufgestellt wird. Nun werden kurz drei Strategien aufgezeigt, wie man dieses LGS\footnote{LGS: Lineares Gleichungssystem} lösen kann). Es werden ausschließlich iterative Löser verwendet. \\
 Die erste Möglichkeit das LGS zu lösen, ist mittels des Jacobi-Verfahrens. Dieses Verfahren berechnet jede Aktualisierung der Lösung nur aufgrundlage der Lösung aus dem vorherigen Iterationsschritt. Betrachtet man beispielsweise Gleichung \eqref{eq:fd_laplace_phi}, so ergibt sich, nach Auflösen nach $\Phi_{i,j}$ folgende Formel für das Jacobi-Verfahren, wobei $k$ den Iterationsindex bezeichnet:
 \begin{equation} \label{eq:phi_jacobi}
 \Phi_{i,j}^{k+1}=\dfrac{1}{2\cdot\left(\Delta x^{2}+\Delta y^{2}\right)}\cdot\left[\Delta y^{2}\left(\Phi_{i+1,j}^{k}+\Phi_{i-1,j}^{k}\right)+\Delta x^{2}\left(\Phi_{i,j+1}^{k}+\Phi_{i,j-1}^{k}\right)\right]. 
@@ -166,7 +162,7 @@ Für diese beiden Löser ist ebenfalls eine Überrelaxation implementiert, so dass:
 \Phi_{i,j}^{k+1}|_{\text{mit Überrelaxation}} = \Phi_{i,j}^{k}+\beta\cdot\left(\Phi_{i,j}^{k+1}-\Phi_{i,j}^{k}\right).
 \end{equation}
 Der Relaxationsparameter $\beta$ ist vom Benutzer zu setzen. \\
-Im Gegensatz zu den gerade beschriebenen explititen Lösern gibt es noch die Möglichkeit den Thomas-Algorithmus zu verwenden, welcher ein impliziter Algorithmus ist. Dieser Algorithmus ist auf tridiagonale bzw. block-tridiagonale Matrizen anwendbar, bei diesem Problem ist das aufkommende LGS in Block-Tridiagonalform. Allerdings werden die Nicht-Hauptdiagonalen nicht als Unbekannte betrachtet, für diese Werte werden jeweils die Werte aus dem vorherigen Iterationsschritt verwendet. Somit können diese 2 Nebendiagonalen in die rechte Seite verschoben werden, sodass nur noch eine Tridiagonal-Form erhalten bleibt:
+Im Gegensatz zu den gerade beschriebenen explititen Lösern gibt es noch die Möglichkeit den Thomas-Algorithmus zu verwenden, welcher ein impliziter Algorithmus ist. Dieser Algorithmus ist auf tridiagonale Matrizen anwendbar:
 \begin{equation}
 \begin{bmatrix}
 b_1 & c_1 &  & & 0 \\
@@ -190,21 +186,21 @@ d_3  \\
 d_N \\
 \end{bmatrix}
 \end{equation} 
-In einem Iterationsschritt werden zunächst alle Koeffizienten der Matrix des LGS's modifiziert und zwar nach folgender Formel: \textcolor{red}{Quelle: wikipedia einfügen!}
+In einem Iterationsschritt werden zunächst alle Koeffizienten der Matrix des LGS's modifiziert und zwar nach folgender Formel (Quelle: Wikipedia):
 \begin{align}
-c_{i}' = \begin{cases}
+c_{i}' &= \begin{cases}
      \dfrac{c_{1}}{b_{1}} & \text{, } i=1 \\
      \dfrac{c_{i}}{b_{i}-c_{i-1}'a_{i}} & \text{, } i=2,3,..,N-1 ,
    \end{cases} \\
-d_{i}' = \begin{cases}
+d_{i}' &= \begin{cases}
      \dfrac{d_{1}}{b_{1}} & \text{, } i=1 \\
      \dfrac{d_{i}-d_{i-1}'a_{i}}{b_{i}-c_{i-1}'a_{i}} & \text{, } i=2,3,..,N.
    \end{cases} 
 \end{align}
 In einem zweiten Schritt werden die Unbekannten mittels Rückwärts-Einsetzten berechnet:
 \begin{align}
-x_{n}=d_{n}' , \\
-x_{i} = d_{i}'-c_{i}'x_{i+1}\quad , i=N-1,N-2,..,1.
+x_{n} &= d_{n}' , \\
+x_{i} &= d_{i}'-c_{i}'x_{i+1}\quad , i=N-1,N-2,..,1.
 \end{align}
 Dieser Algorithmus berechnet die Lösung nach lediglich ${\mathcal O}(n)$ Operationen. Es wird abwechselnd in $x$- und in $y$-Richtung "gelöst".
 
@@ -220,13 +216,13 @@ Setzt man nun diese Taylorentwicklungen in \eqref{eq:fd_laplace_phi} ein, so erh
 \begin{equation}
 \dfrac{\partial^{2}\Phi}{\partial x^{2}}+\dfrac{\partial^{2}\Phi}{\partial y^{2}}=-\lim\limits_{\Delta x,\Delta y \rightarrow 0}{{\mathcal O}\left(\Delta x^{2},\Delta y^{2}\right)}\stackrel{!}{\approx}0.
 \end{equation}
-Somit gibt die Differenzenlösung eine hinreichend genaue Lösung für Gleichung \eqref{eq:laplace_potentialfkt}. Das Gleiche gilt für die Stromfunktion $\Psi$.
+Somit gibt die Differenzenlösung eine hinreichend genaue Lösung für Gleichung \eqref{eq:laplace_potentialfkt}. Das Gleiches gilt für die Stromfunktion $\Psi$.
 \subsection{Stabilität}
 Für Stabilität wird folgendes gefordert:
 \begin{equation}
 |G^{k}|\leq1,
 \end{equation}
-mit Verstärkungsfaktor $G^{k}=\dfrac{\zeta_{i,j}^{k+1}}{\zeta_{i,j}^{k}}$ und Fehler $\zeta_{i,j}^{k}=\tilde{\Phi}_{i,j}^{k}-\Phi_{i,j}^{k}$, sprich die Differenz aus im Computer dargesteller Lösung und exakter numerischer Lösunng. Mittels Fourier $\zeta_{i,j}^{k}=V_{\nu}^{k}\cdot e^{\sqrt{-1}\left(\nu_{x}i\Delta x+\nu_{y}j\Delta y\right)}$ folgt beispielsweise für das Jacobi-Verfahren (siehe \eqref{eq:phi_jacobi}) ohne Transformation nach Einsetzen und Umstellen:
+mit Verstärkungsfaktor $G^{k}=\dfrac{\zeta_{i,j}^{k+1}}{\zeta_{i,j}^{k}}$ und Fehler $\zeta_{i,j}^{k}=\tilde{\Phi}_{i,j}^{k}-\Phi_{i,j}^{k}$, sprich die Differenz aus im Computer dargesteller Lösung und exakter numerischer Lösunng. Mittels Fourier-Transformation $\zeta_{i,j}^{k}=V_{\nu}^{k}\cdot e^{\sqrt{-1}\left(\nu_{x}i\Delta x+\nu_{y}j\Delta y\right)}$ folgt beispielsweise für das Jacobi-Verfahren (siehe \eqref{eq:phi_jacobi}) ohne Transformation nach Einsetzen und Umstellen:
 \begin{equation}
 \dfrac{V_{\nu}^{k+1}}{V_{\nu}^{k}}=\dfrac{1}{\Delta x^{2}+\Delta y^{2}}\cdot\left[\Delta y^{2}cos\left(\nu_{x}\Delta x\right)+\Delta x^{2}cos\left(\nu_{y}\Delta y\right)\right],
 \end{equation}
@@ -234,13 +230,13 @@ wobei $cos(x)=\dfrac{e^{\sqrt{-1}x}+e^{-\sqrt{-1}x}}{2}$ verwendet worden ist. F
 \begin{equation}
 |\dfrac{V_{\nu}^{k+1}}{V_{\nu}^{k}}|\leq\dfrac{1}{\Delta x^{2}+\Delta y^{2}}\left[\Delta y^{2}\cdot 1+\Delta x^{2}\cdot 1\right]=1,
 \end{equation}
-da $\Delta x$ und $\Delta y$ stets positiv sind. Somit ist die Stabilität des Jacobi-Verfahrens ohne Transformation nachgewiesen. Für die anderen zwei Lösungsverfahren und bei Anwendung der Transformation für krummlinige Gebiete folgt das selbe Ergebnis. Da diese Formeln wesentlich komplizierter bzw. undurchsichtiger sind, wird hier nicht näher drauf eingegangen.
+da $\Delta x$ und $\Delta y$ stets positiv sind. Somit ist die Stabilität des Jacobi-Verfahrens ohne Transformation nachgewiesen. Für die anderen zwei Lösungsverfahren und bei Anwendung der Transformation für krummlinige Gebiete folgt das selbe Ergebnis. Da diese Formeln wesentlich komplexer sind, werden sie hier nicht dargestellt.
 
 \section{Validierung des Programms}
 Zunächst werden die Ergebnisse für einzelne Potentialströmungen diskutiert bzw. validiert. Für jede individuelle Potentialströmung werden drei Testfälle diskutiert:
 \begin{enumerate}
 \item Zunächst wird ein Gebiet der Größe $[0,1]\times[0,1]$ in $3\times3$ Zellen unterteilt. Der berechnete Wert in der mittleren Zelle, wo keine Randwerte festgeschrieben sind, wird mit der analytischen Lösung verglichen,
-\item Auf einem $50\times50$-Gitter werden als Anfangsdaten bereits die Werte der analytischen Lösung vorgegeben. Da die Methode nicht berechnen muss, sollte sie bereits nach einem Iterationsschritt mit einem Rediduum von $0$ beenden.
+\item Auf einem $50\times50$-Gitter werden als Anfangsdaten bereits die Werte der analytischen Lösung vorgegeben. Da die Methode nicht berechnen muss, sollte sie bereits nach einem Iterationsschritt mit einem Rediduum von $0$ beenden, unter Beachtung der Maschinengenauigkeit.
 \item Es werden die Äquipotentiallinien und Stromlinien visualisiert. Die Grafiken werden mit den analytischen Lösungen verglichen.
 \end{enumerate}
 
@@ -253,7 +249,6 @@ Zunächst werden die Ergebnisse für einzelne Potentialströmungen diskutiert bzw. 
 \Psi=-v_{\infty}x+u_{\infty}y.
 \end{align}
 Es wird lediglich ein Iterationsschritt ausgeführt.
-\textcolor{red}{prüfen..hat nicht funktioniert}
 \item Visualisierungen: \\[0.3cm]
 \begin{minipage}[t]{7.5cm}
 \includegraphics[height=6cm]{bilder/kapitel1/parallel1}
@@ -267,13 +262,13 @@ Es wird lediglich ein Iterationsschritt ausgeführt.
 
 \subsection{Ebene Staupunktströmung}
 \begin{enumerate}
-\item Es gilt $a=5$. Die analytische Lösung besagt, dass für die mittlere Zelle folgende Werte angenommen werden müssen: $\Phi=0,\quad \Psi=2.5$. Dies stimmt mit der berechneten Lösung überein, das maximale Residuum beträgt bei beiden Berechnungen $0.00e+00$.
+\item Es gilt $a=5$. Die analytische Lösung besagt, dass für die mittlere Zelle folgende Werte angenommen werden müssen: $\Phi=0,\quad \Psi=2.5$. Dies stimmt mit der berechneten Lösung, unter Berücksichtigung der Maschinengenauigkeit, überein, das maximale Residuum beträgt bei beiden Berechnungen $0.00e+00$.
 \item Die analytischen Werte berechnen sich nach den Formeln:
 \begin{align}
 \Phi=a\cdot\left(x^{2}-y^{2}\right), \\
 \Psi=2a\cdot xy.
 \end{align}
-Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat nicht funktioniert}
+Es wird lediglich ein Iterationsschritt ausgeführt.
 \item Visualisierungen: \\[0.3cm]
 \begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/staupunkt1}
@@ -293,7 +288,7 @@ Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat n
 \Phi=\dfrac{S}{2\pi}ln\sqrt{x^{2}+y^{2}}, \\
 \Psi=\dfrac{S}{2\pi}arctan\left(\dfrac{y}{x}\right).
 \end{align}
-Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat nicht funktioniert}
+Es wird lediglich ein Iterationsschritt ausgeführt.
 \item Visualisierungen: \\[0.3cm]
 \begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/quelle1}
@@ -311,18 +306,18 @@ Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat n
 \includegraphics[height=5.5cm]{bilder/kapitel1/senke2}
 \captionof{figure}{Stromlinien, Senke}
 \end{minipage}
-Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_potentialfkt} und \eqref{eq:laplace_stromfkt}), ist dieses Ergebnis auf die verbleibenden drei Quadranten entsprechend zu spiegeln.
+\\[0.2cm] Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_potentialfkt} und \eqref{eq:laplace_stromfkt}), ist dieses Ergebnis auf die verbleibenden drei Quadranten entsprechend zu spiegeln.
 \end{enumerate}
 
 \subsection{Potentialwirbel}
 \begin{enumerate}
-\item Es gilt $\Gamma=5$. Das Gebiet ist in diesem Fall $[1,2]\times[1,2]$. Die analytische Lösung besagt, dass für die mittlere Zelle folgende Werte angenommen werden müssen: $\Phi=0.625,\quad \Psi\approx-0.59845$. Dies stimmt mit der berechneten Lösung überein, das maximale Residuum beträgt bei beiden Berechnungen $0.00e+00$.
+\item Es gilt $\Gamma=5$. Das Gebiet ist in diesem Fall $[1,2]\times[1,2]$. Die analytische Lösung besagt, dass für die mittlere Zelle folgende Werte angenommen werden müssen: $\Phi=0.625,\quad \Psi\approx-0.59845$. Dies stimmt mit der berechneten Lösung, unter Berücksichtigung der Maschinengenauigkeit, überein, das maximale Residuum beträgt bei beiden Berechnungen $0.00e+00$.
 \item Die analytischen Werte berechnen sich nach den Formeln:
 \begin{align}
 \Phi=\dfrac{\Gamma}{2\pi}arctan\left(\dfrac{y}{x}\right), \\
 \Psi=-\dfrac{\Gamma}{2\pi}ln\sqrt{x^{2}+y^{2}}.
 \end{align}
-Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat nicht funktioniert}
+Es wird lediglich ein Iterationsschritt ausgeführt..
 \item Visualisierungen: \\[0.3cm]
 \begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/wirbel1}
@@ -332,18 +327,17 @@ Es wird lediglich ein Iterationsschritt ausgeführt.\textcolor{red}{prüfen..hat n
 \includegraphics[height=5.5cm]{bilder/kapitel1/wirbel2}
 \captionof{figure}{Stromlinien, Potentialwirbel}
 \end{minipage}
-Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_potentialfkt} und \eqref{eq:laplace_stromfkt}), ist dieses Ergebnis auf die verbleibenden drei Quadranten entsprechend zu spiegeln.
+\\[0.2cm] Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_potentialfkt} und \eqref{eq:laplace_stromfkt}), ist dieses Ergebnis auf die verbleibenden drei Quadranten entsprechend zu spiegeln.
 \end{enumerate}
 
 \subsection{Dipol}
 \begin{enumerate}
-\item Es gilt $M=5$. Das Gebiet ist in diesem Fall $[1,2]\times[1,2]$. Die analytische Lösung besagt, dass für die mittlere Zelle folgende Werte angenommen werden müssen: $\Phi\approx0.5627,\quad \Psi\approx-0.5627$. Dies stimmt mit der berechneten Lösung überein, das maximale Residuum beträgt bei beiden Berechnungen $0.00e+00$.
+\item Es gilt $M=5$. Das Gebiet ist in diesem Fall $[1,2]\times[1,2]$. Die analytische Lösung besagt, dass für die mittlere Zelle folgende Werte angenommen werden müssen: $\Phi\approx0.5627,\quad \Psi\approx-0.5627$. Dies stimmt mit der berechneten Lösung, unter Berücksichtigung der Maschinengenauigkeit, überein, das maximale Residuum beträgt bei beiden Berechnungen $0.00e+00$.
 \item Die analytischen Werte berechnen sich nach den Formeln:
 \begin{align}
 \Phi=\dfrac{M}{2\pi}\dfrac{x}{\sqrt{x^{2}+y^{2}}}, \\
 \Psi=-\dfrac{M}{2\pi}\dfrac{x}{\sqrt{x^{2}+y^{2}}}.
 \end{align}
-\textcolor{red}{prüfen..hat nicht funktioniert}
 \item Visualisierungen: \\[0.3cm]
 \begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel1/dipol1}
@@ -353,7 +347,7 @@ Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_p
 \includegraphics[height=5.5cm]{bilder/kapitel1/dipol2}
 \captionof{figure}{Stromlinien, Dipol}
 \end{minipage}
-Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_potentialfkt} und \eqref{eq:laplace_stromfkt}), ist dieses Ergebnis auf die verbleibenden drei Quadranten entsprechend zu spiegeln, bzw. weiter ins Unendliche.
+\\[0.2cm] Aufgrund der Rotationssymmetrie des Laplace-Operators (siehe \eqref{eq:laplace_potentialfkt} und \eqref{eq:laplace_stromfkt}), ist dieses Ergebnis auf die verbleibenden drei Quadranten entsprechend zu spiegeln, bzw. weiter ins Unendliche.
 \end{enumerate}
-Es ist erkennbar, dass alle getesteten Potentialströmungen hinreichend exakte Ergebnisse liefern.
+Es ist erkennbar, dass alle getesteten Potentialströmungen hinreichend exakte Ergebnisse liefern (die Ergebnisse sind nicht exakt der analytischen Lösung aufgrund Rundungsfehler infolge der Maschinengenauigkeit).
 

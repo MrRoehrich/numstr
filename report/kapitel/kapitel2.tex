@@ -1,25 +1,25 @@
-\chapter{Konvektions-Diffusions-Strömung}
+\chapter{Konvektions-Diffusions-Strömung} \label{chap3}
 
 \section{Aufgabenstellung}
 Ziel ist es, eine inkompressible, instationäre und zweidimensionale Strömung zu simulieren, welche Konvektions- und Diffusionsprozesse enthält. \\
-Analag zu Kapitel \ref{chap:1} wird zunächst auf die mathematische Modellbildung eingeganen, anschließend werden numerische Methoden zum Lösen der entstandenen Gleichungen vorgestellt und schließlich, werden Testfälle bzw. Resultate des Programms diskutiert und somit das Programm validiert.
+Analag zu Kapitel \ref{chap:1} wird zunächst auf die mathematische Modellbildung eingegagnen, anschließend werden numerische Methoden zum Lösen der entstandenen Gleichungen vorgestellt und schließlich, werden Testfälle bzw. Resultate des Programms diskutiert und somit das Programm validiert.
 
 \section{Mathematische Modellbildung} \label{sec:mathmodell_2}
 Es wird die Bilanzgröße $\Phi$ betrachet. Stellt man die Bilanz der konvektiven und diffusiven Flüsse, sowie der Quellterme für ein diferentielles Element im Zweidimensionalen auf, so ergibt sich für die horizontalen (konvektiven und diffusiven) Flüsse:
 \begin{align}
-f_{konv,links} = \rho u\Phi dy,\quad f_{konv,rechts}=\left(\rho u \Phi + \dfrac{\partial\left(\rho u \Phi\right)}{\partial x}dx\right)dy, \label{eq:flüsse_konv_hor} \\
-f_{diff,links} = -a\dfrac{\partial\Phi}{\partial x} dy,\quad f_{diff,rechts}=-\left(a\dfrac{\partial\Phi}{\partial x} + \dfrac{\partial}{\partial x}\left(a\dfrac{\partial\Phi}{\partial x}\right)dx\right)dy. \label{eq:flüsse_diff_hor}
+f_{konv,links} &= \rho u\Phi dy,&&f_{konv,rechts}=\left(\rho u \Phi + \dfrac{\partial\left(\rho u \Phi\right)}{\partial x}dx\right)dy, \label{eq:flüsse_konv_hor} \\
+f_{diff,links} &= -a\dfrac{\partial\Phi}{\partial x} dy,&&f_{diff,rechts}=-\left(a\dfrac{\partial\Phi}{\partial x} + \dfrac{\partial}{\partial x}\left(a\dfrac{\partial\Phi}{\partial x}\right)dx\right)dy. \label{eq:flüsse_diff_hor}
 \end{align}
 Analog gilt für die vertikalen Flüsse:
 \begin{align}
-g_{konv,unten} = \rho u\Phi dx,\quad g_{konv,oben}=\left(\rho u \Phi + \dfrac{\partial\left(\rho u \Phi\right)}{\partial y}dy\right)dx, \label{eq:flüsse_konv_ver} \\
-g_{diff,unten} = -a\dfrac{\partial\Phi}{\partial y} dx,\quad g_{diff,oben}=-\left(a\dfrac{\partial\Phi}{\partial y} + \dfrac{\partial}{\partial y}\left(a\dfrac{\partial\Phi}{\partial y}\right)dy\right)dx. \label{eq:flüsse_diff_ver}
+g_{konv,unten} &= \rho u\Phi dx, &&g_{konv,oben}=\left(\rho u \Phi + \dfrac{\partial\left(\rho u \Phi\right)}{\partial y}dy\right)dx, \label{eq:flüsse_konv_ver} \\
+g_{diff,unten} &= -a\dfrac{\partial\Phi}{\partial y} dx,&&g_{diff,oben}=-\left(a\dfrac{\partial\Phi}{\partial y} + \dfrac{\partial}{\partial y}\left(a\dfrac{\partial\Phi}{\partial y}\right)dy\right)dx. \label{eq:flüsse_diff_ver}
 \end{align}
 Für die Quellterme gilt:
 \begin{equation} \label{eq:quellterm}
 s\cdot dxdy.
 \end{equation}
-Mittels diesen Flüssen bzw. Quelltermen ist folgende Bilanzgleichung aufstellbar:
+Mittels dieser Flüsse bzw. Quellterme ist folgende Bilanzgleichung aufstellbar:
 \begin{align*}
 \dfrac{\partial\left(\rho\Phi\right)}{\partial t}= 
 & f_{konv,links}-f_{konv,rechts}+g_{konv,unten}+g_{konv,oben}+ \\ 
@@ -42,15 +42,15 @@ gelangt man zu der nicht-konservativen Darstellung:
 \begin{equation} \label{eq:bilanz_2d_nichtkonserv}
 \rho\dfrac{\partial\Phi}{\partial t}+\rho\cdot u\dfrac{\partial\Phi}{\partial x}+\rho\cdot v\dfrac{\partial\Phi}{\partial y}=\dfrac{\partial}{\partial x}\left(a\dfrac{\partial\Phi}{\partial x}\right)+\dfrac{\partial}{\partial y}\left(a\dfrac{\partial\Phi}{\partial y}\right)+s.
 \end{equation}
-Schreibt man diese Gleichungen als Flussformulierung, so ergibt sich nach Anwendung eines Volumenintegrals über das komplette Volumen $\Omega$ und der anschließenden Anwendung der Gauss'schen Integralsatzes folgende Form:
+Nach Anwendung eines Volumenintegrals auf \eqref{eq:bilanz_allg} über das komplette Volumen $\Omega$ und der anschließenden Anwendung der Gauss'schen Integralsatzes gelangt man zu folgender Form:
 \begin{equation} \label{eq:bilanz_integralform}
 \dfrac{\partial}{\partial t}\int_{\Omega}\left(\rho\Phi\right)\mathrm{d}\Omega+\oint_{\partial\Omega}\left(\rho\vec{v}\Phi-\alpha\cdot\nabla\Phi\right)\cdot \mathrm{d}\vec{A}= \int_{\Omega}s\mathrm{d}\Omega,
 \end{equation} 
 wobei $\vec{F}=\rho\vec{v}\Phi-\alpha\cdot grad(\Phi)$ den Fluss bezeichnet. Die rechte Seite dieser Formel stellt die Bilanz der Quellen über das gesamte Integrationsgebiet $\Omega$ dar, die linke Seite stellt die Summe aus zeitlicher Änderung der Bilanzgröße und der Bilanz aller Flüsse über die Gebietsoberfläche dar. 
 
 \section{Diskretisierung}
-Das gesamte Integrationsgebiet $\Omega$ wird in kleine finite, sich nicht überlappende, Volumen zerlegt. Das dadurch entstehende numerische Verfahren ist das \textbf{Finite-Volumen-Verfahren}. \\
-Mit der so entstandenen Diskretisierung bzw. dem so entstandenen Gitter gilt mit Gleichung \ref{eq:bilanz_integralform} für jedes finite Vilumen $j$ folgende Gleichung:
+Das gesamte Integrationsgebiet $\Omega$ wird in kleine, sich nicht überlappende, Volumen zerlegt. Das dadurch entstehende numerische Verfahren ist das \textbf{Finite-Volumen-Verfahren}. \\
+Mit der so entstandenen Diskretisierung bzw. dem so entstandenen Gitter gilt mit Gleichung \ref{eq:bilanz_integralform} für jedes finite Volumen $j$ folgende Gleichung:
 \begin{equation} \label{eq:bilanz_fv}
 \dfrac{\partial}{\partial t}\left(\rho\Phi_{j}\right)\Delta V_{j} + \sum_{Seiten}\vec{F}\left(\Phi\right)\cdot\Delta\vec{A}=s_{j}\Delta V_{j}.
 \end{equation}
@@ -71,7 +71,7 @@ Es wird eine numerische Berechnung für den in \ref{eq:bilanz_fv} beschriebenen F
 \vec{F}_{P_{1}P_{2}}=\begin{bmatrix}
    f\\
    g
-\end{bmatrix}.,
+\end{bmatrix},
 \end{equation}
 wobei $f$ und $g$ jeweils die horizontale bzw. vertikale Komponenten sind (vgl. \eqref{eq:flüsse_konv_hor}, \eqref{eq:flüsse_diff_hor},\eqref{eq:flüsse_konv_ver},\eqref{eq:flüsse_diff_ver}). Mit dem Normalenvektor der betrachteten Kante $\vec{n}_{P_{1}P_{2}}=\dfrac{1}{\sqrt{\Delta x^{2}+\Delta y^{2}}}\begin{bmatrix}
    \Delta y\\
@@ -86,12 +86,12 @@ Eingesetzt in \eqref{eq:bilanz_fv} folgt:
 \end{equation}
 
 \subsubsection{Flusskomponenten} \label{sec:flusskomponenten_2}
-In Gleichung \eqref{bilanz_fv_numfluss} ist noch unklar, wie sich die numerischen Flusskomponenten $f*$ bzw. $g*$ über eine Zellfläche berechnen. \\
+In Gleichung \eqref{bilanz_fv_numfluss} ist noch unklar, wie sich die numerischen Flusskomponenten $f^{*}$ bzw. $g^{*}$ über eine Zellfläche berechnen. \\
 Es gibt beispielsweise folgende Möglichkeiten für den konvektiven Anteil:
 \begin{enumerate}
-\item $f_{P_{1}P_{2}}*=\dfrac{f_{j}+f_{j+1}}{2}$, wobei $j$ und $j+1$ die Zellen bezeichnen die sich die gemeinsame Kante $\overline{P_{1}P_{2}}$ teilen.
-\item $f_{P_{1}P_{2}}*=f\left(\dfrac{\Phi_{j}+\Phi_{j+1}}{2}\right)$, mit $j$ und $j+1$ wie bei $1.$.
-\item $f_{P_{1}P_{2}}*=\dfrac{f_{P_{1}+f_{P_{2}}}}{2}$.
+\item $f_{P_{1}P_{2}}^{*}=\dfrac{f_{j}+f_{j+1}}{2}$, wobei $j$ und $j+1$ die Zellen bezeichnen die sich die gemeinsame Kante $\overline{P_{1}P_{2}}$ teilen.
+\item $f_{P_{1}P_{2}}^{*}=f\left(\dfrac{\Phi_{j}+\Phi_{j+1}}{2}\right)$, mit $j$ und $j+1$ wie bei $1.$.
+\item $f_{P_{1}P_{2}}^{*}=\dfrac{f_{P_{1}+f_{P_{2}}}}{2}$.
 \end{enumerate}
 Es existieren wesentlich mehr Möglichkeiten, an dieser Stelle wird nicht auf diese eingangen. \\
 Der diffusive Anteil, der sich mittels $\vec{F}_{diff}=-\alpha\cdot\nabla\Phi$ berechnet, wird in seine $x$- und $y$-Anteile aufgespalten, so dass sich folgende Approximation ergibt:
@@ -100,8 +100,8 @@ f_{P_{1}P_{2}}\approx-\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i+1,j}-\Phi_{i,j}}{\D
 \end{equation}
 Somit ergibt sich für die Summe der diffusiven Flüsse der Zelle \{$P_{1},P_{2},P_{3},P_{4}$\} folgende zentrale Approximation:
 \begin{align}
-f_{P_{1}P_{2}}-f_{P_{3}P_{4}}\approx\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i+1,j}-2\Phi_{i,j}+\Phi_{i-1,j}}{\Delta x}, \label{eq:numfluss_diff_hor} \\
-g_{P_{2}P_{3}}-f_{P_{4}P_{1}}\approx\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i,j+1}-2\Phi_{i,j}+\Phi_{i,j-1}}{\Delta y}, \label{eq:numfluss_diff_ver}
+f_{P_{1}P_{2}}-f_{P_{3}P_{4}}&\approx\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i+1,j}-2\Phi_{i,j}+\Phi_{i-1,j}}{\Delta x}, \label{eq:numfluss_diff_hor} \\
+g_{P_{2}P_{3}}-f_{P_{4}P_{1}}&\approx\alpha_{P_{1}P_{2}}\cdot\dfrac{\Phi_{i,j+1}-2\Phi_{i,j}+\Phi_{i,j-1}}{\Delta y}, \label{eq:numfluss_diff_ver}
 \end{align}
 wobei $i,j$ den Wert von $\Phi$ in der bilanzierten Zelle entspricht, $i,j+1$ dem Wert der Zelle darüber usw..
 
@@ -116,9 +116,7 @@ wobei $n$ der Zeit-Index ist und $j$ wie bereits beschrieben, das finite Volumen
 \end{equation}
 Die Flusskomponenten $f$ und $g$ setzen sich, wie in Kapitel \ref{sec:flusskomponenten_2} beschrieben, aus diffusiven und konvektiven Anteilen zusammen.
 
-\subsection{Rekonstruktion und Upwind-Diskretisierung}
-Nachdem alle neuen Werte von $\Phi$ mittels \eqref{eq:konv_diff_fv_verfahren} berechnet worden sind, stellt sich die Frage, wie diese interpretiert bzw. rekonstruiert werden sollen. Einerseits besteht die Möglichkeit, die Zellmittelwerte benachbarter Zellen linear miteinander zu verbinden, andererseits besteht beispielsweise die Möglichkeit der Verwendung eines Stufenprofils mit Sprungstellen an den entsprechenden Zellübergängen. \\
-Dies führt zu der Idee der \textbf{Upwind}-Diskretisierung, da das Stufenprofil die physikalischen Eigenschaften des konvektiven Transportes besser abbildet. Daher wird nun diese Diskretisierungsmöglichkeit näher beleuchtet. \\
+\subsection{Upwind-Diskretisierung}
 Es wird im eindimensionalen Fall die Kante mit Indes $i+\dfrac{1}{2}$ betrachtet, welche die Zellen mit Werten $\Phi_{i}$ und $\Phi_{i+1}$ verbindet. Es gilt folgender Zusammenhang:
 \begin{equation}
 \left(\rho u \Phi\right)_{i+\frac{1}{2}} = \begin{cases}
@@ -128,10 +126,9 @@ Es wird im eindimensionalen Fall die Kante mit Indes $i+\dfrac{1}{2}$ betrachtet
 \end{equation}
 d.h. die Richtung der Transportgeschwindigkeit ist hier entscheidend. \\
 Nachteil dieser Methode ist, dass die Upwind-Diskretisierung lediglich erster Ordnung ist, die zentrale Diskretisierung hingegen zweiter Ordnung. Verbesserungsmöglichkeiten werden in Kapitel \ref{sec:höhere_ordnung_2} diskutiert.
-\textcolor{red}{SEITE 4-11: Übungsaufgabe! Konsistenz, Stabilität, Ordnung + vergleichen mit zentral}
 
 \subsubsection{Höhere Ordnung} \label{sec:höhere_ordnung_2}
-Es existieren optimierte Upwind-Methoden, wie z.b. QUICK. Hier wird statt eines treppenförmigen Profils eine quadratische Rekonstruktion von $\Phi$ auf drei stromauf versetzten Knotenpunkten angesetzt. So wird eine Approximation zweiter Ordnung für äquidistante Gitter erreicht, im Gegensatz zu der ersten Ordnung der "normalen" Upwind-Diskretisierung.
+Es existieren optimierte Upwind-Methoden, wie z.b. QUICK. Hier wird statt eines treppenförmigen Profils eine quadratische Rekonstruktion von $\Phi$ auf drei stromauf versetzten Knotenpunkten angesetzt. So wird eine Approximation zweiter Ordnung für äquidistante Gitter erreicht, im Gegensatz zu der ersten Ordnung der \textit{normalen} Upwind-Diskretisierung.
 
 \subsection{Vereinheitliche Programmierung}
 Wir betrachten die bereits beschrieben diskretisierte Gleichung
@@ -149,10 +146,10 @@ Da die Kontinuitätsgleichung
 erfüllt sein muss, vereinfacht sich Gleichung \eqref{eq:a_ij} dementsprechend.
 Für die Berechnung eines Zellmittelwerts im nächsten Zeitschritt, kann folgende verallgemeinerte Formel angenommen werden:
 \begin{align} \label{eq:verallg_zellmittelformel}
-\tilde{a}_{i,j}\Phi_{i,j}^{k+1}=a_{i,j+1}\cdot\Phi_{i,j+1}^{k}+a_{i+1,j}\cdot\Phi_{i+1,j}^{k}+a_{i,j-1}\cdot\Phi_{i,j-1}^{k}+a_{i-1,j}\cdot\Phi_{i-1,j}^{k}+b, \\
-b=a_{i,j}^{k}\cdot\Phi_{i,j}^{k}, \\
-a_{i,j}^{k}=\dfrac{\rho\Delta x\Delta y}{\Delta t}, \\
-\tilde{a}_{i,j}=a_{i,j+1}+a_{i+1,j}+a_{i,j-1}+a_{i-1,j}+a_{i,j}.
+\tilde{a}_{i,j}\Phi_{i,j}^{k+1}&=a_{i,j+1}\cdot\Phi_{i,j+1}^{k}+a_{i+1,j}\cdot\Phi_{i+1,j}^{k}+a_{i,j-1}\cdot\Phi_{i,j-1}^{k}+a_{i-1,j}\cdot\Phi_{i-1,j}^{k}+b, \\
+b&=a_{i,j}^{k}\cdot\Phi_{i,j}^{k}, \\
+a_{i,j}^{k}&=\dfrac{\rho\Delta x\Delta y}{\Delta t}, \\
+\tilde{a}_{i,j}&=a_{i,j+1}+a_{i+1,j}+a_{i,j-1}+a_{i-1,j}+a_{i,j}.
 \end{align}
 wobei $i$,$j$ die Ortsindizes und $k$ der Zeitindex sind. Das Einflussgebiet sieht also wie folgt aus:
 \FloatBarrier
@@ -168,12 +165,12 @@ wobei $i$,$j$ die Ortsindizes und $k$ der Zeitindex sind. Das Einflussgebiet sie
 \FloatBarrier
 Die Koeffizienten $a_{\bullet,\bullet}$ errechnen sich wie folgt:
 \begin{align}
-a_{i,j+1}=D_{i,j+1}\cdot\Delta x\cdot A\left(|Pe_{i,j+1}|\right)+max\left(-g_{i,j+1}\Delta x,0\right), \\
-a_{i+1,j}=D_{i+1,j}\cdot\Delta y\cdot A\left(|Pe_{i+1,j1}|\right)+max\left(-f_{i+1,j}\Delta y,0\right), \\
-a_{i,j-1}=D_{i,j-1}\cdot\Delta x\cdot A\left(|Pe_{i,j-1}|\right)+max\left(g_{i,j-1}\Delta x,0\right), \\
-a_{i-1,j}=D_{i-1,j}\cdot\Delta y\cdot A\left(|Pe_{i-1,j}|\right)+max\left(f_{i-1,j}\Delta y,0\right),
+a_{i,j+1}&=D_{i,j+1}\cdot\Delta x\cdot A\left(|Pe_{i,j+1}|\right)+max\left(-g_{i,j+1}\Delta x,0\right), \\
+a_{i+1,j}&=D_{i+1,j}\cdot\Delta y\cdot A\left(|Pe_{i+1,j1}|\right)+max\left(-f_{i+1,j}\Delta y,0\right), \\
+a_{i,j-1}&=D_{i,j-1}\cdot\Delta x\cdot A\left(|Pe_{i,j-1}|\right)+max\left(g_{i,j-1}\Delta x,0\right), \\
+a_{i-1,j}&=D_{i-1,j}\cdot\Delta y\cdot A\left(|Pe_{i-1,j}|\right)+max\left(f_{i-1,j}\Delta y,0\right),
 \end{align}
-wobei $f_{\bullet,\bullet}=\rho\cdot u_{\bullet,\bullet}$ und $g_{\bullet,\bullet}=\rho\cdot v_{\bullet,\bullet}$. Für die Peclet-Zahl gilt $Pe_{\bullet,\bullet}=\dfrac{\rho u_{\bullet,\bullet} l}{\alpha}$, mit charakteristischer Länge $l$, die hier zu Eins gesetzt worde ist, und es gilt zum Beispiel $D_{i,j+1}=\dfrac{\alpha}{\Delta x}$. Für die Berechnung von $A\left(|Pe|\right)$ können die folgenden verschiedenen Schemata verwendet werden:
+wobei $f_{\bullet,\bullet}=\rho\cdot u_{\bullet,\bullet}$ und $g_{\bullet,\bullet}=\rho\cdot v_{\bullet,\bullet}$. Für die Peclet-Zahl gilt $Pe_{\bullet,\bullet}=\dfrac{\rho u_{\bullet,\bullet} l}{\alpha}$, mit charakteristischer Länge $l$ und es gilt zum Beispiel $D_{i,j+1}=\dfrac{\alpha}{\Delta x}$. Für die Berechnung von $A\left(|Pe|\right)$ können die folgenden verschiedenen Schemata verwendet werden:
 \FloatBarrier
 \begin{table}[!htb]
 \centering
@@ -190,10 +187,6 @@ wobei $f_{\bullet,\bullet}=\rho\cdot u_{\bullet,\bullet}$ und $g_{\bullet,\bulle
 \end{table}
 \FloatBarrier
 Es ist ersichtlich, dass für das Zentrale Differenzen-Schema $A\left(|Pe|\right)$ kleiner Null wird, sobald $|Pe|>2$ ist. Da stabile Verfahren ein positives $A$ vorraussetzen, ist bei Verwendung dieses Schemas stets auf die Peclet-Zahl zu achten.
-
-\section{Konvergenzanalyse}
-\subsection{Konsistenz}
-\subsection{Stabilität}
 
 \section{Validierung des Programms}
 \subsection{Konvektion}
@@ -241,7 +234,7 @@ Zunächst wird die Zentrale-Differenzen-Methode verwendet, danach die Upwind-Meth
   \end{tabular}
 \end{table}
 \FloatBarrier
-Das Strömungsfeld wird vorgegeben, zunächst sei $u=1$\textcolor{red}{EINHEITEN SCHREIBEN??!!} und $v=0$. Es wird die Upwind-Methode verwendet, d.h. als stationärer Endwert in der mittleren Zelle muss sich der Wert der linken Zelle, sprich der Wert $1$, durchsetzen. Die Resultate der numerischen Berechnung geben genau dieses Ergebnis wieder:
+Das Strömungsfeld wird vorgegeben, zunächst sei $u=1$ und $v=0$. Es wird die Upwind-Methode verwendet, d.h. als stationärer Endwert in der mittleren Zelle muss sich der Wert der linken Zelle, sprich der Wert $1$, durchsetzen. Die Resultate der numerischen Berechnung geben genau dieses Ergebnis wieder:
 \FloatBarrier
 \begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_1}
@@ -252,7 +245,7 @@ Das Strömungsfeld wird vorgegeben, zunächst sei $u=1$\textcolor{red}{EINHEITEN S
 \captionof{figure}{Upwind-Methode, stationäre Endlösung ($v=0$)}
 \end{minipage}
 \FloatBarrier
-Nun wird das Geschwindigkeitsfeld zu $u=0$ und $v=1$ geändert\textcolor{red}{EINHEITEN SCHREIBEN??!!}. Aufgrund der gleichen Argumentation, muss sich jetzt der Wert der unteren Zelle, sprich der Wert $0$ in der mittleren Zelle durchsetzen. Die numerische Simulation stimmt mit dieser Überlegung überein:
+Nun wird das Geschwindigkeitsfeld zu $u=0$ und $v=1$ geändert. Aufgrund der gleichen Argumentation, muss sich jetzt der Wert der unteren Zelle, sprich der Wert $0$ in der mittleren Zelle durchsetzen. Die numerische Simulation stimmt mit dieser Überlegung überein:
 \FloatBarrier
 \begin{minipage}[t]{7.5cm}
 \includegraphics[height=5.5cm]{bilder/kapitel2/konvektion_1}
@@ -264,7 +257,7 @@ Nun wird das Geschwindigkeitsfeld zu $u=0$ und $v=1$ geändert\textcolor{red}{EIN
 \end{minipage}
 \FloatBarrier
 
-\item Die Software gibt anscheinend für das Konvektionsproblem das richtige Ergebnis aus. Abschließend wird eine konvektive Strömung auf einem größeren Gitter der Größe $100\times100$ mit Geschwindigkeiten $u=1$ und $v=2$\textcolor{red}{EINHEITEN SCHREIBEN??!!} simuliert. Das Integrationsgebiet ist ebenfalls $100\times100$\textcolor{red}{EINHEITEN SCHREIBEN??!!} groß. Im Folgenden wird die zeitliche Evolution des skalaren Wertes $\Phi$ über das gesamte Integrationsgebiet dargestellt. Hierfür ist die Upwind-Methode verwendet worden:
+\item Die Software gibt anscheinend für das Konvektionsproblem das richtige Ergebnis aus. Abschließend wird eine konvektive Strömung auf einem größeren Gitter der Größe $100\times100$ mit Geschwindigkeiten $u=1$ und $v=2$ simuliert. Das Integrationsgebiet ist ebenfalls $100\times100$ groß. Im Folgenden wird die zeitliche Evolution des skalaren Wertes $\Phi$ über das gesamte Integrationsgebiet dargestellt. Hierfür ist die Upwind-Methode verwendet worden:
 \begin{figure}[!htb]
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/konvektion_6_0sek}
@@ -334,7 +327,7 @@ Da die Randwerte fest sind ist der Mittelwert der mittleren Zelle für die statio
 \end{minipage}
 \FloatBarrier
 
-\item Die Software gibt anscheinend für das Diffusionsproblem das richtige Ergebnis aus. Abschließend wird eine diffusive Strömung auf einem größeren Gitter der Größe $100\times100$ mit Diffusionskoeffizient $\alpha=50$\textcolor{red}{EINHEITEN SCHREIBEN??!!} simuliert. Das Integrationsgebiet ist ebenfalls $100\times100$\textcolor{red}{EINHEITEN SCHREIBEN??!!} groß. Im Folgenden wird die zeitliche Evolution des skalaren Wertes $\Phi$ über das gesamte Integrationsgebiet dargestellt:
+\item Die Software gibt anscheinend für das Diffusionsproblem das richtige Ergebnis aus. Abschließend wird eine diffusive Strömung auf einem größeren Gitter der Größe $100\times100$ mit Diffusionskoeffizient $\alpha=50$ simuliert. Das Integrationsgebiet ist ebenfalls $100\times100$ groß. Im Folgenden wird die zeitliche Evolution des skalaren Wertes $\Phi$ über das gesamte Integrationsgebiet dargestellt:
 \begin{figure}[!htb]
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_0sek}
@@ -342,7 +335,7 @@ Da die Randwerte fest sind ist der Mittelwert der mittleren Zelle für die statio
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_100sek}
-\subcaption*{$t=100$}
+\subcaption*{$t=100sek$}
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/diffusion_3_200sek}
@@ -376,7 +369,7 @@ Im stationären Endfall, der hier nicht visualisiert ist, werden im gesamten Inte
 
 \subsection{Konvektion-Diffusion}
 \begin{enumerate}
-\item Im Folgenden wird eine Konvektion-Diffusions-Strömung visualisiert. Die Parameter sind $\alpha=50$, $u=5$ und $v=10$. Das Gebiet ist das selbe $100\times100$-Gebiet, wie in den vorherigen Testfällen, wo Konvektion und Diffusion getrennt betrachtet wurden. Das Ergebnis der Simulation sieht wie folgt aus:
+\item Im Folgenden wird eine Konvektion-Diffusions-Strömung visualisiert. Die Parameter sind $\alpha=50$, $u=5$ und $v=10$. Das Gebiet ist das selbe $100\times100$-Gebiet, wie in den vorherigen Testfällen, wo Konvektion und Diffusion getrennt betrachtet worden sind. Das Ergebnis der Simulation sieht wie folgt aus:
 \begin{figure}[!htb]
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_0sek}
@@ -384,7 +377,7 @@ Im stationären Endfall, der hier nicht visualisiert ist, werden im gesamten Inte
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_100sek}
-\subcaption*{$t=100$}
+\subcaption*{$t=100sek$}
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/konvektiondiffusion_1_200sek}
@@ -416,8 +409,8 @@ Im stationären Endfall, der hier nicht visualisiert ist, werden im gesamten Inte
 Im stationären Endfall, der hier nicht visualisiert ist, werden im gesamten Integrationsgebiet die Werte der Dirchichlet-Ränder, nämlich $42$, angenommen, was auch der richtigen Lösung entspricht. Weiterhin ist erkennbar, dass sich die Randwerte von unten und links in das Gebiet hineinpflanzen und dass am Ende der skalare Wert $\Phi$ mit der Zeit hinaus-diffundiert.
 \end{enumerate}
 
-\subsection{Neumann-Räder}
-Biser wurden in sämtlichen Testfällen Dirichlet-Randbedingungen verwendet. Im Folgenden werden in einem Testfall die Implementierung der Neumann-Ränder getestet und visualisert. Es wird eine $50\times50$-Diskretisierung für das $3\times3$ große Gitter verwendet. Die Anfangswerte sind über das ganze Integrationsgebiet $4,711$. Am nördlichen und östlichen Rand fließt der Skalar $\Phi$ ebenfalls mit $4,711$ pro Sekunde heraus. An dem südlichen und westlichen Rand, fließt der Skalar $\Phi$ mit $42$ pro Sekunde rein. Als Konvektionsgeschwindigkeiten sind $u=1$ und $v=1$ gesetzt, der Diffusionskoeffizient $\alpha$ ist zu Null gesetzt. Es wird die zeitliche Evolution des skalaren Wertes $\Phi$ dargestellt, welche der physikalischen Überlegung, dass sich der Skalar Richtung Nord-Osten bewegt und dort aufstaut, entspricht (bei den Grafiken ist die Änderung der Skala zu beachten):
+\subsection{Neumann-Ränder}
+Biser wurden in sämtlichen Testfällen Dirichlet-Randbedingungen verwendet. Im Folgenden werden in einem Testfall die Implementierung der Neumann-Ränder getestet und visualisert. Es wird eine $50\times50$-Diskretisierung für das $3\times3$ große Gitter verwendet. Die Anfangswerte sind über das ganze Integrationsgebiet $4.711$. Am nördlichen und östlichen Rand fließt der Skalar $\Phi$ ebenfalls mit $4.711$ pro Sekunde heraus. An dem südlichen und westlichen Rand, fließt der Skalar $\Phi$ mit $42$ pro Sekunde rein. Als Konvektionsgeschwindigkeiten sind $u=1$ und $v=1$ gesetzt, der Diffusionskoeffizient $\alpha$ ist zu Null gesetzt. Es wird die zeitliche Evolution des skalaren Wertes $\Phi$ dargestellt, welche der physikalischen Überlegung, dass sich der Skalar Richtung Nord-Osten bewegt und dort aufstaut, entspricht (bei den Grafiken ist die Änderung der Skala zu beachten):
 \begin{figure}[!htb]
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_0sek}
@@ -425,7 +418,7 @@ Biser wurden in sämtlichen Testfällen Dirichlet-Randbedingungen verwendet. Im Fo
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_01sek}
-\subcaption*{$t=0,1$}
+\subcaption*{$t=0,1sek$}
 \end{minipage}
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/neumann_1_02sek}
@@ -456,7 +449,7 @@ Biser wurden in sämtlichen Testfällen Dirichlet-Randbedingungen verwendet. Im Fo
 \FloatBarrier
 
 \subsection{Quellen}
-Es wird wieder eine $50\times50$-Diskretisierung für ein $3\times3$ großes Integrationsgebiet verwendet. Es werden undruchlässige Wände an allen vier Wänden simuliert, die Konvektionsgeschwindigkeiten sind beide Null und der Diffusionskoeffizient beträgt $\alpha=10$. Als Initialwerte für den Skalar $\Phi$ wird wieder über dem gesamten Gebiet der Wert $4,711$ gesetzt. An der Stelle $(1,1)$ befindet eine Quelle, die pro Sekunde $100$ Einheiten des Skalars $\Phi$ in das Integrationsgebiet einbringt, an der Stelle $(2,2)$ befindet sich eine Senke die $15$ Einheiten des Skalars $\Phi$ pro Sekunde "absaugt". Es ergibt sich folgende, physikalisch korrektes, zeitliche Evolution (Bemerkung: Es werden nur positive Werte von $\Phi$ angezeigt, nicht die negativen Werte, welche aus der Senke resultieren. So wird deutlicher, welchen Einfluss die Senke bzw. die Quelle aufeinander haben).
+Es wird wieder eine $50\times50$-Diskretisierung für ein $3\times3$ großes Integrationsgebiet verwendet. Es werden undruchlässige Wände an allen vier Wänden simuliert, die Konvektionsgeschwindigkeiten sind beide Null und der Diffusionskoeffizient beträgt $\alpha=10$. Als Initialwerte für den Skalar $\Phi$ wird wieder über dem gesamten Gebiet der Wert $4.711$ gesetzt. An der Stelle $(1,1)$ befindet eine Quelle, die pro Sekunde $100$ Einheiten des Skalars $\Phi$ in das Integrationsgebiet einbringt, an der Stelle $(2,2)$ befindet sich eine Senke die $15$ Einheiten des Skalars $\Phi$ pro Sekunde \textit{absaugt}. Es ergibt sich folgende, physikalisch korrektes, zeitliche Evolution (Bemerkung: Es werden nur positive Werte von $\Phi$ angezeigt, nicht die negativen Werte, welche aus der Senke resultieren. So wird deutlicher, welchen Einfluss die Senke bzw. die Quelle aufeinander haben).
 \begin{figure}[!htb]
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/diffusion4_4sek}
