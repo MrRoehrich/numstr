@@ -36,7 +36,7 @@ Zunächst werden die Ableitungen, die beispielsweise in \eqref{eq:fd_laplace_phi_
 \begin{align*}
 \xi\left(x,y\right)&=10x+50, && \eta\left(x,y\right)=\dfrac{50y}{arctan(x)+2} \\
 \dfrac{\partial\xi}{\partial x}&=10, && \dfrac{\partial\eta}{\partial x}=\dfrac{-50y}{\left(1+x^{2}\right)\left(arctan(x)+2\right)^{2}}, \\
-\dfrac{\partial^{2}\xi}{\partial x^{2}}&=0, &&\dfrac{\partial^{2}\eta}{\partial x^{2}}=\dfrac{100\left(x\cdot arctan(x)+1+2x\right)}{\left(1+x^{2}\right)^{2}\left(arctan(x)+2\right)^{3}}, \\
+\dfrac{\partial^{2}\xi}{\partial x^{2}}&=0, &&\dfrac{\partial^{2}\eta}{\partial x^{2}}=\dfrac{100\left( arctan(x)x+1+2x\right)}{\left(1+x^{2}\right)^{2}\left(arctan(x)+2\right)^{3}}, \\
 \dfrac{\partial\xi}{\partial y}&=0, &&\dfrac{\partial\eta}{\partial y}=\dfrac{50}{arctan(x)+2}, \\
 \dfrac{\partial^{2}\xi}{\partial y^{2}}&=0, && \dfrac{\partial^{2}\eta}{\partial y^{2}}=0.
 \end{align*}
@@ -138,13 +138,13 @@ Es folgen die gleichen Ergebnisse wie bei Kanal 1
 
 \subsection{Berechnung des Transports eines Skalars}
 \subsubsection{Flussströmung mit Ein- und Abflussrohr am Rand} \label{sec:fluss}
-Betrachtet wird ein Fluss bzw. ein Kanal, welcher stationär mit der selben Geschwindigkeit $u$ in $x$-Richtung fließt. Am Rand dieses Kanals befindet sich ein Einflussrohr, beispielsweise ein Abfluss einer Fabrik oder ein Zufluss eines anderen Kanals, welches einen Stoff gleicher Dichte $\rho$ in das strömende Fluid des Kanals gibt. Die Ausströmrichtung dieses Rohres steht senkrecht zur Kanalströmung. \\
+Betrachtet wird ein Fluss bzw. ein Kanal, welcher stationär und homgogen mit der Geschwindigkeit $u$ in $x$-Richtung fließt. Am Rand dieses Kanals befindet sich ein Einflussrohr, beispielsweise ein Abfluss einer Fabrik oder ein Zufluss eines anderen Kanals, welches einen Stoff gleicher Dichte $\rho$ in das strömende Fluid des Kanals gibt. Die Ausströmrichtung dieses Rohres steht senkrecht zur Kanalströmung. \\
 Im Folgenden werden zwei Fälle verglichen:
 \begin{itemize}
 \item \textbf{Links}: Es wird lediglich ein Stoff in die Kanalströmung eingeführt.
 \item \textbf{Rechts}: Kurz hinter dem Einfluss des neuen Stoffes wird das Fluid des Kanals abgesaugt, ebenfalls am unteren Rand.
 \end{itemize}
-Die zwei Strömungen werden an fünf diskreten Zeitpunkten visualisiert. Die Berechnungen wurden auf einem $100\times50$-Gitter durchgeführt.
+Die zwei Strömungen werden zu fünf Zeitpunkten visualisiert. Die Berechnungen wurden auf einem $100\times50$-Gitter durchgeführt.
 
 \begin{figure}[!htb]
 \begin{minipage}[t]{7.8cm}
@@ -266,7 +266,7 @@ Die Simulationseinstellungen bleiben ansonsten dieselben wie in \ref{sec:fluss}.
 \end{figure}
 \FloatBarrier
 
-Links wird, aufgrund der stärkeren Quelle, das neue Fluid entlang des Kanals transportiert, da die Senke zu schwach ist, um es komplett wieder abzusaugen. Hingegen wird beim rechten Fall sogar mehr abgesaugt, als durch die Quelle eingebracht wird. Da die Skala nicht neu skaliert worden ist, wird das hier nicht komplett ersichtlich. Dies ist bewusst gemacht worden, da so zum Einen die drei Fälle besser verglichen werden können.. Gleiches gilt auch für die Grafiken aus \ref{sec:fluss}.
+Links wird, aufgrund der stärkeren Quelle, das neue Fluid entlang des Kanals transportiert, da die Senke zu schwach ist, um es komplett wieder abzusaugen. Hingegen wird beim rechten Fall sogar mehr abgesaugt, als durch die Quelle eingebracht wird. Da die Skala nicht neu skaliert worden ist, wird das hier nicht komplett ersichtlich. Dies ist bewusst gemacht worden, da so die drei Fälle besser verglichen werden können. Gleiches gilt auch für die Grafiken aus \ref{sec:fluss}.
 
 \subsection{Berechnung des Geschwindigkeitsfeldes bei gegebenem Druck}
 \subsubsection{Couette-Strömung} \label{sec:couette}
@@ -296,13 +296,13 @@ Analog zur Couette-Strömung in \ref{sec:couette} wird wieder die Strömung durch 
 \begin{align*}
 \left.
 \begin{array}{l l}
-& \eta\dfrac{\partial^{2}u}{\partial y^{2}}=-\dfrac{\partial p}{\partial x} \\
+& \eta\dfrac{\partial^{2}u}{\partial y^{2}}=\dfrac{\partial p}{\partial x} \\
 & \dfrac{\partial p}{\partial x}=const \\
 & u\left(y=0\right)\stackrel{!}=0 \\
 & u\left(y=b\right)\stackrel{!}=0
 \end{array}
 \right\}
-u\left(y\right)= -\dfrac{1}{2\eta}\dfrac{\partial p}{\partial x}\left(y^{2}-yb\right).
+u\left(y\right)= \dfrac{1}{2\eta}\dfrac{\partial p}{\partial x}\left(y^{2}-yb\right).
 \end{align*}
 Als Randbedingungen wird dieses Geschwindigkeitsprofil am Einström- und Auströmrand vorgegeben. Als stationärer Endzustand sollte sich dieses Profil über die komplette Länge $L$ eingestellt haben. Mit folgenden gegebenen Initialdaten
 \FloatBarrier
@@ -331,7 +331,7 @@ Man erkennt, dass sich das initiale Parabelprofil an den Rändern (siehe \ref{pic
 
 \subsection{Berechnung des Druck- und Geschwindigkeitsfeldes mit Hilfe des \texttt{SIMPLER}-Algorithmus}
 
-\subsection{Couette-Strömung}
+\subsubsection{Couette-Strömung}
 Analog zu \ref{sec:couette} wird eine Couette-Strömung berechnet, nun wird allerdings nur am rechten Rand ein Druckwert vorgegeben. Es sollte sich das gleiche stationäre Geschwindigkeitsprofil einstellen, sowie ein konstantes Druckfeld. Beides ist auch mit dem Algorithmus berechnet worden. Da die Bilder identisch aussehen, sind diese hier nicht noch einmal aufgeführt.
 
 \subsubsection{Gartenschlauch}
@@ -375,12 +375,12 @@ Dieses Druckfeld stimmt ebenfalls mit der analytischen Lösung überein. Die Kontu
   \caption{Festkörperrotation: Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
-Diese Grafik visualisiert eine im mathematisch Sinn positive Drehbewegung, was wegen der VorgabeW $\omega=5$ auch die exakte Lösung wiederspiegelt. Aufgrund der Beziehung $v_{\phi}\sim r$ werden die Tangentialgeschwindigkeiten Richtung Kurvenaußen proportional zum Radius größer, da $\omega=const$.
+Diese Grafik visualisiert eine im mathematisch Sinn positive Drehbewegung, was wegen der Vorgabe $\omega=5$ auch die exakte Lösung widerspiegelt. Aufgrund der Beziehung $v_{\phi}\sim r$ werden die Tangentialgeschwindigkeiten Richtung Kurvenaußen proportional zum Radius größer, da $\omega=const$.
 
 
 \subsubsection{Driven Cavity}
-Es wird ein Behälter betrachtet, der unten, links und rechts undurchlässige Wände besitzt. Überhalb dieses Behälters fließt ein Fluid mit konstantem Druck und konstanter Geschwindigkeit in $x$-Richtung. Nun wird das Druck- und Geschwindigkeitsfeld simuliert, welches sich in dem Behälter einstellt. Als Randbedingungen gilt einerseits die Haftbedingung an den drei festen undruchlässigen Wänden ($u_{Wand}=v_{Wand}=0$), am oberen Rand gilt $u_{\text{Fluid,oben}}=u_{\infty}$. Gleiches gilt für den Druck: $p_{\text{Fluid,oben}}=p_{\infty}$.
-Der Behälter ist wird mit einem $50\times50$-Gitter diskretisiert. \\
+Es wird ein Behälter betrachtet, der unten, links und rechts undurchlässige Wände besitzt. Überhalb dieses Behälters fließt ein Fluid mit konstantem Druck und konstanter Geschwindigkeit in $x$-Richtung. Nun wird das Druck- und Geschwindigkeitsfeld simuliert, welches sich in dem Behälter einstellt. Als Randbedingungen gilt einerseits die Haftbedingung an den drei festen undurchlässigen Wänden ($u_{Wand}=v_{Wand}=0$), am oberen Rand gilt $u_{\text{Fluid,oben}}=u_{\infty}$. Gleiches gilt für den Druck: $p_{\text{Fluid,oben}}=p_{\infty}$.
+Der Behälter wird mit einem $50\times50$-Gitter diskretisiert. \\
 Für kleine Reynoldszahlen ($Re\leq400$) ergibt sich folgendes Ergebnis:
 \FloatBarrier
 \begin{figure}[!htb] 
@@ -427,7 +427,7 @@ Man erkennt einen einzigen Wirbel, was auch vergleichbaren Resulaten (s. Interne
   \caption{Driven Cavity: Re=3200, Druck- und Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
-Man erkennt, dass sich in den Ecken kleinere, entgegengerichtete Wirbel ausbilden. Die letzten beiden Bilder zeigen die Strömung für $Re=3200$. Der zentrale, mathematisch negativ gerichtete, Wirbel hat die Tendenz in die Mitte der Nische (cavity) zu wandern. Es ist außerdem erkennbar, wie sich die kleinen, im mathematisch positiven Sinn drehenden, Wirbel ausbilden. Das Druckfeld zeigt im Bereiche der Wirbel ein Minimum auf. All diese Ergebnisse spiegeln die erwarteten Ergebnisse wieder.
+Man erkennt, dass sich in den Ecken kleinere, entgegengerichtete Wirbel ausbilden. Die letzten beiden Bilder zeigen die Strömung für $Re=3200$. Der zentrale, mathematisch negativ gerichtete, Wirbel hat die Tendenz in die Mitte der Nische (cavity) zu wandern. Es ist außerdem erkennbar, wie sich die kleinen, im mathematisch positiven Sinn drehenden, Wirbel ausbilden. Das Druckfeld nimmt im Bereich der Wirbel ein Minimum auf. All diese Ergebnisse spiegeln die erwarteten Ergebnisse wieder.
 
 
 \subsubsection{Kanalvergrößerung}
@@ -490,4 +490,4 @@ Abschließend wird ein umströmter Zylinder betrachtet. In einem Kanal befindet si
   \caption{Umströmter Zylinder:Geschwindigkeitsfeld}
 \end{figure}
 \FloatBarrier
-Die Ergebnisse sehen qualitativ richtig aus. Es ist zu beachten, dass aufgrund des kartesischen Gitters der Zylinder nur durch eine Art Stufenprofil approximiert worden ist. Um trotzdem eine gut erkennbare Kreisform zu erhalten, wurde das $20\times10$ große Integrationsgebiet mit einem $200\times100$-Gitter diskretisiert. Zur abschließenden Validierung der Implementierung müssten jedoch weitere Testfälle, insbesondere solche, für die experimentelle Daten zur Verfügung stehen, gerechnet werden.
+Die Ergebnisse sehen qualitativ richtig aus. Es ist zu beachten, dass aufgrund des kartesischen Gitters der Zylinder nur durch eine Art Stufenprofil approximiert worden ist. Um trotzdem eine gut erkennbare Kreisform zu erhalten, wurde das $20\times10$ große Integrationsgebiet mit einem $200\times100$-Gitter diskretisiert. Zur abschließenden Validierung der Implementierung müssten jedoch weitere Testfälle, insbesondere solche, für die experimentelle Daten zum Vergleich zur Verfügung stehen, gerechnet werden.

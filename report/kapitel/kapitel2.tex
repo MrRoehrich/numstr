@@ -2,7 +2,7 @@
 
 \section{Aufgabenstellung}
 Ziel ist es, eine inkompressible, instationäre und zweidimensionale Strömung zu simulieren, welche Konvektions- und Diffusionsprozesse enthält. \\
-Analag zu Kapitel \ref{chap:1} wird zunächst auf die mathematische Modellbildung eingegagnen, anschließend werden numerische Methoden zum Lösen der entstandenen Gleichungen vorgestellt und schließlich, werden Testfälle bzw. Resultate des Programms diskutiert und somit das Programm validiert.
+Analag zu Kapitel \ref{chap:1} wird zunächst auf die mathematische Modellbildung eingegangen, anschließend werden numerische Methoden zum Lösen der entstandenen Gleichungen vorgestellt und schließlich, werden Testfälle bzw. Resultate des Programms diskutiert und somit das Programm validiert.
 
 \section{Mathematische Modellbildung} \label{sec:mathmodell_2}
 Es wird die Bilanzgröße $\Phi$ betrachet. Stellt man die Bilanz der konvektiven und diffusiven Flüsse, sowie der Quellterme für ein diferentielles Element im Zweidimensionalen auf, so ergibt sich für die horizontalen (konvektiven und diffusiven) Flüsse:
@@ -63,7 +63,7 @@ Als Erstes eröffnet sich die Frage, wie die finiten Volumen $\Delta V_{j}$ zu wä
 \item $\Delta V_{i} \cup \Delta V_{j}=\emptyset,\ \forall i\neq j$, d.h. die finiten Volumen überschneiden sich nicht. Außerdem gehört jede Begrenzungskante oder -fläche zu zwei finiten Volumen gleichzeitig.
 \item Die Berechnung der Flüsse über die Zellflächen muss unabhängig von den Zellen geschehen, so dass sicher gestellt ist, dass der eintretende Fluss über eine Zellfläche der einen Zelle, gleich dem austretenden Fluss der benachbarten Zelle über die selbe Zellfläche ist.
 \end{enumerate}
-Im Folgenden wird eine zellzentrierte Interpretation gewählt, sprich die diskreten Werte der Bilanzgröße $\Phi$ werden innerhalb eines finiten Volumens/einer Zelle angenommen und nicht an den Knotenpunten mehrerer Zellen.
+Im Folgenden wird eine zellzentrierte Interpretation gewählt, sprich die diskreten Werte der Bilanzgröße $\Phi$ werden innerhalb eines finiten Volumens/einer Zelle angenommen und nicht an den Knotenpunten des Gitters.
 
 \subsection{Numerischer Fluss}
 Es wird eine numerische Berechnung für den in (\ref{eq:bilanz_fv}) beschriebenen Fluss gesucht. Betrachtet man die Kante zwischen den Punkten $P_{1}$ und $P_{2}$ einer Zelle, so ist der Fluss über diese Oberfläche gegeben durch:
@@ -130,7 +130,7 @@ Nachteil dieser Methode ist, dass die Upwind-Diskretisierung lediglich erster Or
 \subsubsection{Höhere Ordnung} \label{sec:höhere_ordnung_2}
 Es existieren optimierte Upwind-Methoden, wie z.b. QUICK. Hier wird statt eines treppenförmigen Profils eine quadratische Rekonstruktion von $\Phi$ auf drei stromauf versetzten Knotenpunkten angesetzt. So wird eine Approximation zweiter Ordnung für äquidistante Gitter erreicht, im Gegensatz zu der ersten Ordnung der gewöhnlichen Upwind-Diskretisierung.
 
-\subsection{Vereinheitliche Programmierung}
+\subsection{Vereinheitlichte Programmierung}
 Wir betrachten die bereits beschriebene diskretisierte Gleichung aus einer anderen Persepktive
 \begin{equation}
 \rho\dfrac{\Phi_{i,j}^{n+1}-\Phi_{i,j}^{n}}{\Delta t}\Delta x \Delta y = -a_{i,j}\Phi_{i,j}^{n}+a_{i,j+1}\Phi_{i,j+1}^{n}+a_{i+1,j}\Phi_{i+1,j}^{n}+a_{i,j-1}\Phi_{i,j-1}^{n}+a_{i-1,j}\Phi_{i-1,j}^{n}.
@@ -315,7 +315,7 @@ Nun werden die Geschwindigkeiten $u$ und $v$ zu Null gesetzt, der Diffusionskoef
   \end{tabular}
 \end{table}
 \FloatBarrier
-Da die Randwerte fest sind ist der Mittelwert der mittleren Zelle für die stationäre Endlösung gleich Eins, da alles über die Ränder hinaus diffundiert ist. Diese Überlegung stimmt mit dem berechneten Ergebnis überein:
+Da die Randwerte fest sind ist der Mittelwert der mittleren Zelle für die stationäre Endlösung gleich Eins, da alles über die Ränder in Folge der Verbreitung durch Diffusion abgeleitet worden ist. Diese Überlegung stimmt mit dem berechneten Ergebnis überein:
 \FloatBarrier
 \begin{minipage}[b]{7.5cm}
 \includegraphics[height=5cm]{bilder/kapitel2/diffusion_1}
@@ -364,7 +364,7 @@ Da die Randwerte fest sind ist der Mittelwert der mittleren Zelle für die statio
 \captionof{figure}{zeitliche Evolution diffusiver Strömung}
 \end{figure}
 \FloatBarrier
-Im stationären Endfall, der hier nicht visualisiert ist, werden im gesamten Integrationsgebiet die Werte der Dirichlet-Ränder, nämlich $42$. Dies entspricht der analytischen Lösung.
+Im stationären Endfall, der hier nicht visualisiert ist, werden im gesamten Integrationsgebiet die Werte der Dirichlet-Ränder, nämlich $42$, angenommen. Dies entspricht der analytischen Lösung.
 \end{enumerate}
 
 \subsection{Konvektion-Diffusion}
@@ -449,7 +449,7 @@ Bisher wurden in sämtlichen Testfällen Dirichlet-Randbedingungen verwendet. Im F
 \FloatBarrier
 
 \subsection{Quellen}
-Es wird wieder eine $50\times50$-Diskretisierung für ein $3\times3$ großes Integrationsgebiet verwendet. Es werden undruchlässige Wände an allen vier Wänden simuliert, die Konvektionsgeschwindigkeiten sind beide Null und der Diffusionskoeffizient beträgt $\alpha=10$. Als Initialwerte für den Skalar $\Phi$ wird wieder über dem gesamten Gebiet der Wert $4.711$ gesetzt. An der Stelle $(1,1)$ befindet sich eine Quelle, die pro Zeiteinheit $100$ Einheiten des Skalars $\Phi$ in das Integrationsgebiet einbringt, an der Stelle $(2,2)$ befindet sich eine Senke die $15$ Einheiten des Skalars $\Phi$ pro Zeiteinheit absaugt. Es ergibt sich folgende, physikalisch sinnvolle, zeitliche Evolution.
+Es wird wieder eine $50\times50$-Diskretisierung für ein $3\times3$ großes Integrationsgebiet verwendet. Es werden undurchlässige Wände an allen vier Seiten simuliert, die Konvektionsgeschwindigkeiten sind beide Null und der Diffusionskoeffizient beträgt $\alpha=10$. Als Initialwerte für den Skalar $\Phi$ wird wieder über dem gesamten Gebiet der Wert $4.711$ gesetzt. An der Stelle $(1,1)$ befindet sich eine Quelle, die pro Zeiteinheit $100$ Einheiten des Skalars $\Phi$ in das Integrationsgebiet einbringt, an der Stelle $(2,2)$ befindet sich eine Senke die $15$ Einheiten des Skalars $\Phi$ pro Zeiteinheit absaugt. Es ergibt sich folgende, physikalisch sinnvolle, zeitliche Evolution.
 \begin{figure}[!htb]
 \begin{minipage}[t]{3.9cm}
 \includegraphics[width=3.8cm]{bilder/kapitel2/diffusion4_4sek}
